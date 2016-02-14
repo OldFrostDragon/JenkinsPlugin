@@ -3,13 +3,16 @@ DEFINES += JENKINSPLUGIN_LIBRARY
 # JenkinsPlugin files
 
 SOURCES += jenkinspluginplugin.cpp \
-    jenkinsviewwidget.cpp
+    jenkinsviewwidget.cpp \
+    jenkinssettings.cpp
 
 HEADERS += jenkinspluginplugin.h \
         jenkinsplugin_global.h \
         jenkinspluginconstants.h \
-    jenkinsviewwidget.h
+    jenkinsviewwidget.h \
+    jenkinssettings.h
 
+CONFIG += C++14
 # Qt Creator linking
 
 ## set the QTC_SOURCE environment variable to override the setting here
