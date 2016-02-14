@@ -26,7 +26,3 @@
 *.exe
 *.out
 *.app
-
-#Qt Creator files and folders
-*.pro.user*
-build-*/

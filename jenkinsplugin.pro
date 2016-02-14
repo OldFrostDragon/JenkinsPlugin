@@ -2,11 +2,13 @@ DEFINES += JENKINSPLUGIN_LIBRARY
 
 # JenkinsPlugin files
 
-SOURCES += jenkinspluginplugin.cpp
+SOURCES += jenkinspluginplugin.cpp \
+    jenkinsviewwidget.cpp
 
 HEADERS += jenkinspluginplugin.h \
         jenkinsplugin_global.h \
-        jenkinspluginconstants.h
+        jenkinspluginconstants.h \
+    jenkinsviewwidget.h
 
 # Qt Creator linking
 
@@ -43,3 +45,6 @@ QTC_PLUGIN_RECOMMENDS += \
 ###### End _dependencies.pri contents ######
 
 include($$QTCREATOR_SOURCES/src/qtcreatorplugin.pri)
+
+FORMS += \
+    jenkinsviewwidget.ui

@@ -15,6 +15,8 @@
 
 #include <QtPlugin>
 
+#include "jenkinsviewwidget.h"
+
 using namespace JenkinsPlugin::Internal;
 
 JenkinsPluginPlugin::JenkinsPluginPlugin()
@@ -50,6 +52,8 @@ bool JenkinsPluginPlugin::initialize(const QStringList &arguments, QString *erro
     menu->menu()->setTitle(tr("JenkinsPlugin"));
     menu->addAction(cmd);
     Core::ActionManager::actionContainer(Core::Constants::M_TOOLS)->addMenu(menu);
+
+    addAutoReleasedObject(new JenkinsViewWidgetFactory);
 
     return true;
 }
