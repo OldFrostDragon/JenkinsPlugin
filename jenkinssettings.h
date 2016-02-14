@@ -3,17 +3,21 @@
 
 #include <QString>
 
-class JenkinsSettings
-{
-public:
-    JenkinsSettings();
+namespace JenkinsPlugin {
+namespace Internal {
 
-    QString jenkinsUrl() const;
-    void setJenkinsUrl(const QString &jenkinsUrl);
+class JenkinsSettings {
+public:
+  JenkinsSettings();
+
+  QString jenkinsUrl() const;
+  void setJenkinsUrl(const QString &jenkinsUrl);
 
 private:
-    QString _jenkinsUrl{QStringLiteral("https://ci.jenkins-ci.org/")};
-
+  QString _jenkinsUrl{QStringLiteral("http://jenkins.cyanogenmod.com")};
 };
+
+}
+}
 
 #endif // JENKINSSETTINGS_H

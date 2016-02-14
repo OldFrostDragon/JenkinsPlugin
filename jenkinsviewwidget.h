@@ -6,6 +6,8 @@
 #include <coreplugin/inavigationwidgetfactory.h>
 #include <utils/navigationtreeview.h>
 
+#include "jenkinsdatafetcher.h"
+
 QT_BEGIN_NAMESPACE
 class QToolButton;
 QT_END_NAMESPACE
@@ -33,6 +35,8 @@ public:
   explicit JenkinsViewWidget(QWidget *parent = 0);
   ~JenkinsViewWidget();
   QList<QToolButton *> createToolButtons();
+
+public slots:
 
 private:
   Ui::JenkinsViewWidget *ui;

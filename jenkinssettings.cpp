@@ -1,5 +1,7 @@
 #include "jenkinssettings.h"
 
+using namespace JenkinsPlugin::Internal;
+
 JenkinsSettings::JenkinsSettings()
 {
 

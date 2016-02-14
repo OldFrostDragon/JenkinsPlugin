@@ -1,18 +1,21 @@
 DEFINES += JENKINSPLUGIN_LIBRARY
 
 # JenkinsPlugin files
+QT += network
 
 SOURCES += jenkinspluginplugin.cpp \
     jenkinsviewwidget.cpp \
-    jenkinssettings.cpp
+    jenkinssettings.cpp \
+    jenkinsdatafetcher.cpp
 
 HEADERS += jenkinspluginplugin.h \
         jenkinsplugin_global.h \
         jenkinspluginconstants.h \
     jenkinsviewwidget.h \
-    jenkinssettings.h
+    jenkinssettings.h \
+    jenkinsdatafetcher.h
 
-CONFIG += C++14
+CONFIG += c++14
 # Qt Creator linking
 
 ## set the QTC_SOURCE environment variable to override the setting here

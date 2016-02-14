@@ -6,6 +6,8 @@
 
 #include <QToolButton>
 
+#include <QDebug>
+
 using namespace JenkinsPlugin::Internal;
 
 JenkinsViewWidget::JenkinsViewWidget(QWidget *parent)

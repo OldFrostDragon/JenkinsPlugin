@@ -5,6 +5,9 @@
 
 #include <extensionsystem/iplugin.h>
 
+#include "jenkinsdatafetcher.h"
+#include "jenkinsviewwidget.h"
+
 namespace JenkinsPlugin {
 namespace Internal {
 
@@ -23,6 +26,10 @@ public:
 
 private slots:
     void triggerAction();
+    void updateJobs(QList<JenkinsJob> jobs);
+
+private:
+    JenkinsDataFetcher *_fetcher;
 };
 
 } // namespace Internal

@@ -15,7 +15,7 @@
 
 #include <QtPlugin>
 
-#include "jenkinsviewwidget.h"
+#include <QDebug>
 
 using namespace JenkinsPlugin::Internal;
 
@@ -55,6 +55,10 @@ bool JenkinsPluginPlugin::initialize(const QStringList &arguments, QString *erro
 
     addAutoReleasedObject(new JenkinsViewWidgetFactory);
 
+    _fetcher = new JenkinsDataFetcher();
+    addAutoReleasedObject(_fetcher);
+    connect(_fetcher, &JenkinsDataFetcher::jobsUpdated, this, &JenkinsPluginPlugin::updateJobs);
+
     return true;
 }
 
@@ -75,7 +79,17 @@ ExtensionSystem::IPlugin::ShutdownFlag JenkinsPluginPlugin::aboutToShutdown()
 
 void JenkinsPluginPlugin::triggerAction()
 {
+    _fetcher->getAvaliableJobs();
     QMessageBox::information(Core::ICore::mainWindow(),
                              tr("Action triggered"),
                              tr("This is an action from JenkinsPlugin."));
+}
+
+void JenkinsPluginPlugin::updateJobs(QList<JenkinsJob> jobs)
+{
+    foreach (auto job, jobs) {
+        qDebug() << "job:";
+        qDebug() << "    name:" << job.name();
+        qDebug() << "    url:" << job.jobUrl();
+    }
 }
