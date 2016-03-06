@@ -7,6 +7,7 @@
 #include <utils/navigationtreeview.h>
 
 #include "jenkinsdatafetcher.h"
+#include "jenkinsjobview.h"
 
 QT_BEGIN_NAMESPACE
 class QToolButton;
@@ -39,6 +40,7 @@ public:
 public slots:
 
 private:
+  JenkinsJobView *_view;
   Ui::JenkinsViewWidget *ui;
   QToolButton *_refreshButton;
 };

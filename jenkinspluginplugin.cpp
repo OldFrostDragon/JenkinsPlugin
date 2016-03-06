@@ -17,6 +17,8 @@
 
 #include <QDebug>
 
+#include "jenkinsjobsmodel.h"
+
 using namespace JenkinsPlugin::Internal;
 
 JenkinsPluginPlugin::JenkinsPluginPlugin()
@@ -92,4 +94,5 @@ void JenkinsPluginPlugin::updateJobs(QList<JenkinsJob> jobs)
         qDebug() << "    name:" << job.name();
         qDebug() << "    url:" << job.jobUrl();
     }
+    JenkinsJobsModel::instance()->setJenkinsJobs(jobs);
 }

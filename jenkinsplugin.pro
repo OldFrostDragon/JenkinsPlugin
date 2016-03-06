@@ -6,14 +6,20 @@ QT += network
 SOURCES += jenkinspluginplugin.cpp \
     jenkinsviewwidget.cpp \
     jenkinssettings.cpp \
-    jenkinsdatafetcher.cpp
+    jenkinsdatafetcher.cpp \
+    jenkinstreeitem.cpp \
+    jenkinsjobsmodel.cpp \
+    jenkinsjobview.cpp
 
 HEADERS += jenkinspluginplugin.h \
         jenkinsplugin_global.h \
         jenkinspluginconstants.h \
     jenkinsviewwidget.h \
     jenkinssettings.h \
-    jenkinsdatafetcher.h
+    jenkinsdatafetcher.h \
+    jenkinstreeitem.h \
+    jenkinsjobsmodel.h \
+    jenkinsjobview.h
 
 CONFIG += c++14
 # Qt Creator linking
