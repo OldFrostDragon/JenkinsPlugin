@@ -60,6 +60,7 @@ bool JenkinsPluginPlugin::initialize(const QStringList &arguments, QString *erro
     _fetcher = new JenkinsDataFetcher();
     addAutoReleasedObject(_fetcher);
     connect(_fetcher, &JenkinsDataFetcher::jobsUpdated, this, &JenkinsPluginPlugin::updateJobs);
+    connect(_fetcher, &JenkinsDataFetcher::jobUpdated, this, &JenkinsPluginPlugin::updateJob);
 
     return true;
 }
@@ -81,7 +82,7 @@ ExtensionSystem::IPlugin::ShutdownFlag JenkinsPluginPlugin::aboutToShutdown()
 
 void JenkinsPluginPlugin::triggerAction()
 {
-    _fetcher->getAvaliableJobs();
+//    _fetcher->getAvaliableJobs();
     QMessageBox::information(Core::ICore::mainWindow(),
                              tr("Action triggered"),
                              tr("This is an action from JenkinsPlugin."));
@@ -89,10 +90,18 @@ void JenkinsPluginPlugin::triggerAction()
 
 void JenkinsPluginPlugin::updateJobs(QList<JenkinsJob> jobs)
 {
-    foreach (auto job, jobs) {
-        qDebug() << "job:";
-        qDebug() << "    name:" << job.name();
-        qDebug() << "    url:" << job.jobUrl();
-    }
+//    foreach (auto job, jobs) {
+//        qDebug() << "job:";
+//        qDebug() << "    name:" << job.name();
+//        qDebug() << "    url:" << job.jobUrl();
+//    }
     JenkinsJobsModel::instance()->setJenkinsJobs(jobs);
+}
+
+void JenkinsPluginPlugin::updateJob(JenkinsJob job)
+{
+//    qDebug() << "updated job:";
+//    qDebug() << "    name:" << job.name();
+//    qDebug() << "    url:" << job.jobUrl();
+    JenkinsJobsModel::instance()->setOrUpdateJob(job);
 }

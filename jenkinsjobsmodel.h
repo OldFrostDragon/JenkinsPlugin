@@ -22,6 +22,7 @@ public:
     JenkinsSettings jenkinsSettings() const;
     void setJenkinsSettings(const JenkinsSettings &jenkinsSettings);
     void setJenkinsJobs(QList<JenkinsJob> jobs);
+    void setOrUpdateJob(JenkinsJob job);
 
 private:
     explicit JenkinsJobsModel(QObject *parent = 0);

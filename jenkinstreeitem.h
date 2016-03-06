@@ -2,6 +2,7 @@
 #define JENKINSTREEITEM_H
 
 #include <utils/treemodel.h>
+#include "jenkinsdatafetcher.h"
 
 namespace JenkinsPlugin
 {
@@ -17,6 +18,8 @@ public:
     };
 
     JenkinsTreeItem(const QString &name, const Type type);
+    JenkinsTreeItem(const Type type, const JenkinsJob &job);
+
     JenkinsTreeItem(const JenkinsTreeItem &other);
 
     Type itemType() const;
@@ -30,10 +33,13 @@ public:
 public:
     QVariant data(int column, int role) const;
 
+    JenkinsJob job() const;
+    void setJob(const JenkinsJob &job);
+
 private:
     Type _itemType;
     QString _name;
-
+    JenkinsJob _job;
 };
 }
 }

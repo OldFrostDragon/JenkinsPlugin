@@ -27,6 +27,7 @@ public:
 private slots:
     void triggerAction();
     void updateJobs(QList<JenkinsJob> jobs);
+    void updateJob(JenkinsJob job);
 
 private:
     JenkinsDataFetcher *_fetcher;
