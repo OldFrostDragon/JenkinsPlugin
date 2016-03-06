@@ -17,6 +17,11 @@ public:
         Job
     };
 
+    enum JobRoles
+    {
+        IsRunningRole = Qt::UserRole + 1
+    };
+
     JenkinsTreeItem(const QString &name, const Type type);
     JenkinsTreeItem(const Type type, const JenkinsJob &job);
 

@@ -10,6 +10,7 @@
 #include <QDebug>
 #include <QVBoxLayout>
 #include "jenkinsjobsmodel.h"
+#include "jenkinstreeitemdelegate.h"
 
 using namespace JenkinsPlugin::Internal;
 
@@ -20,6 +21,7 @@ JenkinsViewWidget::JenkinsViewWidget(QWidget *parent)
     JenkinsJobsModel *model = JenkinsJobsModel::instance();
     _view = new JenkinsJobView(this);
     _view->setModel(model);
+    _view->setItemDelegate(new JenkinsTreeItemDelegate(this));
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setMargin(0);

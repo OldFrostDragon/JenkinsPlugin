@@ -1,5 +1,7 @@
 #include "jenkinstreeitem.h"
 
+#include <QIcon>
+
 using namespace JenkinsPlugin::Internal;
 
 JenkinsTreeItem::JenkinsTreeItem(const QString &name, const Type type)
@@ -54,6 +56,16 @@ QVariant JenkinsTreeItem::data(int column, int role) const
                     + _job.buildInfo().timestamp().toString(QStringLiteral("dd.MM.yyyy hh:mm:ss")));
         return data.join(QLatin1Char('\n'));
     }
+    else if(role == Qt::DecorationRole && column == 0 && _itemType == Type::Job)
+    {
+        return QIcon(_job.buildInfo().getResultIcon());
+    }
+
+    else if(role == JobRoles::IsRunningRole && column == 0)
+    {
+        return _itemType == Type::Job;
+    }
+
     else
         return QVariant();
 }

@@ -6,6 +6,8 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
+#include "jenkinspluginconstants.h"
+
 using namespace JenkinsPlugin::Internal;
 
 const QString JenkinsDataFetcher::REST_API_URL_SUFFIX = QStringLiteral("api/json");
@@ -15,7 +17,7 @@ JenkinsDataFetcher::JenkinsDataFetcher(QObject *parent) : QObject(parent)
     _manager = new QNetworkAccessManager(this);
     connect(_manager, &QNetworkAccessManager::finished, this, &JenkinsDataFetcher::readReply);
     _timer = new QTimer(this);
-    _timer->setInterval(1000 * 30);  // 30 seconds
+    _timer->setInterval(1000 * 1);  // 30 seconds
     connect(_timer, &QTimer::timeout, this, &JenkinsDataFetcher::updateJobInfo);
     _timer->start();
 }
@@ -270,6 +272,25 @@ void BuildInfo::setTimestamp(const qint64 timestamp)
 }
 
 BuildInfo::Result BuildInfo::result() const { return _result; }
+
+QString BuildInfo::getResultIcon()
+{
+    switch (_result)
+    {
+        case Result::Success:
+            return QLatin1String(JenkinsPlugin::Constants::SUCCESS_ICON);
+            break;
+        case Result::Failure:
+            return QLatin1String(JenkinsPlugin::Constants::FAIL_ICON);
+            break;
+        case Result::Unstable:
+            return QLatin1String(JenkinsPlugin::Constants::UNSTABLE_ICON);
+            break;
+        default:
+            return QLatin1String(JenkinsPlugin::Constants::NOT_BUILT_ICON);
+            break;
+    }
+}
 
 void BuildInfo::setResult(const Result &result) { _result = result; }
 

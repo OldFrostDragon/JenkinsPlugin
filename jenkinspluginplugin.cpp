@@ -58,6 +58,9 @@ bool JenkinsPluginPlugin::initialize(const QStringList &arguments, QString *erro
     addAutoReleasedObject(new JenkinsViewWidgetFactory);
 
     _fetcher = new JenkinsDataFetcher();
+    //FIXME: remove it
+    JenkinsJobsModel::instance()->setJenkinsSettings(JenkinsSettings());
+
     addAutoReleasedObject(_fetcher);
     connect(_fetcher, &JenkinsDataFetcher::jobsUpdated, this, &JenkinsPluginPlugin::updateJobs);
     connect(_fetcher, &JenkinsDataFetcher::jobUpdated, this, &JenkinsPluginPlugin::updateJob);
