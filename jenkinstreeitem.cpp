@@ -58,12 +58,12 @@ QVariant JenkinsTreeItem::data(int column, int role) const
     }
     else if(role == Qt::DecorationRole && column == 0 && _itemType == Type::Job)
     {
-        return QIcon(_job.buildInfo().getResultIcon());
+        return QIcon(_job.colorIcon());
     }
 
-    else if(role == JobRoles::IsRunningRole && column == 0)
+    else if(role == JobRoles::IsRunningRole && column == 0 && _itemType == Type::Job)
     {
-        return _itemType == Type::Job;
+        return _job.isRunning();
     }
 
     else

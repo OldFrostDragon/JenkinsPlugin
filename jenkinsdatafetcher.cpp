@@ -49,6 +49,7 @@ QString JenkinsDataFetcher::urlToRestApiUrl(const QString &url)
 
 void JenkinsDataFetcher::readReply(QNetworkReply *reply)
 {
+    qDebug() << "reply:" << reply->url();
     switch (_state)
     {
         case State::Ready:
@@ -72,7 +73,17 @@ void JenkinsDataFetcher::readReply(QNetworkReply *reply)
         break;
         case State::FetchingJobDetails:
         {
-            JenkinsJob detailedJob = fillBuildDetails(reply);
+            JenkinsJob detailedJob;
+            if (reply->error() != QNetworkReply::NoError)
+            {
+                //FIXME: Maybe better to retry request?
+                detailedJob = _jobsForDetalization.takeFirst();
+            }
+            else
+            {
+                detailedJob = fillBuildDetails(reply);
+            }
+
             if (detailedJob.isValid())
                 emit jobUpdated(detailedJob);
             if (_jobsForDetalization.isEmpty())
@@ -129,6 +140,8 @@ QList< JenkinsJob > JenkinsDataFetcher::fetchJobList(QNetworkReply *reply)
             jenkinsJob.setName(jobObject[QStringLiteral("name")].toString());
         if (jobObject.contains(QStringLiteral("url")))
             jenkinsJob.setJobUrl(jobObject[QStringLiteral("url")].toString());
+        if (jobObject.contains(QStringLiteral("color")))
+            jenkinsJob.setBuildStatus(jobObject[QStringLiteral("color")].toString());
         parsedJobs.append(jenkinsJob);
     }
     return parsedJobs;
@@ -246,13 +259,39 @@ QString JenkinsJob::name() const { return _name; }
 
 void JenkinsJob::setName(const QString &name) { _name = name; }
 
-QString JenkinsJob::color() const { return _color; }
-
-void JenkinsJob::setColor(const QString &color) { _color = color; }
+void JenkinsJob::setBuildStatus(const QString &colorEntry)
+{
+    QString entry = colorEntry;
+    if(entry.endsWith(QStringLiteral("_anime")))
+    {
+        _isRunning = true;
+        entry.chop(6);
+    }
+    else
+        _isRunning = false;
+    if(entry == QStringLiteral("blue"))
+        _colorIcon = QLatin1String(JenkinsPlugin::Constants::SUCCESS_ICON);
+    else if(entry == QStringLiteral("red"))
+        _colorIcon = QLatin1String(JenkinsPlugin::Constants::FAIL_ICON);
+    else if(entry == QStringLiteral("yellow"))
+        _colorIcon = QLatin1String(JenkinsPlugin::Constants::UNSTABLE_ICON);
+    else
+        _colorIcon = QLatin1String(JenkinsPlugin::Constants::NOT_BUILT_ICON);
+}
 
 BuildInfo JenkinsJob::buildInfo() const { return _buildInfo; }
 
 void JenkinsJob::setBuildInfo(const BuildInfo &buildInfo) { _buildInfo = buildInfo; }
+
+bool JenkinsJob::isRunning() const
+{
+    return _isRunning;
+}
+
+QString JenkinsJob::colorIcon() const
+{
+    return _colorIcon;
+}
 
 QString BuildInfo::url() const { return _url; }
 

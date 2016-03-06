@@ -14,7 +14,9 @@ public:
   void setJenkinsUrl(const QString &jenkinsUrl);
 
 private:
-  QString _jenkinsUrl{QStringLiteral("http://jenkins.cyanogenmod.com")};
+//  QString _jenkinsUrl{QStringLiteral("http://jenkins.cyanogenmod.com")};
+  QString _jenkinsUrl{QStringLiteral("https://ci.jenkins-ci.org/view/Libraries/")};
+//  QString _jenkinsUrl{QStringLiteral("http://dotnet-ci.cloudapp.net/view/Roslyn/")};
 };
 
 }

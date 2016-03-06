@@ -78,19 +78,24 @@ public:
     QString name() const;
     void setName(const QString &name);
 
-    QString color() const;
-    void setColor(const QString &color);
+    void setBuildStatus(const QString &colorEntry);
 
     bool isValid() { return !_jobUrl.isEmpty() && !_name.isEmpty(); }
 
     BuildInfo buildInfo() const;
     void setBuildInfo(const BuildInfo &buildInfo);
 
+    bool isRunning() const;
+    QString colorIcon() const;
+
 private:
     QString _jobUrl;
     QString _name;
     QString _color;
     BuildInfo _buildInfo;
+
+    bool _isRunning{false};
+    QString _colorIcon;
 };
 
 class JenkinsDataFetcher : public QObject
