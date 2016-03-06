@@ -4,5 +4,9 @@
         <file>Resources/grey_ball.png</file>
         <file>Resources/red_ball.png</file>
         <file>Resources/yellow_ball.png</file>
+        <file>Resources/green_ball.ico</file>
+        <file>Resources/grey_ball.ico</file>
+        <file>Resources/red_ball.ico</file>
+        <file>Resources/yellow_ball.ico</file>
     </qresource>
 </RCC>

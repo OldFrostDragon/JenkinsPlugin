@@ -52,7 +52,7 @@ void JenkinsJobsModel::setOrUpdateJob(JenkinsJob job)
     QVector< Utils::TreeItem * > items = _rootItem->children();
     QList<JenkinsTreeItem *> castedItems;
     foreach (Utils::TreeItem *treeItem, items)
-        castedItems.append(dynamic_cast<JenkinsTreeItem *>(treeItem));
+        castedItems.append(static_cast<JenkinsTreeItem *>(treeItem));
     for (int i = 0; i < castedItems.size(); ++i)
     {
         if (castedItems[i]->job().jobUrl() == job.jobUrl())

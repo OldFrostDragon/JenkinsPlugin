@@ -17,7 +17,7 @@ JenkinsDataFetcher::JenkinsDataFetcher(QObject *parent) : QObject(parent)
     _manager = new QNetworkAccessManager(this);
     connect(_manager, &QNetworkAccessManager::finished, this, &JenkinsDataFetcher::readReply);
     _timer = new QTimer(this);
-    _timer->setInterval(1000 * 1);  // 30 seconds
+    _timer->setInterval(1000 * 10);  // 30 seconds
     connect(_timer, &QTimer::timeout, this, &JenkinsDataFetcher::updateJobInfo);
     _timer->start();
 }
