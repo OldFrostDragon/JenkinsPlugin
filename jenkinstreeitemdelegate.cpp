@@ -16,6 +16,8 @@ void JenkinsTreeItemDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     painter->save();
 
     QTextDocument doc;
+    doc.setDocumentMargin(1);
+
     bool isRunning = index.data(JenkinsTreeItem::JobRoles::IsRunningRole).toBool();
     if (isRunning)
         doc.setHtml(opt.text + QStringLiteral("    <i>[Running]</i>"));
@@ -43,6 +45,7 @@ QSize JenkinsTreeItemDelegate::sizeHint(const QStyleOptionViewItem &option,
     initStyleOption(&options, index);
 
     QTextDocument doc;
+    doc.setDocumentMargin(1);
     bool isRunning = index.data(JenkinsTreeItem::JobRoles::IsRunningRole).toBool();
     if (isRunning)
         doc.setHtml(options.text + QStringLiteral("    <i>[Running]</i>"));
@@ -51,6 +54,7 @@ QSize JenkinsTreeItemDelegate::sizeHint(const QStyleOptionViewItem &option,
     doc.setTextWidth(options.rect.width());
 
     QSize size = QStyledItemDelegate::sizeHint(option, index);
+
     return QSize(size.width() > doc.idealWidth() ? size.width() : doc.idealWidth(),
                  size.height() > doc.size().height() ? size.height() : doc.size().height());
 }
