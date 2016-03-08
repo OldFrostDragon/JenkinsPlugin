@@ -24,12 +24,14 @@ using namespace JenkinsPlugin::Internal;
 JenkinsPluginPlugin::JenkinsPluginPlugin()
 {
     // Create your members
+    _settings.load(Core::ICore::settings());
 }
 
 JenkinsPluginPlugin::~JenkinsPluginPlugin()
 {
     // Unregister objects from the plugin manager's object pool
     // Delete members
+    _settings.save(Core::ICore::settings());
 }
 
 bool JenkinsPluginPlugin::initialize(const QStringList &arguments, QString *errorString)
@@ -44,27 +46,28 @@ bool JenkinsPluginPlugin::initialize(const QStringList &arguments, QString *erro
     Q_UNUSED(arguments)
     Q_UNUSED(errorString)
 
-    QAction *action = new QAction(tr("JenkinsPlugin action"), this);
-    Core::Command *cmd = Core::ActionManager::registerAction(action, Constants::ACTION_ID,
-                                                             Core::Context(Core::Constants::C_GLOBAL));
-    cmd->setDefaultKeySequence(QKeySequence(tr("Ctrl+Alt+Meta+A")));
-    connect(action, SIGNAL(triggered()), this, SLOT(triggerAction()));
+//    QAction *action = new QAction(tr("JenkinsPlugin action"), this);
+//    Core::Command *cmd
+//        = Core::ActionManager::registerAction(action, Constants::ACTION_ID,
+//                                              Core::Context(Core::Constants::C_GLOBAL));
+//    cmd->setDefaultKeySequence(QKeySequence(tr("Ctrl+Alt+Meta+A")));
+//    connect(action, SIGNAL(triggered()), this, SLOT(triggerAction()));
 
-    Core::ActionContainer *menu = Core::ActionManager::createMenu(Constants::MENU_ID);
-    menu->menu()->setTitle(tr("JenkinsPlugin"));
-    menu->addAction(cmd);
-    Core::ActionManager::actionContainer(Core::Constants::M_TOOLS)->addMenu(menu);
+//    Core::ActionContainer *menu = Core::ActionManager::createMenu(Constants::MENU_ID);
+//    menu->menu()->setTitle(tr("JenkinsPlugin"));
+//    menu->addAction(cmd);
+//    Core::ActionManager::actionContainer(Core::Constants::M_TOOLS)->addMenu(menu);
 
     addAutoReleasedObject(new JenkinsViewWidgetFactory);
 
     _fetcher = new JenkinsDataFetcher();
-    //FIXME: remove it
-    JenkinsJobsModel::instance()->setJenkinsSettings(JenkinsSettings());
-
     addAutoReleasedObject(_fetcher);
+    onSettingsChanged(_settings);
+
     connect(_fetcher, &JenkinsDataFetcher::jobsUpdated, this, &JenkinsPluginPlugin::updateJobs);
     connect(_fetcher, &JenkinsDataFetcher::jobUpdated, this, &JenkinsPluginPlugin::updateJob);
 
+    createOptionsPage();
     return true;
 }
 
@@ -85,26 +88,40 @@ ExtensionSystem::IPlugin::ShutdownFlag JenkinsPluginPlugin::aboutToShutdown()
 
 void JenkinsPluginPlugin::triggerAction()
 {
-//    _fetcher->getAvaliableJobs();
-    QMessageBox::information(Core::ICore::mainWindow(),
-                             tr("Action triggered"),
+    //    _fetcher->getAvaliableJobs();
+    QMessageBox::information(Core::ICore::mainWindow(), tr("Action triggered"),
                              tr("This is an action from JenkinsPlugin."));
 }
 
-void JenkinsPluginPlugin::updateJobs(QList<JenkinsJob> jobs)
+void JenkinsPluginPlugin::updateJobs(QList< JenkinsJob > jobs)
 {
-//    foreach (auto job, jobs) {
-//        qDebug() << "job:";
-//        qDebug() << "    name:" << job.name();
-//        qDebug() << "    url:" << job.jobUrl();
-//    }
+    //    foreach (auto job, jobs) {
+    //        qDebug() << "job:";
+    //        qDebug() << "    name:" << job.name();
+    //        qDebug() << "    url:" << job.jobUrl();
+    //    }
     JenkinsJobsModel::instance()->setJenkinsJobs(jobs);
 }
 
 void JenkinsPluginPlugin::updateJob(JenkinsJob job)
 {
-//    qDebug() << "updated job:";
-//    qDebug() << "    name:" << job.name();
-//    qDebug() << "    url:" << job.jobUrl();
+    //    qDebug() << "updated job:";
+    //    qDebug() << "    name:" << job.name();
+    //    qDebug() << "    url:" << job.jobUrl();
     JenkinsJobsModel::instance()->setOrUpdateJob(job);
+}
+
+void JenkinsPluginPlugin::onSettingsChanged(const JenkinsSettings &settings)
+{
+    _settings = settings;
+    JenkinsJobsModel::instance()->setJenkinsSettings(settings);
+    _fetcher->setJenkinsSettings(settings);
+}
+
+void JenkinsPluginPlugin::createOptionsPage()
+{
+    _optionsPage = new OptionsPage(_settings);
+    addAutoReleasedObject(_optionsPage);
+    connect(_optionsPage, &OptionsPage::settingsChanged, this,
+            &JenkinsPluginPlugin::onSettingsChanged);
 }

@@ -5,6 +5,7 @@
 
 #include "jenkinssettings.h"
 #include <QtNetwork/QNetworkAccessManager>
+#include <QAuthenticator>
 #include <QNetworkReply>
 #include <QTimer>
 
@@ -119,20 +120,23 @@ public slots:
 
 private slots:
     void readReply(QNetworkReply *reply);
-    void updateJobInfo();
+    void switchToNextFetchStep();
+//    void authentificateUser();
 
 private:
     enum class State
     {
         Ready,
         FetchingJobs,
-        FetchingJobDetails
+        FetchingJobDetails,
     };
 
     QList< JenkinsJob > fetchJobList(QNetworkReply *reply);
     JenkinsJob fillBuildDetails(QNetworkReply *reply);
     static QString cutRestApiUrlPart(const QString url);
     static QString buildUrlToJobUrl(QString buildUrl);
+
+    QNetworkRequest createRequest(const QString urlString) const;
 
     void sendDetailsRequestForFirstJob();
 
@@ -142,6 +146,8 @@ private:
     QNetworkAccessManager *_manager;
     State _state{State::Ready};
     QTimer *_timer;
+
+//    bool _isAuthentificated{false};
 
     static const QString REST_API_URL_SUFFIX;
 };

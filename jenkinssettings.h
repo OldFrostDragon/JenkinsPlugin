@@ -2,24 +2,48 @@
 #define JENKINSSETTINGS_H
 
 #include <QString>
+#include <QSettings>
 
-namespace JenkinsPlugin {
-namespace Internal {
+namespace JenkinsPlugin
+{
+namespace Internal
+{
 
-class JenkinsSettings {
+class JenkinsSettings
+{
 public:
-  JenkinsSettings();
+    JenkinsSettings();
 
-  QString jenkinsUrl() const;
-  void setJenkinsUrl(const QString &jenkinsUrl);
+    QString jenkinsUrl() const;
+    void setJenkinsUrl(const QString &jenkinsUrl);
+
+    void save(QSettings *settings) const;
+    void load(QSettings *settings);
+
+    int port() const;
+    void setPort(int port);
+
+    QString username() const;
+    void setUsername(const QString &username);
+
+    bool equals(const JenkinsSettings &other) const;
+    void setDefaults();
+
+    QString apiToken() const;
+    void setApiToken(const QString &apiToken);
 
 private:
-//  QString _jenkinsUrl{QStringLiteral("http://jenkins.cyanogenmod.com")};
-  QString _jenkinsUrl{QStringLiteral("https://ci.jenkins-ci.org/view/Libraries/")};
-//  QString _jenkinsUrl{QStringLiteral("http://dotnet-ci.cloudapp.net/view/Roslyn/")};
+    QString _jenkinsUrl{QStringLiteral("https://ci.jenkins-ci.org/view/Libraries/")};
+    int _port;
+    QString _username;
+    QString _apiToken;
+    //  QString _jenkinsUrl{QStringLiteral("http://jenkins.cyanogenmod.com")};
+    //  QString _jenkinsUrl{QStringLiteral("http://dotnet-ci.cloudapp.net/view/Roslyn/")};
 };
 
+bool operator==(const JenkinsSettings &first, const JenkinsSettings &second);
+bool operator!=(const JenkinsSettings &first, const JenkinsSettings &second);
 }
 }
 
-#endif // JENKINSSETTINGS_H
+#endif  // JENKINSSETTINGS_H

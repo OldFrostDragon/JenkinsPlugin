@@ -18,7 +18,7 @@ JenkinsDataFetcher::JenkinsDataFetcher(QObject *parent) : QObject(parent)
     connect(_manager, &QNetworkAccessManager::finished, this, &JenkinsDataFetcher::readReply);
     _timer = new QTimer(this);
     _timer->setInterval(1000 * 10);  // 30 seconds
-    connect(_timer, &QTimer::timeout, this, &JenkinsDataFetcher::updateJobInfo);
+    connect(_timer, &QTimer::timeout, this, &JenkinsDataFetcher::switchToNextFetchStep);
     _timer->start();
 }
 
@@ -26,14 +26,16 @@ JenkinsSettings JenkinsDataFetcher::jenkinsSettings() const { return _jenkinsSet
 
 void JenkinsDataFetcher::setJenkinsSettings(const JenkinsSettings &jenkinsSettings)
 {
+    // TODO: update for new host only?
     _jenkinsSettings = jenkinsSettings;
+    _jobsForDetalization.clear();
+    _state = State::Ready;
+    switchToNextFetchStep();
 }
 
 void JenkinsDataFetcher::getAvaliableJobs()
 {
-    QString queryUrl = urlToRestApiUrl(_jenkinsSettings.jenkinsUrl());
-    QNetworkRequest request{QUrl(queryUrl)};
-    _timer->stop();
+    QNetworkRequest request = createRequest(urlToRestApiUrl(_jenkinsSettings.jenkinsUrl()));
     _manager->get(request);
 }
 
@@ -49,7 +51,6 @@ QString JenkinsDataFetcher::urlToRestApiUrl(const QString &url)
 
 void JenkinsDataFetcher::readReply(QNetworkReply *reply)
 {
-    qDebug() << "reply:" << reply->url();
     switch (_state)
     {
         case State::Ready:
@@ -58,17 +59,8 @@ void JenkinsDataFetcher::readReply(QNetworkReply *reply)
         case State::FetchingJobs:
         {
             QList< JenkinsJob > jobs = fetchJobList(reply);
-            if (jobs.isEmpty())
-            {
-                _state = State::Ready;
-                emit jobsUpdated(jobs);
-            }
-            else
-            {
-                _state = State::FetchingJobDetails;
-                _jobsForDetalization = jobs;
-                sendDetailsRequestForFirstJob();
-            }
+            _jobsForDetalization = jobs;
+            switchToNextFetchStep();
         }
         break;
         case State::FetchingJobDetails:
@@ -76,7 +68,7 @@ void JenkinsDataFetcher::readReply(QNetworkReply *reply)
             JenkinsJob detailedJob;
             if (reply->error() != QNetworkReply::NoError)
             {
-                //FIXME: Maybe better to retry request?
+                // FIXME: Maybe better to retry request?
                 detailedJob = _jobsForDetalization.takeFirst();
             }
             else
@@ -86,8 +78,52 @@ void JenkinsDataFetcher::readReply(QNetworkReply *reply)
 
             if (detailedJob.isValid())
                 emit jobUpdated(detailedJob);
+            switchToNextFetchStep();
+        }
+        break;
+        default:
+            break;
+    }
+}
+
+void JenkinsDataFetcher::switchToNextFetchStep()
+{
+    switch (_state)
+    {
+        case State::Ready:
+        {
+            qDebug() << "transition:"
+                     << "Ready -> Fetching jobs";
+            _timer->stop();
+            _state = State::FetchingJobs;
+            getAvaliableJobs();
+        }
+        break;
+        case State::FetchingJobs:
+        {
             if (_jobsForDetalization.isEmpty())
             {
+                qDebug() << "transition:"
+                         << "Fetching jobs -> Ready";
+                _state = State::Ready;
+                _timer->start();
+            }
+            else
+            {
+                qDebug() << "transition:"
+                         << "Fetching jobs -> Fetching details";
+                _state = State::FetchingJobDetails;
+                sendDetailsRequestForFirstJob();
+            }
+        }
+        break;
+        case State::FetchingJobDetails:
+        {
+
+            if (_jobsForDetalization.isEmpty())
+            {
+                qDebug() << "transition:"
+                         << "Fetching details -> Ready";
                 _state = State::Ready;
                 _timer->start();
             }
@@ -96,16 +132,8 @@ void JenkinsDataFetcher::readReply(QNetworkReply *reply)
         }
         break;
         default:
+            qDebug() << "unknown state";
             break;
-    }
-}
-
-void JenkinsDataFetcher::updateJobInfo()
-{
-    if (_state == State::Ready)
-    {
-        _state = State::FetchingJobs;
-        getAvaliableJobs();
     }
 }
 
@@ -241,13 +269,28 @@ QString JenkinsDataFetcher::buildUrlToJobUrl(QString buildUrl)
     return localBuildUrl;
 }
 
+QNetworkRequest JenkinsDataFetcher::createRequest(const QString urlString) const
+{
+    QUrl url(urlString);
+    url.setPort(_jenkinsSettings.port());
+    QNetworkRequest request(url);
+    request.setRawHeader(QByteArray("Authorization"),
+                         QByteArray("Basic ")
+                             + QByteArray(QString(QStringLiteral("%1:%2"))
+                                              .arg(_jenkinsSettings.username())
+                                              .arg(_jenkinsSettings.apiToken())
+                                              .toLocal8Bit())
+                                   .toBase64());
+    return request;
+}
+
 void JenkinsDataFetcher::sendDetailsRequestForFirstJob()
 {
     if (_jobsForDetalization.isEmpty())
         return;
     QString queryUrl
         = urlToRestApiUrl(_jobsForDetalization.at(0).jobUrl() + QStringLiteral("lastBuild/"));
-    QNetworkRequest request{QUrl(queryUrl)};
+    QNetworkRequest request = createRequest(queryUrl);
     _manager->get(request);
 }
 
@@ -262,18 +305,18 @@ void JenkinsJob::setName(const QString &name) { _name = name; }
 void JenkinsJob::setBuildStatus(const QString &colorEntry)
 {
     QString entry = colorEntry;
-    if(entry.endsWith(QStringLiteral("_anime")))
+    if (entry.endsWith(QStringLiteral("_anime")))
     {
         _isRunning = true;
         entry.chop(6);
     }
     else
         _isRunning = false;
-    if(entry == QStringLiteral("blue"))
+    if (entry == QStringLiteral("blue"))
         _colorIcon = QLatin1String(JenkinsPlugin::Constants::SUCCESS_ICON);
-    else if(entry == QStringLiteral("red"))
+    else if (entry == QStringLiteral("red"))
         _colorIcon = QLatin1String(JenkinsPlugin::Constants::FAIL_ICON);
-    else if(entry == QStringLiteral("yellow"))
+    else if (entry == QStringLiteral("yellow"))
         _colorIcon = QLatin1String(JenkinsPlugin::Constants::UNSTABLE_ICON);
     else
         _colorIcon = QLatin1String(JenkinsPlugin::Constants::NOT_BUILT_ICON);
@@ -283,15 +326,9 @@ BuildInfo JenkinsJob::buildInfo() const { return _buildInfo; }
 
 void JenkinsJob::setBuildInfo(const BuildInfo &buildInfo) { _buildInfo = buildInfo; }
 
-bool JenkinsJob::isRunning() const
-{
-    return _isRunning;
-}
+bool JenkinsJob::isRunning() const { return _isRunning; }
 
-QString JenkinsJob::colorIcon() const
-{
-    return _colorIcon;
-}
+QString JenkinsJob::colorIcon() const { return _colorIcon; }
 
 QString BuildInfo::url() const { return _url; }
 

@@ -7,9 +7,12 @@
 
 #include "jenkinsdatafetcher.h"
 #include "jenkinsviewwidget.h"
+#include "optionspage.h"
 
-namespace JenkinsPlugin {
-namespace Internal {
+namespace JenkinsPlugin
+{
+namespace Internal
+{
 
 class JenkinsPluginPlugin : public ExtensionSystem::IPlugin
 {
@@ -26,14 +29,21 @@ public:
 
 private slots:
     void triggerAction();
-    void updateJobs(QList<JenkinsJob> jobs);
+    void updateJobs(QList< JenkinsJob > jobs);
     void updateJob(JenkinsJob job);
 
+    void onSettingsChanged(const JenkinsSettings &settings);
+
 private:
+    void createOptionsPage();
+
     JenkinsDataFetcher *_fetcher;
+    OptionsPage *_optionsPage;
+    JenkinsSettings _settings;
+
 };
 
-} // namespace Internal
-} // namespace JenkinsPlugin
+}  // namespace Internal
+}  // namespace JenkinsPlugin
 
-#endif // JENKINSPLUGIN_H
+#endif  // JENKINSPLUGIN_H

@@ -34,7 +34,6 @@ void JenkinsJobsModel::resetJobs(QList< JenkinsJob > newJobs)
     {
         _rootItem->appendChild(new JenkinsTreeItem(job.name(), JenkinsTreeItem::Type::Job));
     }
-    updateHeader();
 }
 
 JenkinsSettings JenkinsJobsModel::jenkinsSettings() const { return _jenkinsSettings; }
@@ -42,6 +41,7 @@ JenkinsSettings JenkinsJobsModel::jenkinsSettings() const { return _jenkinsSetti
 void JenkinsJobsModel::setJenkinsSettings(const JenkinsSettings &jenkinsSettings)
 {
     _jenkinsSettings = jenkinsSettings;
+    resetJobs(QList<JenkinsJob>{});
     updateHeader();
 }
 

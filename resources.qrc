@@ -8,5 +8,6 @@
         <file>Resources/grey_ball.ico</file>
         <file>Resources/red_ball.ico</file>
         <file>Resources/yellow_ball.ico</file>
+        <file>Resources/jenkins_logo.png</file>
     </qresource>
 </RCC>

@@ -10,7 +10,9 @@ SOURCES += jenkinspluginplugin.cpp \
     jenkinstreeitem.cpp \
     jenkinsjobsmodel.cpp \
     jenkinsjobview.cpp \
-    jenkinstreeitemdelegate.cpp
+    jenkinstreeitemdelegate.cpp \
+    jenkinssettingswidget.cpp \
+    optionspage.cpp
 
 HEADERS += jenkinspluginplugin.h \
         jenkinsplugin_global.h \
@@ -21,7 +23,9 @@ HEADERS += jenkinspluginplugin.h \
     jenkinstreeitem.h \
     jenkinsjobsmodel.h \
     jenkinsjobview.h \
-    jenkinstreeitemdelegate.h
+    jenkinstreeitemdelegate.h \
+    jenkinssettingswidget.h \
+    optionspage.h
 
 CONFIG += c++14
 # Qt Creator linking
@@ -61,7 +65,8 @@ QTC_PLUGIN_RECOMMENDS += \
 include($$QTCREATOR_SOURCES/src/qtcreatorplugin.pri)
 
 FORMS += \
-    jenkinsviewwidget.ui
+    jenkinsviewwidget.ui \
+    jenkinssettingswidget.ui
 
 RESOURCES += \
     resources.qrc
