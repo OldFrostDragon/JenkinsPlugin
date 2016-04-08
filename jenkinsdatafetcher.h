@@ -105,9 +105,6 @@ public:
 
     bool isValid() { return !_jobUrl.isEmpty() && !_name.isEmpty(); }
 
-    BuildInfo buildInfo() const;
-    void setBuildInfo(const BuildInfo &buildInfo);
-
     bool isRunning() const;
     QString colorIcon() const;
 
@@ -118,7 +115,6 @@ private:
     QString _jobUrl;
     QString _name;
     QString _color;
-    BuildInfo _buildInfo;
     QList<HealthReport> _healthReports;
     bool _isRunning{false};
     QString _colorIcon;

@@ -68,7 +68,7 @@ QVariant JenkinsTreeItem::data(int column, int role) const
             case 2:
             {
                 if (_itemType == Type::Job)
-                    return _job.buildInfo().timestamp().toString(QStringLiteral("dd.MM.yyyy hh:mm"));
+                    return QStringLiteral("TBD");
                 else
                     return QVariant();
             }
@@ -78,19 +78,20 @@ QVariant JenkinsTreeItem::data(int column, int role) const
                 break;
         }
     }
-    else if (role == Qt::ToolTipRole && column == 0 && _itemType == Type::Job)
-    {
-        QStringList data;
-        data.append(QStringLiteral("Last build URL: ") + _job.buildInfo().url());
-        data.append(QStringLiteral("number: ") + QString::number(_job.buildInfo().number()));
-        data.append(QStringLiteral("Display name: ") + _job.buildInfo().displayName());
-        data.append(
-            QStringLiteral("Duration: ")
-            + QTime(0, 0, 0, _job.buildInfo().duration()).toString(QStringLiteral("hh::mm::ss")));
-        data.append(QStringLiteral("timestamp: ")
-                    + _job.buildInfo().timestamp().toString(QStringLiteral("dd.MM.yyyy hh:mm:ss")));
-        return data.join(QLatin1Char('\n'));
-    }
+    //FIXME: remove commented code
+//    else if (role == Qt::ToolTipRole && column == 0 && _itemType == Type::Job)
+//    {
+//        QStringList data;
+//        data.append(QStringLiteral("Last build URL: ") + _job.buildInfo().url());
+//        data.append(QStringLiteral("number: ") + QString::number(_job.buildInfo().number()));
+//        data.append(QStringLiteral("Display name: ") + _job.buildInfo().displayName());
+//        data.append(
+//            QStringLiteral("Duration: ")
+//            + QTime(0, 0, 0, _job.buildInfo().duration()).toString(QStringLiteral("hh::mm::ss")));
+//        data.append(QStringLiteral("timestamp: ")
+//                    + _job.buildInfo().timestamp().toString(QStringLiteral("dd.MM.yyyy hh:mm:ss")));
+//        return data.join(QLatin1Char('\n'));
+//    }
     else if (role == Qt::DecorationRole && column == 0 && _itemType == Type::Job)
     {
         return QIcon(_job.colorIcon());

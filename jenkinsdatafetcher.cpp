@@ -226,24 +226,24 @@ JenkinsJob JenkinsDataFetcher::fillBuildDetails(QNetworkReply *reply)
     job = _jobsForDetalization.takeAt(jobIndex);
 
     // fill build info
-    BuildInfo info;
-    info.setUrl(buildUrl);
-    if (jsonObject.contains(QStringLiteral("number")))
-        info.setNumber(jsonObject[QStringLiteral("number")].toInt());
-    if (jsonObject.contains(QStringLiteral("timestamp")))
-        info.setTimestamp(jsonObject[QStringLiteral("timestamp")].toVariant().toULongLong());
+//    BuildInfo info;
+//    info.setUrl(buildUrl);
+//    if (jsonObject.contains(QStringLiteral("number")))
+//        info.setNumber(jsonObject[QStringLiteral("number")].toInt());
+//    if (jsonObject.contains(QStringLiteral("timestamp")))
+//        info.setTimestamp(jsonObject[QStringLiteral("timestamp")].toVariant().toULongLong());
 
-    if (jsonObject.contains(QStringLiteral("result")))
-        info.setResult(jsonObject[QStringLiteral("result")].toString());
-    if (jsonObject.contains(QStringLiteral("displayName")))
-        info.setDisplayName(jsonObject[QStringLiteral("displayName")].toString());
-    if (jsonObject.contains(QStringLiteral("fullDisplayName")))
-        info.setFullDisplayName(jsonObject[QStringLiteral("fullDisplayName")].toString());
-    if (jsonObject.contains(QStringLiteral("description")))
-        info.setDescription(jsonObject[QStringLiteral("description")].toString());
-    if (jsonObject.contains(QStringLiteral("duration")))
-        info.setDuration(jsonObject[QStringLiteral("duration")].toInt());
-    job.setBuildInfo(info);
+//    if (jsonObject.contains(QStringLiteral("result")))
+//        info.setResult(jsonObject[QStringLiteral("result")].toString());
+//    if (jsonObject.contains(QStringLiteral("displayName")))
+//        info.setDisplayName(jsonObject[QStringLiteral("displayName")].toString());
+//    if (jsonObject.contains(QStringLiteral("fullDisplayName")))
+//        info.setFullDisplayName(jsonObject[QStringLiteral("fullDisplayName")].toString());
+//    if (jsonObject.contains(QStringLiteral("description")))
+//        info.setDescription(jsonObject[QStringLiteral("description")].toString());
+//    if (jsonObject.contains(QStringLiteral("duration")))
+//        info.setDuration(jsonObject[QStringLiteral("duration")].toInt());
+//    job.setBuildInfo(info);
 
     if (jsonObject.contains(QStringLiteral("healthReport")))
     {
@@ -344,10 +344,6 @@ void JenkinsJob::setBuildStatus(const QString &colorEntry)
     else
         _colorIcon = QLatin1String(JenkinsPlugin::Constants::NOT_BUILT_ICON);
 }
-
-BuildInfo JenkinsJob::buildInfo() const { return _buildInfo; }
-
-void JenkinsJob::setBuildInfo(const BuildInfo &buildInfo) { _buildInfo = buildInfo; }
 
 bool JenkinsJob::isRunning() const { return _isRunning; }
 
