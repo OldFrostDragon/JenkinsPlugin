@@ -45,6 +45,7 @@ private:
     Type _itemType;
     QString _name;
     JenkinsJob _job;
+    QIcon _serverIcon;
 };
 }
 }

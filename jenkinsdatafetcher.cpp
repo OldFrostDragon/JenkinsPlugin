@@ -11,6 +11,13 @@
 using namespace JenkinsPlugin::Internal;
 
 const QString JenkinsDataFetcher::REST_API_URL_SUFFIX = QStringLiteral("api/json");
+const QMap< QString, QString > HealthReport::ICON_CLASS_ICONS = {
+    {QStringLiteral("icon-health-80plus"), QLatin1String(JenkinsPlugin::Constants::HEALTH_80PLUS)},
+    {QStringLiteral("icon-health-60to79"), QLatin1String(JenkinsPlugin::Constants::HEALTH_60TO79)},
+    {QStringLiteral("icon-health-40to59"), QLatin1String(JenkinsPlugin::Constants::HEALTH_40TO59)},
+    {QStringLiteral("icon-health-20to39"), QLatin1String(JenkinsPlugin::Constants::HEALTH_20TO39)},
+    {QStringLiteral("icon-health-00to19"), QLatin1String(JenkinsPlugin::Constants::HEALTH_00TO19)},
+};
 
 JenkinsDataFetcher::JenkinsDataFetcher(QObject *parent) : QObject(parent)
 {
@@ -354,6 +361,25 @@ QList< HealthReport > JenkinsJob::healthReports() const { return _healthReports;
 void JenkinsJob::setHealthReports(const QList< HealthReport > &healthReports)
 {
     _healthReports = healthReports;
+    QString iconPath;
+    int score = 1000;
+    foreach (const HealthReport &report, _healthReports)
+    {
+        if (report.score() < score)
+        {
+            score = report.score();
+            iconPath = report.getIconFile();
+        }
+    }
+    if(!iconPath.isEmpty())
+        _healthIcon = QIcon(iconPath);
+    else
+        _healthIcon = QIcon();
+}
+
+QIcon JenkinsJob::healthIcon() const
+{
+    return _healthIcon;
 }
 
 QString BuildInfo::url() const { return _url; }

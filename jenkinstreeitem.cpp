@@ -1,12 +1,15 @@
 #include "jenkinstreeitem.h"
 
 #include <QIcon>
+#include "jenkinspluginconstants.h"
 
 using namespace JenkinsPlugin::Internal;
 
 JenkinsTreeItem::JenkinsTreeItem(const QString &name, const Type type)
     : _itemType(type), _name(name)
 {
+    if (type == Type::Root)
+        _serverIcon = QIcon(QStringLiteral(":/icons/Resources/server.png"));
 }
 
 JenkinsTreeItem::JenkinsTreeItem(const JenkinsTreeItem::Type type, const JenkinsJob &job)
@@ -78,25 +81,43 @@ QVariant JenkinsTreeItem::data(int column, int role) const
                 break;
         }
     }
-    //FIXME: remove commented code
-//    else if (role == Qt::ToolTipRole && column == 0 && _itemType == Type::Job)
-//    {
-//        QStringList data;
-//        data.append(QStringLiteral("Last build URL: ") + _job.buildInfo().url());
-//        data.append(QStringLiteral("number: ") + QString::number(_job.buildInfo().number()));
-//        data.append(QStringLiteral("Display name: ") + _job.buildInfo().displayName());
-//        data.append(
-//            QStringLiteral("Duration: ")
-//            + QTime(0, 0, 0, _job.buildInfo().duration()).toString(QStringLiteral("hh::mm::ss")));
-//        data.append(QStringLiteral("timestamp: ")
-//                    + _job.buildInfo().timestamp().toString(QStringLiteral("dd.MM.yyyy hh:mm:ss")));
-//        return data.join(QLatin1Char('\n'));
-//    }
-    else if (role == Qt::DecorationRole && column == 0 && _itemType == Type::Job)
+    // FIXME: remove commented code
+    //    else if (role == Qt::ToolTipRole && column == 0 && _itemType == Type::Job)
+    //    {
+    //        QStringList data;
+    //        data.append(QStringLiteral("Last build URL: ") + _job.buildInfo().url());
+    //        data.append(QStringLiteral("number: ") + QString::number(_job.buildInfo().number()));
+    //        data.append(QStringLiteral("Display name: ") + _job.buildInfo().displayName());
+    //        data.append(
+    //            QStringLiteral("Duration: ")
+    //            + QTime(0, 0, 0,
+    //            _job.buildInfo().duration()).toString(QStringLiteral("hh::mm::ss")));
+    //        data.append(QStringLiteral("timestamp: ")
+    //                    + _job.buildInfo().timestamp().toString(QStringLiteral("dd.MM.yyyy
+    //                    hh:mm:ss")));
+    //        return data.join(QLatin1Char('\n'));
+    //    }
+    else if (role == Qt::DecorationRole)
     {
-        return QIcon(_job.colorIcon());
+        if (_itemType == Type::Job)
+        {
+            if (column == 0)
+                return QIcon(_job.colorIcon());
+            else if (column == 1)
+                return _job.healthIcon();
+            else
+                return QVariant();
+        }
+        else if (_itemType == Type::Root)
+        {
+            if (column == 0)
+                return _serverIcon;
+            else
+                return QVariant();
+        }
+        else
+            return QVariant();
     }
-
     else if (role == JobRoles::IsRunningRole && column == 0 && _itemType == Type::Job)
     {
         return _job.isRunning();

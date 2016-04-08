@@ -9,5 +9,11 @@
         <file>Resources/red_ball.ico</file>
         <file>Resources/yellow_ball.ico</file>
         <file>Resources/jenkins_logo.png</file>
+        <file>Resources/health-00to19.png</file>
+        <file>Resources/health-20to39.png</file>
+        <file>Resources/health-40to59.png</file>
+        <file>Resources/health-60to79.png</file>
+        <file>Resources/health-80plus.png</file>
+        <file>Resources/server.png</file>
     </qresource>
 </RCC>

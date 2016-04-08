@@ -8,6 +8,7 @@
 #include <QAuthenticator>
 #include <QNetworkReply>
 #include <QTimer>
+#include <QIcon>
 
 namespace JenkinsPlugin
 {
@@ -30,7 +31,9 @@ public:
     QString iconClassName() const;
     void setIconClassName(const QString &iconClassName);
 
+    QString getIconFile() const { return ICON_CLASS_ICONS.value(_iconClassName); }
 private:
+    static const QMap< QString, QString > ICON_CLASS_ICONS;
     int _score{-1};
     QString _description;
     QString _iconClassName;
@@ -108,14 +111,19 @@ public:
     bool isRunning() const;
     QString colorIcon() const;
 
-    QList<HealthReport> healthReports() const;
-    void setHealthReports(const QList<HealthReport> &healthReports);
+    QList< HealthReport > healthReports() const;
+    void setHealthReports(const QList< HealthReport > &healthReports);
+
+
+    QIcon healthIcon() const;
 
 private:
+    QIcon _healthIcon;
+
     QString _jobUrl;
     QString _name;
     QString _color;
-    QList<HealthReport> _healthReports;
+    QList< HealthReport > _healthReports;
     bool _isRunning{false};
     QString _colorIcon;
 };
