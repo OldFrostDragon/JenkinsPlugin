@@ -14,6 +14,28 @@ namespace JenkinsPlugin
 namespace Internal
 {
 
+class HealthReport
+{
+public:
+    HealthReport() = default;
+    HealthReport(const int score, const QString &description,
+                 const QString &iconClassName = QString());
+
+    QString description() const;
+    void setDescription(const QString &description);
+
+    int score() const;
+    void setScore(int score);
+
+    QString iconClassName() const;
+    void setIconClassName(const QString &iconClassName);
+
+private:
+    int _score{-1};
+    QString _description;
+    QString _iconClassName;
+};
+
 class BuildInfo
 {
 public:
@@ -65,7 +87,7 @@ private:
     QString _displayName;
     QString _fullDisplayName;
     QString _description;
-    int _duration; // in miliseconds
+    int _duration;  // in miliseconds
 };
 
 class JenkinsJob
@@ -89,12 +111,15 @@ public:
     bool isRunning() const;
     QString colorIcon() const;
 
+    QList<HealthReport> healthReports() const;
+    void setHealthReports(const QList<HealthReport> &healthReports);
+
 private:
     QString _jobUrl;
     QString _name;
     QString _color;
     BuildInfo _buildInfo;
-
+    QList<HealthReport> _healthReports;
     bool _isRunning{false};
     QString _colorIcon;
 };
@@ -121,7 +146,7 @@ public slots:
 private slots:
     void readReply(QNetworkReply *reply);
     void switchToNextFetchStep();
-//    void authentificateUser();
+    //    void authentificateUser();
 
 private:
     enum class State
@@ -147,7 +172,7 @@ private:
     State _state{State::Ready};
     QTimer *_timer;
 
-//    bool _isAuthentificated{false};
+    //    bool _isAuthentificated{false};
 
     static const QString REST_API_URL_SUFFIX;
 };

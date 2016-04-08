@@ -7,10 +7,11 @@ using namespace JenkinsPlugin::Internal;
 
 JenkinsPane::JenkinsPane(QObject *parent) : Core::IOutputPane(parent)
 {
-    _view = new JenkinsJobView();
+    _view = new QTreeView();
+    _view->setHeaderHidden(false);
     JenkinsJobsModel *model = JenkinsJobsModel::instance();
     _view->setModel(model);
-    _view->setItemDelegate(new JenkinsTreeItemDelegate(this));
+    //_view->setItemDelegateForColumn(0, new JenkinsTreeItemDelegate(this));
 }
 
 JenkinsPane::~JenkinsPane()

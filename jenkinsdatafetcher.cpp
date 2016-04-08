@@ -207,6 +207,7 @@ JenkinsJob JenkinsDataFetcher::fillBuildDetails(QNetworkReply *reply)
     // TODO: maybe better to use URL from reply?
     QString expectedJobUrl = buildUrlToJobUrl(buildUrl);
 
+    qDebug() << expectedJobUrl;
     // find Job to detalize
     int jobIndex = -1;
     for (int i = 0; i < _jobsForDetalization.size(); ++i)
@@ -243,6 +244,28 @@ JenkinsJob JenkinsDataFetcher::fillBuildDetails(QNetworkReply *reply)
     if (jsonObject.contains(QStringLiteral("duration")))
         info.setDuration(jsonObject[QStringLiteral("duration")].toInt());
     job.setBuildInfo(info);
+
+    if (jsonObject.contains(QStringLiteral("healthReport")))
+    {
+        QJsonArray healthArray = jsonObject[QStringLiteral("healthReport")].toArray();
+        QList< HealthReport > reportList;
+        foreach (auto item, healthArray)
+        {
+            HealthReport report;
+            QJsonObject healthObject = item.toObject();
+            if (healthObject.contains(QStringLiteral("score")))
+                report.setScore(healthObject[QStringLiteral("score")].toInt());
+            if (healthObject.contains(QStringLiteral("description")))
+                report.setDescription(healthObject[QStringLiteral("description")].toString());
+            if (healthObject.contains(QStringLiteral("iconClassName")))
+                report.setIconClassName(healthObject[QStringLiteral("iconClassName")].toString());
+            reportList.append(report);
+        }
+        job.setHealthReports(reportList);
+    }
+    else
+        qDebug() << "Health report is absent";
+
     return job;
 }
 
@@ -257,15 +280,15 @@ QString JenkinsDataFetcher::cutRestApiUrlPart(QString url)
 QString JenkinsDataFetcher::buildUrlToJobUrl(QString buildUrl)
 {
     QString localBuildUrl = buildUrl;
-    if (localBuildUrl.endsWith(QStringLiteral("/")))
-        localBuildUrl.chop(1);
-    int lastSlashIndex = localBuildUrl.lastIndexOf(QLatin1Char('/'));
-    if (lastSlashIndex == -1)
-        return buildUrl;
-    // remove all after last '/'
-    int startIndex = lastSlashIndex + 1;
-    int length = localBuildUrl.size() - startIndex;
-    localBuildUrl.chop(length);
+//    if (localBuildUrl.endsWith(QStringLiteral("/")))
+//        localBuildUrl.chop(1);
+//    int lastSlashIndex = localBuildUrl.lastIndexOf(QLatin1Char('/'));
+//    if (lastSlashIndex == -1)
+//        return buildUrl;
+//    // remove all after last '/'
+//    int startIndex = lastSlashIndex + 1;
+//    int length = localBuildUrl.size() - startIndex;
+//    localBuildUrl.chop(length);
     return localBuildUrl;
 }
 
@@ -289,7 +312,7 @@ void JenkinsDataFetcher::sendDetailsRequestForFirstJob()
     if (_jobsForDetalization.isEmpty())
         return;
     QString queryUrl
-        = urlToRestApiUrl(_jobsForDetalization.at(0).jobUrl() + QStringLiteral("lastBuild/"));
+        = urlToRestApiUrl(_jobsForDetalization.at(0).jobUrl() /*+ QStringLiteral("lastBuild/")*/);
     QNetworkRequest request = createRequest(queryUrl);
     _manager->get(request);
 }
@@ -329,6 +352,16 @@ void JenkinsJob::setBuildInfo(const BuildInfo &buildInfo) { _buildInfo = buildIn
 bool JenkinsJob::isRunning() const { return _isRunning; }
 
 QString JenkinsJob::colorIcon() const { return _colorIcon; }
+
+QList<HealthReport> JenkinsJob::healthReports() const
+{
+    return _healthReports;
+}
+
+void JenkinsJob::setHealthReports(const QList<HealthReport> &healthReports)
+{
+    _healthReports = healthReports;
+}
 
 QString BuildInfo::url() const { return _url; }
 
@@ -404,3 +437,24 @@ void BuildInfo::setDescription(const QString &description) { _description = desc
 int BuildInfo::duration() const { return _duration; }
 
 void BuildInfo::setDuration(int duration) { _duration = duration; }
+
+HealthReport::HealthReport(const int score, const QString &description,
+                           const QString &iconClassName)
+    : _score(score), _description(description), _iconClassName(iconClassName)
+{
+}
+
+QString HealthReport::description() const { return _description; }
+
+void HealthReport::setDescription(const QString &description) { _description = description; }
+
+int HealthReport::score() const { return _score; }
+
+void HealthReport::setScore(int score) { _score = score; }
+
+QString HealthReport::iconClassName() const { return _iconClassName; }
+
+void HealthReport::setIconClassName(const QString &iconClassName)
+{
+    _iconClassName = iconClassName;
+}

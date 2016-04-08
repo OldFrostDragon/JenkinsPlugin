@@ -25,9 +25,9 @@ void JenkinsTreeItemDelegate::paint(QPainter *painter, const QStyleOptionViewIte
         doc.setHtml(opt.text);
 
     opt.text = QStringLiteral("");
-    opt.state &= ~QStyle::State_Selected;
-    opt.state &= ~QStyle::State_HasFocus;
-    opt.state &= ~QStyle::State_MouseOver;
+//    opt.state &= ~QStyle::State_Selected;
+//    opt.state &= ~QStyle::State_HasFocus;
+//    opt.state &= ~QStyle::State_MouseOver;
 
     opt.widget->style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
 

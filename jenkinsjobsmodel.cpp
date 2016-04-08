@@ -9,7 +9,10 @@ JenkinsJobsModel::JenkinsJobsModel() { updateHeader(); }
 JenkinsJobsModel *JenkinsJobsModel::instance()
 {
     if (_instance == nullptr)
+    {
         _instance = new JenkinsJobsModel(nullptr);
+        _instance->setHeader(QStringList{tr("Job"), tr("Health report"), tr("Last build date")});
+    }
     return _instance;
 }
 
@@ -17,7 +20,7 @@ void JenkinsJobsModel::updateHeader()
 {
     _rootItem->setName(QString(QStringLiteral("Jenkins [%1]")).arg(_jenkinsSettings.jenkinsUrl()));
     emit dataChanged(QAbstractItemModel::createIndex(0, 0, _rootItem->parent()),
-                     QAbstractItemModel::createIndex(0, 0, _rootItem->parent()),
+                     QAbstractItemModel::createIndex(0, 2, _rootItem->parent()),
                      QVector< int >() << Qt::DisplayRole);
 }
 
@@ -41,7 +44,7 @@ JenkinsSettings JenkinsJobsModel::jenkinsSettings() const { return _jenkinsSetti
 void JenkinsJobsModel::setJenkinsSettings(const JenkinsSettings &jenkinsSettings)
 {
     _jenkinsSettings = jenkinsSettings;
-    resetJobs(QList<JenkinsJob>{});
+    resetJobs(QList< JenkinsJob >{});
     updateHeader();
 }
 
@@ -50,9 +53,9 @@ void JenkinsJobsModel::setJenkinsJobs(QList< JenkinsJob > jobs) { resetJobs(jobs
 void JenkinsJobsModel::setOrUpdateJob(JenkinsJob job)
 {
     QVector< Utils::TreeItem * > items = _rootItem->children();
-    QList<JenkinsTreeItem *> castedItems;
+    QList< JenkinsTreeItem * > castedItems;
     foreach (Utils::TreeItem *treeItem, items)
-        castedItems.append(static_cast<JenkinsTreeItem *>(treeItem));
+        castedItems.append(static_cast< JenkinsTreeItem * >(treeItem));
     for (int i = 0; i < castedItems.size(); ++i)
     {
         if (castedItems[i]->job().jobUrl() == job.jobUrl())

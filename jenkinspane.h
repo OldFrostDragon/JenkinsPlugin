@@ -35,7 +35,7 @@ public:
     void goToPrev() {}
 
 private:
-    JenkinsJobView *_view;
+    QTreeView *_view;
 };
 
 }
