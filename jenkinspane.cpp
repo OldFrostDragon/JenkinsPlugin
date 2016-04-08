@@ -3,6 +3,8 @@
 #include "jenkinsjobsmodel.h"
 #include "jenkinstreeitemdelegate.h"
 
+#include <QHeaderView>
+
 using namespace JenkinsPlugin::Internal;
 
 JenkinsPane::JenkinsPane(QObject *parent) : Core::IOutputPane(parent)
@@ -11,6 +13,11 @@ JenkinsPane::JenkinsPane(QObject *parent) : Core::IOutputPane(parent)
     _view->setHeaderHidden(false);
     JenkinsJobsModel *model = JenkinsJobsModel::instance();
     _view->setModel(model);
+
+    _view->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    _view->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+    _view->header()->setSectionResizeMode(2, QHeaderView::Stretch);
+
     //_view->setItemDelegateForColumn(0, new JenkinsTreeItemDelegate(this));
 }
 

@@ -226,24 +226,24 @@ JenkinsJob JenkinsDataFetcher::fillBuildDetails(QNetworkReply *reply)
     job = _jobsForDetalization.takeAt(jobIndex);
 
     // fill build info
-//    BuildInfo info;
-//    info.setUrl(buildUrl);
-//    if (jsonObject.contains(QStringLiteral("number")))
-//        info.setNumber(jsonObject[QStringLiteral("number")].toInt());
-//    if (jsonObject.contains(QStringLiteral("timestamp")))
-//        info.setTimestamp(jsonObject[QStringLiteral("timestamp")].toVariant().toULongLong());
+    //    BuildInfo info;
+    //    info.setUrl(buildUrl);
+    //    if (jsonObject.contains(QStringLiteral("number")))
+    //        info.setNumber(jsonObject[QStringLiteral("number")].toInt());
+    //    if (jsonObject.contains(QStringLiteral("timestamp")))
+    //        info.setTimestamp(jsonObject[QStringLiteral("timestamp")].toVariant().toULongLong());
 
-//    if (jsonObject.contains(QStringLiteral("result")))
-//        info.setResult(jsonObject[QStringLiteral("result")].toString());
-//    if (jsonObject.contains(QStringLiteral("displayName")))
-//        info.setDisplayName(jsonObject[QStringLiteral("displayName")].toString());
-//    if (jsonObject.contains(QStringLiteral("fullDisplayName")))
-//        info.setFullDisplayName(jsonObject[QStringLiteral("fullDisplayName")].toString());
-//    if (jsonObject.contains(QStringLiteral("description")))
-//        info.setDescription(jsonObject[QStringLiteral("description")].toString());
-//    if (jsonObject.contains(QStringLiteral("duration")))
-//        info.setDuration(jsonObject[QStringLiteral("duration")].toInt());
-//    job.setBuildInfo(info);
+    //    if (jsonObject.contains(QStringLiteral("result")))
+    //        info.setResult(jsonObject[QStringLiteral("result")].toString());
+    //    if (jsonObject.contains(QStringLiteral("displayName")))
+    //        info.setDisplayName(jsonObject[QStringLiteral("displayName")].toString());
+    //    if (jsonObject.contains(QStringLiteral("fullDisplayName")))
+    //        info.setFullDisplayName(jsonObject[QStringLiteral("fullDisplayName")].toString());
+    //    if (jsonObject.contains(QStringLiteral("description")))
+    //        info.setDescription(jsonObject[QStringLiteral("description")].toString());
+    //    if (jsonObject.contains(QStringLiteral("duration")))
+    //        info.setDuration(jsonObject[QStringLiteral("duration")].toInt());
+    //    job.setBuildInfo(info);
 
     if (jsonObject.contains(QStringLiteral("healthReport")))
     {
@@ -280,15 +280,15 @@ QString JenkinsDataFetcher::cutRestApiUrlPart(QString url)
 QString JenkinsDataFetcher::buildUrlToJobUrl(QString buildUrl)
 {
     QString localBuildUrl = buildUrl;
-//    if (localBuildUrl.endsWith(QStringLiteral("/")))
-//        localBuildUrl.chop(1);
-//    int lastSlashIndex = localBuildUrl.lastIndexOf(QLatin1Char('/'));
-//    if (lastSlashIndex == -1)
-//        return buildUrl;
-//    // remove all after last '/'
-//    int startIndex = lastSlashIndex + 1;
-//    int length = localBuildUrl.size() - startIndex;
-//    localBuildUrl.chop(length);
+    //    if (localBuildUrl.endsWith(QStringLiteral("/")))
+    //        localBuildUrl.chop(1);
+    //    int lastSlashIndex = localBuildUrl.lastIndexOf(QLatin1Char('/'));
+    //    if (lastSlashIndex == -1)
+    //        return buildUrl;
+    //    // remove all after last '/'
+    //    int startIndex = lastSlashIndex + 1;
+    //    int length = localBuildUrl.size() - startIndex;
+    //    localBuildUrl.chop(length);
     return localBuildUrl;
 }
 
@@ -349,12 +349,9 @@ bool JenkinsJob::isRunning() const { return _isRunning; }
 
 QString JenkinsJob::colorIcon() const { return _colorIcon; }
 
-QList<HealthReport> JenkinsJob::healthReports() const
-{
-    return _healthReports;
-}
+QList< HealthReport > JenkinsJob::healthReports() const { return _healthReports; }
 
-void JenkinsJob::setHealthReports(const QList<HealthReport> &healthReports)
+void JenkinsJob::setHealthReports(const QList< HealthReport > &healthReports)
 {
     _healthReports = healthReports;
 }
