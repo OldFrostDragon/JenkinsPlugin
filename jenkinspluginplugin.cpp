@@ -58,7 +58,9 @@ bool JenkinsPluginPlugin::initialize(const QStringList &arguments, QString *erro
 //    menu->addAction(cmd);
 //    Core::ActionManager::actionContainer(Core::Constants::M_TOOLS)->addMenu(menu);
 
-    addAutoReleasedObject(new JenkinsViewWidgetFactory);
+    _pane = new JenkinsPane();
+    addAutoReleasedObject(_pane);
+
 
     _fetcher = new JenkinsDataFetcher();
     addAutoReleasedObject(_fetcher);

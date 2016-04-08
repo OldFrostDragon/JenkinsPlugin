@@ -6,8 +6,8 @@
 #include <extensionsystem/iplugin.h>
 
 #include "jenkinsdatafetcher.h"
-#include "jenkinsviewwidget.h"
 #include "optionspage.h"
+#include "jenkinspane.h"
 
 namespace JenkinsPlugin
 {
@@ -40,7 +40,7 @@ private:
     JenkinsDataFetcher *_fetcher;
     OptionsPage *_optionsPage;
     JenkinsSettings _settings;
-
+    JenkinsPane *_pane;
 };
 
 }  // namespace Internal

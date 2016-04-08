@@ -4,7 +4,6 @@ DEFINES += JENKINSPLUGIN_LIBRARY
 QT += network
 
 SOURCES += jenkinspluginplugin.cpp \
-    jenkinsviewwidget.cpp \
     jenkinssettings.cpp \
     jenkinsdatafetcher.cpp \
     jenkinstreeitem.cpp \
@@ -12,12 +11,12 @@ SOURCES += jenkinspluginplugin.cpp \
     jenkinsjobview.cpp \
     jenkinstreeitemdelegate.cpp \
     jenkinssettingswidget.cpp \
-    optionspage.cpp
+    optionspage.cpp \
+    jenkinspane.cpp
 
 HEADERS += jenkinspluginplugin.h \
         jenkinsplugin_global.h \
         jenkinspluginconstants.h \
-    jenkinsviewwidget.h \
     jenkinssettings.h \
     jenkinsdatafetcher.h \
     jenkinstreeitem.h \
@@ -25,7 +24,8 @@ HEADERS += jenkinspluginplugin.h \
     jenkinsjobview.h \
     jenkinstreeitemdelegate.h \
     jenkinssettingswidget.h \
-    optionspage.h
+    optionspage.h \
+    jenkinspane.h
 
 CONFIG += c++14
 # Qt Creator linking
