@@ -68,7 +68,7 @@ void JenkinsPane::onCustomContextMenuRequested(const QPoint &point)
         contextMenu->addAction(buildHistoryEntry);
         connect(buildHistoryEntry, &QAction::triggered, this, &JenkinsPane::requestBuildHistory);
     }
-    contextMenu->exec(_view->mapToGlobal(point));
+    contextMenu->popup(_view->viewport()->mapToGlobal(point));
 }
 
 void JenkinsPane::requestBuildHistory()
