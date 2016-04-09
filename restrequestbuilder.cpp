@@ -62,6 +62,12 @@ QNetworkRequest RestRequestBuilder::buildAvaliableJobsRequest() const
     return request;
 }
 
+QNetworkRequest RestRequestBuilder::buildBuildInfoRequest(const QString url) const
+{
+    QNetworkRequest request = buildRequest(urlToRestApiUrl(url));
+    return request;
+}
+
 JenkinsSettings RestRequestBuilder::jenkinsSettings() const { return _jenkinsSettings; }
 
 void RestRequestBuilder::setJenkinsSettings(const JenkinsSettings &jenkinsSettings)

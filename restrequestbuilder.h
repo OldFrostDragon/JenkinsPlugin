@@ -20,6 +20,7 @@ public:
 
     QNetworkRequest buildRequest(const QString urlString) const;
     QNetworkRequest buildAvaliableJobsRequest() const;
+    QNetworkRequest buildBuildInfoRequest(const QString url) const;
 
     JenkinsSettings jenkinsSettings() const;
     void setJenkinsSettings(const JenkinsSettings &jenkinsSettings);

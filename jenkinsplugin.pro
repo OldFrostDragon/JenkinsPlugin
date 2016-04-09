@@ -3,7 +3,7 @@ DEFINES += JENKINSPLUGIN_LIBRARY
 # JenkinsPlugin files
 QT += network
 
-CONFIG += c++11
+CONFIG += c++14
 
 SOURCES += jenkinspluginplugin.cpp \
     jenkinssettings.cpp \
