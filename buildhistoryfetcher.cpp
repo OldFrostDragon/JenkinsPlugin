@@ -27,7 +27,7 @@ void BuildInfo::setTimestamp(const qint64 timestamp)
 
 BuildInfo::Result BuildInfo::result() const { return _result; }
 
-QString BuildInfo::getResultIcon()
+QString BuildInfo::getResultIcon() const
 {
     switch (_result)
     {

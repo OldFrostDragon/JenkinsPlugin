@@ -16,7 +16,9 @@ SOURCES += jenkinspluginplugin.cpp \
     optionspage.cpp \
     jenkinspane.cpp \
     restrequestbuilder.cpp \
-    buildhistoryfetcher.cpp
+    buildhistoryfetcher.cpp \
+    buildhistorydialog.cpp \
+    buildhistorymodel.cpp
 
 HEADERS += jenkinspluginplugin.h \
         jenkinsplugin_global.h \
@@ -31,7 +33,9 @@ HEADERS += jenkinspluginplugin.h \
     optionspage.h \
     jenkinspane.h \
     restrequestbuilder.h \
-    buildhistoryfetcher.h
+    buildhistoryfetcher.h \
+    buildhistorydialog.h \
+    buildhistorymodel.h
 
 CONFIG += c++14
 # Qt Creator linking
@@ -72,7 +76,8 @@ include($$QTCREATOR_SOURCES/src/qtcreatorplugin.pri)
 
 FORMS += \
     jenkinsviewwidget.ui \
-    jenkinssettingswidget.ui
+    jenkinssettingswidget.ui \
+    buildhistorydialog.ui
 
 RESOURCES += \
     resources.qrc

@@ -40,7 +40,7 @@ public:
     void setTimestamp(const qint64 timestamp);
 
     Result result() const;
-    QString getResultIcon();
+    QString getResultIcon() const;
 
     void setResult(const Result &result);
     void setResult(const QString &result);
