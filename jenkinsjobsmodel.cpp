@@ -19,6 +19,7 @@ JenkinsJobsModel *JenkinsJobsModel::instance()
 void JenkinsJobsModel::updateHeader()
 {
     _rootItem->setName(QString(QStringLiteral("Jenkins [%1]")).arg(_jenkinsSettings.jenkinsUrl()));
+    _rootItem->setItemUrl(_jenkinsSettings.jenkinsUrl());
     emit dataChanged(QAbstractItemModel::createIndex(0, 0, _rootItem->parent()),
                      QAbstractItemModel::createIndex(0, 2, _rootItem->parent()),
                      QVector< int >() << Qt::DisplayRole);

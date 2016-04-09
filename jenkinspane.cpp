@@ -4,6 +4,7 @@
 
 #include <QHeaderView>
 #include <QMenu>
+#include <QDesktopServices>
 
 using namespace JenkinsPlugin::Internal;
 
@@ -48,21 +49,42 @@ bool JenkinsPane::canPrevious() const { return false; }
 
 void JenkinsPane::onCustomContextMenuRequested(const QPoint &point)
 {
-    QModelIndex index = _view->indexAt(point);
-    if (!index.isValid())
+    _contextMenuIndex = _view->indexAt(point);
+    if (!_contextMenuIndex.isValid())
         return;
-    JenkinsTreeItem *item = static_cast< JenkinsTreeItem * >(index.internalPointer());
+    JenkinsTreeItem *item = static_cast< JenkinsTreeItem * >(_contextMenuIndex.internalPointer());
+    if (item == nullptr)
+        return;
+
+    QMenu *contextMenu = new QMenu(_view);
+
+    QAction *openInBrowserEntry = new QAction(QObject::tr("open in browser"), contextMenu);
+    contextMenu->addAction(openInBrowserEntry);
+    connect(openInBrowserEntry, &QAction::triggered, this, &JenkinsPane::openInBrowser);
+
+    if (item->itemType() == JenkinsTreeItem::Type::Job)
+    {
+        QAction *buildHistoryEntry = new QAction(QObject::tr("show build history"), contextMenu);
+        contextMenu->addAction(buildHistoryEntry);
+        connect(buildHistoryEntry, &QAction::triggered, this, &JenkinsPane::requestBuildHistory);
+    }
+    contextMenu->exec(_view->mapToGlobal(point));
+}
+
+void JenkinsPane::requestBuildHistory()
+{
+    JenkinsTreeItem *item = static_cast< JenkinsTreeItem * >(_contextMenuIndex.internalPointer());
     if (item == nullptr)
         return;
     if (item->itemType() != JenkinsTreeItem::Type::Job)
         return;
-    _contextMenuJob = item->job();
-
-    QMenu *contextMenu = new QMenu(_view);
-    QAction *buildHistoryEntry = new QAction(QObject::tr("show build history"), contextMenu);
-    contextMenu->addAction(buildHistoryEntry);
-    connect(buildHistoryEntry, &QAction::triggered, this, &JenkinsPane::requestBuildHistory);
-    contextMenu->exec(_view->mapToGlobal(point));
+    emit buildHistoryRequested(item->job());
 }
 
-void JenkinsPane::requestBuildHistory() { emit buildHistoryRequested(_contextMenuJob); }
+void JenkinsPane::openInBrowser()
+{
+    JenkinsTreeItem *item = static_cast< JenkinsTreeItem * >(_contextMenuIndex.internalPointer());
+    if (item == nullptr)
+        return;
+    QDesktopServices::openUrl(QUrl(item->itemUrl()));
+}

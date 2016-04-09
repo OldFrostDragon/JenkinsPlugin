@@ -44,10 +44,11 @@ signals:
 private slots:
     void onCustomContextMenuRequested(const QPoint &point);
     void requestBuildHistory();
+    void openInBrowser();
 
 private:
     QTreeView *_view;
-    JenkinsJob _contextMenuJob;
+    QModelIndex _contextMenuIndex;
 };
 
 }

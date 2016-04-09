@@ -12,9 +12,22 @@ JenkinsTreeItem::JenkinsTreeItem(const QString &name, const Type type)
         _serverIcon = QIcon(QStringLiteral(":/icons/Resources/server.png"));
 }
 
+JenkinsTreeItem::JenkinsTreeItem(const QString &name, const QString &url,
+                                 const JenkinsTreeItem::Type type)
+    : _itemType(type),
+      _name(name),
+      _itemUrl(url)
+{
+    if (type == Type::Root)
+        _serverIcon = QIcon(QStringLiteral(":/icons/Resources/server.png"));
+}
+
 JenkinsTreeItem::JenkinsTreeItem(const JenkinsTreeItem::Type type, const JenkinsJob &job)
     : _itemType(type), _job(job)
 {
+    _itemUrl = _job.jobUrl();
+    if (type == Type::Root)
+        _serverIcon = QIcon(QStringLiteral(":/icons/Resources/server.png"));
 }
 
 JenkinsTreeItem::JenkinsTreeItem(const JenkinsTreeItem &other)
@@ -131,3 +144,7 @@ QVariant JenkinsTreeItem::data(int column, int role) const
 JenkinsJob JenkinsTreeItem::job() const { return _job; }
 
 void JenkinsTreeItem::setJob(const JenkinsJob &job) { _job = job; }
+
+QString JenkinsTreeItem::itemUrl() const { return _itemUrl; }
+
+void JenkinsTreeItem::setItemUrl(const QString &itemUrl) { _itemUrl = itemUrl; }

@@ -23,6 +23,7 @@ public:
     };
 
     JenkinsTreeItem(const QString &name, const Type type);
+    JenkinsTreeItem(const QString &name, const QString &url, const Type type);
     JenkinsTreeItem(const Type type, const JenkinsJob &job);
 
     JenkinsTreeItem(const JenkinsTreeItem &other);
@@ -41,9 +42,14 @@ public:
     JenkinsJob job() const;
     void setJob(const JenkinsJob &job);
 
+    QString itemUrl() const;
+    void setItemUrl(const QString &itemUrl);
+
 private:
     Type _itemType;
     QString _name;
+    QString _itemUrl;
+
     JenkinsJob _job;
     QIcon _serverIcon;
 };
