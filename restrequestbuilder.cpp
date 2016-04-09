@@ -18,6 +18,29 @@ QString RestRequestBuilder::urlToRestApiUrl(const QString &url)
         return url + QStringLiteral("/") + REST_API_URL_SUFFIX;
 }
 
+QString RestRequestBuilder::cutRestApiUrlPart(const QString &url)
+{
+    QString localUrl = url;
+    if (localUrl.endsWith(REST_API_URL_SUFFIX))
+        localUrl.chop(REST_API_URL_SUFFIX.size());
+    return localUrl;
+}
+
+QString RestRequestBuilder::buildUrlToJobUrl(QString buildUrl)
+{
+    QString localBuildUrl = buildUrl;
+    //    if (localBuildUrl.endsWith(QStringLiteral("/")))
+    //        localBuildUrl.chop(1);
+    //    int lastSlashIndex = localBuildUrl.lastIndexOf(QLatin1Char('/'));
+    //    if (lastSlashIndex == -1)
+    //        return buildUrl;
+    //    // remove all after last '/'
+    //    int startIndex = lastSlashIndex + 1;
+    //    int length = localBuildUrl.size() - startIndex;
+    //    localBuildUrl.chop(length);
+    return localBuildUrl;
+}
+
 QNetworkRequest RestRequestBuilder::buildRequest(const QString urlString) const
 {
     QUrl url(urlString);
@@ -33,11 +56,17 @@ QNetworkRequest RestRequestBuilder::buildRequest(const QString urlString) const
     return request;
 }
 
+QNetworkRequest RestRequestBuilder::buildAvaliableJobsRequest() const
+{
+    QNetworkRequest request = buildRequest(urlToRestApiUrl(_jenkinsSettings.jenkinsUrl()));
+    return request;
+}
+
 JenkinsSettings RestRequestBuilder::jenkinsSettings() const { return _jenkinsSettings; }
 
 void RestRequestBuilder::setJenkinsSettings(const JenkinsSettings &jenkinsSettings)
 {
-    if(_jenkinsSettings.equals(jenkinsSettings))
+    if (_jenkinsSettings.equals(jenkinsSettings))
         emit settingsChanged();
     _jenkinsSettings = jenkinsSettings;
 }
