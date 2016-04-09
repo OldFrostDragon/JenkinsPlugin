@@ -3,12 +3,12 @@
 
 using namespace JenkinsPlugin::Internal;
 
-BuildHistoryDialog::BuildHistoryDialog(JenkinsJob job, std::shared_ptr< RestRequestBuilder > builder,
+BuildHistoryDialog::BuildHistoryDialog(JenkinsJob job, BuildHistoryModel *buildHistoryModel,
                                        QWidget *parent)
     : QDialog(parent), ui(new Ui::BuildHistoryDialog)
 {
     ui->setupUi(this);
-    _buildHistoryModel = new BuildHistoryModel(builder);
+    _buildHistoryModel = buildHistoryModel;
     ui->listView->setModel(_buildHistoryModel);
     _buildHistoryModel->fetchBuildHistoryFor(job);
 }

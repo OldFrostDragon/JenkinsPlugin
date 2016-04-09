@@ -126,8 +126,7 @@ void JenkinsPluginPlugin::onSettingsChanged(const JenkinsSettings &settings)
 
 void JenkinsPluginPlugin::showJobHistoryDialog(JenkinsJob job)
 {
-    //TODO: inject BuildHistoryModel here
-    BuildHistoryDialog *dialog = new BuildHistoryDialog(job, _restRequestBuilder, nullptr);
+    BuildHistoryDialog *dialog = new BuildHistoryDialog(job, createBuildHistoryModel(), nullptr);
     dialog->setAttribute(Qt::WA_DeleteOnClose, true);
     dialog->show();
 }
@@ -138,4 +137,11 @@ void JenkinsPluginPlugin::createOptionsPage()
     addAutoReleasedObject(_optionsPage);
     connect(_optionsPage, &OptionsPage::settingsChanged, this,
             &JenkinsPluginPlugin::onSettingsChanged);
+}
+
+BuildHistoryModel *JenkinsPluginPlugin::createBuildHistoryModel()
+{
+    BuildHistoryFetcher *_fetcher = new BuildHistoryFetcher(_restRequestBuilder);
+    BuildHistoryModel *model = new BuildHistoryModel(_fetcher);
+    return model;
 }

@@ -68,7 +68,7 @@ void JenkinsDataFetcher::readReply(QNetworkReply *reply)
             JenkinsJob detailedJob;
             if (reply->error() != QNetworkReply::NoError)
             {
-                // FIXME: Maybe better to retry request?
+                // TODO: Maybe better to retry request?
                 detailedJob = _jobsForDetalization.takeFirst();
             }
             else

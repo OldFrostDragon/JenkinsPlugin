@@ -11,7 +11,6 @@ void JenkinsSettings::setJenkinsUrl(const QString &jenkinsUrl) { _jenkinsUrl = j
 
 void JenkinsSettings::save(QSettings *settings) const
 {
-    // FIXME: not implemented
     settings->beginGroup(QLatin1String(JenkinsPlugin::Constants::SETTINGS_GROUP));
     settings->setValue(QLatin1String(JenkinsPlugin::Constants::URL), _jenkinsUrl);
     settings->setValue(QLatin1String(JenkinsPlugin::Constants::PORT), _port);

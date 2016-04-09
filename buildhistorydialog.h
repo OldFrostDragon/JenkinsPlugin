@@ -18,7 +18,7 @@ class BuildHistoryDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit BuildHistoryDialog(JenkinsJob job, std::shared_ptr< RestRequestBuilder > builder,
+    explicit BuildHistoryDialog(JenkinsJob job, BuildHistoryModel *buildHistoryModel,
                                 QWidget *parent = 0);
     ~BuildHistoryDialog();
 

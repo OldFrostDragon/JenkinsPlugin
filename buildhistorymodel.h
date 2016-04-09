@@ -13,7 +13,7 @@ namespace Internal
 class BuildHistoryModel : public QAbstractListModel
 {
 public:
-    BuildHistoryModel(std::shared_ptr<RestRequestBuilder> restRequestBuilder);
+    BuildHistoryModel(BuildHistoryFetcher *buildHistoryFetcher);
     ~BuildHistoryModel();
 
     // QAbstractItemModel interface

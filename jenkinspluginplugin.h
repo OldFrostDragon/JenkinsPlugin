@@ -15,6 +15,8 @@ namespace JenkinsPlugin
 namespace Internal
 {
 
+class BuildHistoryModel;
+
 class JenkinsPluginPlugin : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
@@ -38,6 +40,8 @@ private slots:
 
 private:
     void createOptionsPage();
+    BuildHistoryModel *createBuildHistoryModel();
+
 
     std::shared_ptr<RestRequestBuilder> _restRequestBuilder;
 

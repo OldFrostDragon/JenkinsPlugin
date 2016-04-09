@@ -3,9 +3,9 @@
 #include <QIcon>
 using namespace JenkinsPlugin::Internal;
 
-BuildHistoryModel::BuildHistoryModel(std::shared_ptr< RestRequestBuilder > restRequestBuilder)
+BuildHistoryModel::BuildHistoryModel(BuildHistoryFetcher *buildHistoryFetcher)
 {
-    _buildHistoryFetcher = new BuildHistoryFetcher(restRequestBuilder);
+    _buildHistoryFetcher = buildHistoryFetcher;
     connect(_buildHistoryFetcher, &BuildHistoryFetcher::buildInfoFetched, this,
             &BuildHistoryModel::appendBuildInfo);
 }
