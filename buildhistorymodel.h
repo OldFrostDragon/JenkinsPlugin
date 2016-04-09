@@ -4,6 +4,7 @@
 #include <QAbstractListModel>
 
 #include "buildhistoryfetcher.h"
+#include "jenkinsdatafetcher.h"
 
 namespace JenkinsPlugin
 {
@@ -12,7 +13,8 @@ namespace Internal
 class BuildHistoryModel : public QAbstractListModel
 {
 public:
-    BuildHistoryModel();
+    BuildHistoryModel(std::shared_ptr<RestRequestBuilder> restRequestBuilder);
+    ~BuildHistoryModel();
 
     // QAbstractItemModel interface
 public:
@@ -20,10 +22,14 @@ public:
     virtual QVariant data(const QModelIndex &index, int role) const override;
 
 public slots:
+    void fetchBuildHistoryFor(JenkinsJob job);
+
+private slots:
     void appendBuildInfo(BuildInfo buildInfo);
 
 private:
     QList<BuildInfo> _buildHistory;
+    BuildHistoryFetcher *_buildHistoryFetcher;
 };
 }
 }

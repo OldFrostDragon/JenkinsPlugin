@@ -3,20 +3,30 @@
 
 #include <QDialog>
 
-namespace Ui {
+#include "buildhistorymodel.h"
+
+namespace Ui
+{
 class BuildHistoryDialog;
 }
 
+namespace JenkinsPlugin
+{
+namespace Internal
+{
 class BuildHistoryDialog : public QDialog
 {
     Q_OBJECT
-
 public:
-    explicit BuildHistoryDialog(QWidget *parent = 0);
+    explicit BuildHistoryDialog(JenkinsJob job, std::shared_ptr< RestRequestBuilder > builder,
+                                QWidget *parent = 0);
     ~BuildHistoryDialog();
 
 private:
     Ui::BuildHistoryDialog *ui;
+    BuildHistoryModel *_buildHistoryModel{nullptr};
 };
+}
+}
 
-#endif // BUILDHISTORYDIALOG_H
+#endif  // BUILDHISTORYDIALOG_H

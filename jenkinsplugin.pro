@@ -10,7 +10,6 @@ SOURCES += jenkinspluginplugin.cpp \
     jenkinsdatafetcher.cpp \
     jenkinstreeitem.cpp \
     jenkinsjobsmodel.cpp \
-    jenkinsjobview.cpp \
     jenkinstreeitemdelegate.cpp \
     jenkinssettingswidget.cpp \
     optionspage.cpp \
@@ -27,7 +26,6 @@ HEADERS += jenkinspluginplugin.h \
     jenkinsdatafetcher.h \
     jenkinstreeitem.h \
     jenkinsjobsmodel.h \
-    jenkinsjobview.h \
     jenkinstreeitemdelegate.h \
     jenkinssettingswidget.h \
     optionspage.h \

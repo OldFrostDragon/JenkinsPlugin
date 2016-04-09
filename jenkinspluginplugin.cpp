@@ -18,6 +18,7 @@
 #include <QDebug>
 
 #include "jenkinsjobsmodel.h"
+#include "buildhistorydialog.h"
 
 using namespace JenkinsPlugin::Internal;
 
@@ -60,6 +61,7 @@ bool JenkinsPluginPlugin::initialize(const QStringList &arguments, QString *erro
 
     _pane = new JenkinsPane();
     addAutoReleasedObject(_pane);
+    connect(_pane, &JenkinsPane::buildHistoryRequested, this, &JenkinsPluginPlugin::showJobHistoryDialog);
 
     _restRequestBuilder = std::make_shared<RestRequestBuilder>(_settings);
 
@@ -71,6 +73,7 @@ bool JenkinsPluginPlugin::initialize(const QStringList &arguments, QString *erro
     connect(_fetcher, &JenkinsDataFetcher::jobUpdated, this, &JenkinsPluginPlugin::updateJob);
 
     createOptionsPage();
+
     return true;
 }
 
@@ -119,6 +122,14 @@ void JenkinsPluginPlugin::onSettingsChanged(const JenkinsSettings &settings)
     _settings = settings;
     JenkinsJobsModel::instance()->setJenkinsSettings(settings);
     _restRequestBuilder->setJenkinsSettings(settings);
+}
+
+void JenkinsPluginPlugin::showJobHistoryDialog(JenkinsJob job)
+{
+    //TODO: inject BuildHistoryModel here
+    BuildHistoryDialog *dialog = new BuildHistoryDialog(job, _restRequestBuilder, nullptr);
+    dialog->setAttribute(Qt::WA_DeleteOnClose, true);
+    dialog->show();
 }
 
 void JenkinsPluginPlugin::createOptionsPage()

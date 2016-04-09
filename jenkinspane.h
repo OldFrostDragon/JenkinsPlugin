@@ -4,15 +4,19 @@
 #include <coreplugin/ioutputpane.h>
 #include <utils/outputformat.h>
 
-#include "jenkinsjobview.h"
+#include <QTreeView>
+#include "jenkinsjobsmodel.h"
 
 namespace JenkinsPlugin
 {
 namespace Internal
 {
 
+class JenkinsJob;
+
 class JenkinsPane : public Core::IOutputPane
 {
+    Q_OBJECT
 public:
     JenkinsPane(QObject *parent = 0);
     ~JenkinsPane();
@@ -34,8 +38,16 @@ public:
     void goToNext() {}
     void goToPrev() {}
 
+signals:
+    void buildHistoryRequested(const JenkinsJob job);
+
+private slots:
+    void onCustomContextMenuRequested(const QPoint &point);
+    void requestBuildHistory();
+
 private:
     QTreeView *_view;
+    JenkinsJob _contextMenuJob;
 };
 
 }

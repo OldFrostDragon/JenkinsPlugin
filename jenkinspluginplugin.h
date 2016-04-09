@@ -34,6 +34,7 @@ private slots:
     void updateJob(JenkinsJob job);
 
     void onSettingsChanged(const JenkinsSettings &settings);
+    void showJobHistoryDialog(JenkinsJob job);
 
 private:
     void createOptionsPage();
