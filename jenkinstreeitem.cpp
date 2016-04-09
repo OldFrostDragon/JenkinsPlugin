@@ -94,13 +94,16 @@ QVariant JenkinsTreeItem::data(int column, int role) const
     }
     else if (role == Qt::ToolTipRole && _itemType == Type::Job)
     {
-        const QString TABLE_CELL_TEMPLATE = QLatin1String("<td>%1</td>");
-        const QString IMAGE_ENTRY_TEMPLATE = QLatin1String("<td align=\"center\"><img src=\"%1\", align=\"center\"></img></td>");
+        const QString DESCRIPTION_CELL_TEMPLATE = QLatin1String("<td>%1</td>");
+        const QString IMAGE_CELL_TEMPLATE
+            = QLatin1String("<td align=\"center\"><img src=\"%1\", align=\"center\"></img></td>");
+
         QString htmlData = QLatin1String("<table border=\"0\">");
-        foreach (HealthReport report, _job.healthReports()) {
+        foreach (HealthReport report, _job.healthReports())
+        {
             htmlData.append(QStringLiteral("<tr>"));
-            htmlData.append(IMAGE_ENTRY_TEMPLATE.arg(report.getIconFile()));
-            htmlData.append(TABLE_CELL_TEMPLATE.arg(report.description()));
+            htmlData.append(IMAGE_CELL_TEMPLATE.arg(report.getIconFile()));
+            htmlData.append(DESCRIPTION_CELL_TEMPLATE.arg(report.description()));
             htmlData.append(QStringLiteral("</tr>"));
         }
         htmlData.append(QStringLiteral("</table>"));
