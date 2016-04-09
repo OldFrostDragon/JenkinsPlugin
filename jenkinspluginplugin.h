@@ -8,6 +8,7 @@
 #include "jenkinsdatafetcher.h"
 #include "optionspage.h"
 #include "jenkinspane.h"
+#include "restrequestbuilder.h"
 
 namespace JenkinsPlugin
 {
@@ -36,6 +37,8 @@ private slots:
 
 private:
     void createOptionsPage();
+
+    std::shared_ptr<RestRequestBuilder> _restRequestBuilder;
 
     JenkinsDataFetcher *_fetcher;
     OptionsPage *_optionsPage;

@@ -10,6 +10,9 @@
 #include <QTimer>
 #include <QIcon>
 
+#include "restrequestbuilder.h"
+#include <memory>
+
 namespace JenkinsPlugin
 {
 namespace Internal
@@ -96,6 +99,16 @@ private:
 class JenkinsJob
 {
 public:
+    struct BuildUrl
+    {
+        BuildUrl() {}
+        BuildUrl(const int buildNumber, const QString buildUrl) : number(buildNumber), url(buildUrl)
+        {
+        }
+        int number{1};
+        QString url;
+    };
+
     JenkinsJob() {}
 
     QString jobUrl() const;
@@ -113,9 +126,10 @@ public:
 
     QList< HealthReport > healthReports() const;
     void setHealthReports(const QList< HealthReport > &healthReports);
-
-
     QIcon healthIcon() const;
+
+    QList< BuildUrl > buildUrls() const;
+    void setBuildUrls(const QList< BuildUrl > &buildUrls);
 
 private:
     QIcon _healthIcon;
@@ -124,6 +138,7 @@ private:
     QString _name;
     QString _color;
     QList< HealthReport > _healthReports;
+    QList< BuildUrl > _buildUrls;
     bool _isRunning{false};
     QString _colorIcon;
 };
@@ -132,14 +147,10 @@ class JenkinsDataFetcher : public QObject
 {
     Q_OBJECT
 public:
-    explicit JenkinsDataFetcher(QObject *parent = 0);
-
-    JenkinsSettings jenkinsSettings() const;
-    void setJenkinsSettings(const JenkinsSettings &jenkinsSettings);
+    explicit JenkinsDataFetcher(std::shared_ptr< RestRequestBuilder > restRequestBuilder,
+                                QObject *parent = 0);
 
     void getAvaliableJobs();
-
-    static QString urlToRestApiUrl(const QString &url);
 
 signals:
     void jobsUpdated(QList< JenkinsJob >);
@@ -148,6 +159,8 @@ signals:
 public slots:
 
 private slots:
+    void resetFetchProgress();
+
     void readReply(QNetworkReply *reply);
     void switchToNextFetchStep();
     //    void authentificateUser();
@@ -175,6 +188,7 @@ private:
     QNetworkAccessManager *_manager;
     State _state{State::Ready};
     QTimer *_timer;
+    std::shared_ptr< RestRequestBuilder > _restRequestBuilder;
 
     //    bool _isAuthentificated{false};
 

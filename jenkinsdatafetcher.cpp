@@ -19,41 +19,36 @@ const QMap< QString, QString > HealthReport::ICON_CLASS_ICONS = {
     {QStringLiteral("icon-health-00to19"), QLatin1String(JenkinsPlugin::Constants::HEALTH_00TO19)},
 };
 
-JenkinsDataFetcher::JenkinsDataFetcher(QObject *parent) : QObject(parent)
+JenkinsDataFetcher::JenkinsDataFetcher(std::shared_ptr< RestRequestBuilder > restRequestBuilder,
+                                       QObject *parent)
+    : QObject(parent)
 {
+    _restRequestBuilder = restRequestBuilder;
+    connect(_restRequestBuilder.get(), &RestRequestBuilder::settingsChanged, this,
+            &JenkinsDataFetcher::resetFetchProgress);
+
     _manager = new QNetworkAccessManager(this);
     connect(_manager, &QNetworkAccessManager::finished, this, &JenkinsDataFetcher::readReply);
+
     _timer = new QTimer(this);
     _timer->setInterval(1000 * 10);  // 10 seconds
     connect(_timer, &QTimer::timeout, this, &JenkinsDataFetcher::switchToNextFetchStep);
     _timer->start();
 }
 
-JenkinsSettings JenkinsDataFetcher::jenkinsSettings() const { return _jenkinsSettings; }
-
-void JenkinsDataFetcher::setJenkinsSettings(const JenkinsSettings &jenkinsSettings)
-{
-    // TODO: update for new host only?
-    _jenkinsSettings = jenkinsSettings;
-    _jobsForDetalization.clear();
-    _state = State::Ready;
-    switchToNextFetchStep();
-}
-
 void JenkinsDataFetcher::getAvaliableJobs()
 {
-    QNetworkRequest request = createRequest(urlToRestApiUrl(_jenkinsSettings.jenkinsUrl()));
+    QNetworkRequest request = _restRequestBuilder->buildRequest(
+        _restRequestBuilder->urlToRestApiUrl(_jenkinsSettings.jenkinsUrl()));
     _manager->get(request);
 }
 
-QString JenkinsDataFetcher::urlToRestApiUrl(const QString &url)
+void JenkinsDataFetcher::resetFetchProgress()
 {
-    if (url.endsWith(REST_API_URL_SUFFIX))
-        return url;
-    else if (url.endsWith(QStringLiteral("/")))
-        return url + REST_API_URL_SUFFIX;
-    else
-        return url + QStringLiteral("/") + REST_API_URL_SUFFIX;
+    // TODO: update for new host only?
+    _jobsForDetalization.clear();
+    _state = State::Ready;
+    switchToNextFetchStep();
 }
 
 void JenkinsDataFetcher::readReply(QNetworkReply *reply)
@@ -270,8 +265,24 @@ JenkinsJob JenkinsDataFetcher::fillBuildDetails(QNetworkReply *reply)
         }
         job.setHealthReports(reportList);
     }
-    else
-        qDebug() << "Health report is absent";
+
+    if (jsonObject.contains(QStringLiteral("builds")))
+    {
+        QJsonArray buildsArray = jsonObject[QStringLiteral("builds")].toArray();
+        QList< JenkinsJob::BuildUrl > urls;
+        foreach (auto build, buildsArray)
+        {
+            QJsonObject buildObject = build.toObject();
+            if (buildObject.contains(QStringLiteral("number"))
+                && buildObject.contains(QStringLiteral("url")))
+            {
+                int number = buildObject[QStringLiteral("number")].toInt();
+                QString url = buildObject[QStringLiteral("url")].toString();
+                urls.append(JenkinsJob::BuildUrl(number, url));
+            }
+        }
+        job.setBuildUrls(urls);
+    }
 
     return job;
 }
@@ -318,9 +329,9 @@ void JenkinsDataFetcher::sendDetailsRequestForFirstJob()
 {
     if (_jobsForDetalization.isEmpty())
         return;
-    QString queryUrl
-        = urlToRestApiUrl(_jobsForDetalization.at(0).jobUrl() /*+ QStringLiteral("lastBuild/")*/);
-    QNetworkRequest request = createRequest(queryUrl);
+    QString queryUrl = _restRequestBuilder->urlToRestApiUrl(
+        _jobsForDetalization.at(0).jobUrl() /*+ QStringLiteral("lastBuild/")*/);
+    QNetworkRequest request = _restRequestBuilder->buildRequest(queryUrl);
     _manager->get(request);
 }
 
@@ -371,16 +382,17 @@ void JenkinsJob::setHealthReports(const QList< HealthReport > &healthReports)
             iconPath = report.getIconFile();
         }
     }
-    if(!iconPath.isEmpty())
+    if (!iconPath.isEmpty())
         _healthIcon = QIcon(iconPath);
     else
         _healthIcon = QIcon();
 }
 
-QIcon JenkinsJob::healthIcon() const
-{
-    return _healthIcon;
-}
+QIcon JenkinsJob::healthIcon() const { return _healthIcon; }
+
+QList< JenkinsJob::BuildUrl > JenkinsJob::buildUrls() const { return _buildUrls; }
+
+void JenkinsJob::setBuildUrls(const QList< BuildUrl > &buildUrls) { _buildUrls = buildUrls; }
 
 QString BuildInfo::url() const { return _url; }
 

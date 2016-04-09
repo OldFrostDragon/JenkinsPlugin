@@ -61,8 +61,9 @@ bool JenkinsPluginPlugin::initialize(const QStringList &arguments, QString *erro
     _pane = new JenkinsPane();
     addAutoReleasedObject(_pane);
 
+    _restRequestBuilder = std::make_shared<RestRequestBuilder>(_settings);
 
-    _fetcher = new JenkinsDataFetcher();
+    _fetcher = new JenkinsDataFetcher(_restRequestBuilder);
     addAutoReleasedObject(_fetcher);
     onSettingsChanged(_settings);
 
@@ -117,7 +118,7 @@ void JenkinsPluginPlugin::onSettingsChanged(const JenkinsSettings &settings)
 {
     _settings = settings;
     JenkinsJobsModel::instance()->setJenkinsSettings(settings);
-    _fetcher->setJenkinsSettings(settings);
+    _restRequestBuilder->setJenkinsSettings(settings);
 }
 
 void JenkinsPluginPlugin::createOptionsPage()

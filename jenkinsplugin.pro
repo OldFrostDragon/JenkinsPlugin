@@ -3,6 +3,8 @@ DEFINES += JENKINSPLUGIN_LIBRARY
 # JenkinsPlugin files
 QT += network
 
+CONFIG += c++11
+
 SOURCES += jenkinspluginplugin.cpp \
     jenkinssettings.cpp \
     jenkinsdatafetcher.cpp \
@@ -12,7 +14,9 @@ SOURCES += jenkinspluginplugin.cpp \
     jenkinstreeitemdelegate.cpp \
     jenkinssettingswidget.cpp \
     optionspage.cpp \
-    jenkinspane.cpp
+    jenkinspane.cpp \
+    restrequestbuilder.cpp \
+    buildhistoryfetcher.cpp
 
 HEADERS += jenkinspluginplugin.h \
         jenkinsplugin_global.h \
@@ -25,7 +29,9 @@ HEADERS += jenkinspluginplugin.h \
     jenkinstreeitemdelegate.h \
     jenkinssettingswidget.h \
     optionspage.h \
-    jenkinspane.h
+    jenkinspane.h \
+    restrequestbuilder.h \
+    buildhistoryfetcher.h
 
 CONFIG += c++14
 # Qt Creator linking
