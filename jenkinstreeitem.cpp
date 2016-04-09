@@ -14,9 +14,7 @@ JenkinsTreeItem::JenkinsTreeItem(const QString &name, const Type type)
 
 JenkinsTreeItem::JenkinsTreeItem(const QString &name, const QString &url,
                                  const JenkinsTreeItem::Type type)
-    : _itemType(type),
-      _name(name),
-      _itemUrl(url)
+    : _itemType(type), _name(name), _itemUrl(url)
 {
     if (type == Type::Root)
         _serverIcon = QIcon(QStringLiteral(":/icons/Resources/server.png"));
@@ -94,22 +92,20 @@ QVariant JenkinsTreeItem::data(int column, int role) const
                 break;
         }
     }
-    // FIXME: remove commented code
-    //    else if (role == Qt::ToolTipRole && column == 0 && _itemType == Type::Job)
-    //    {
-    //        QStringList data;
-    //        data.append(QStringLiteral("Last build URL: ") + _job.buildInfo().url());
-    //        data.append(QStringLiteral("number: ") + QString::number(_job.buildInfo().number()));
-    //        data.append(QStringLiteral("Display name: ") + _job.buildInfo().displayName());
-    //        data.append(
-    //            QStringLiteral("Duration: ")
-    //            + QTime(0, 0, 0,
-    //            _job.buildInfo().duration()).toString(QStringLiteral("hh::mm::ss")));
-    //        data.append(QStringLiteral("timestamp: ")
-    //                    + _job.buildInfo().timestamp().toString(QStringLiteral("dd.MM.yyyy
-    //                    hh:mm:ss")));
-    //        return data.join(QLatin1Char('\n'));
-    //    }
+    else if (role == Qt::ToolTipRole && _itemType == Type::Job)
+    {
+        const QString TABLE_CELL_TEMPLATE = QLatin1String("<td>%1</td>");
+        const QString IMAGE_ENTRY_TEMPLATE = QLatin1String("<td align=\"center\"><img src=\"%1\", align=\"center\"></img></td>");
+        QString htmlData = QLatin1String("<table border=\"0\">");
+        foreach (HealthReport report, _job.healthReports()) {
+            htmlData.append(QStringLiteral("<tr>"));
+            htmlData.append(IMAGE_ENTRY_TEMPLATE.arg(report.getIconFile()));
+            htmlData.append(TABLE_CELL_TEMPLATE.arg(report.description()));
+            htmlData.append(QStringLiteral("</tr>"));
+        }
+        htmlData.append(QStringLiteral("</table>"));
+        return htmlData;
+    }
     else if (role == Qt::DecorationRole)
     {
         if (_itemType == Type::Job)

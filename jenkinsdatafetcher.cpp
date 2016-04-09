@@ -326,6 +326,7 @@ void JenkinsJob::setHealthReports(const QList< HealthReport > &healthReports)
         _healthIcon = QIcon(iconPath);
     else
         _healthIcon = QIcon();
+    _healthIconPath = iconPath;
 }
 
 QIcon JenkinsJob::healthIcon() const { return _healthIcon; }
@@ -333,6 +334,11 @@ QIcon JenkinsJob::healthIcon() const { return _healthIcon; }
 QList< JenkinsJob::BuildUrl > JenkinsJob::buildUrls() const { return _buildUrls; }
 
 void JenkinsJob::setBuildUrls(const QList< BuildUrl > &buildUrls) { _buildUrls = buildUrls; }
+
+QString JenkinsJob::healthIconPath() const
+{
+    return _healthIconPath;
+}
 
 
 HealthReport::HealthReport(const int score, const QString &description,

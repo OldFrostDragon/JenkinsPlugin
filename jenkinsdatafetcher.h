@@ -77,8 +77,11 @@ public:
     QList< BuildUrl > buildUrls() const;
     void setBuildUrls(const QList< BuildUrl > &buildUrls);
 
+    QString healthIconPath() const;
+
 private:
     QIcon _healthIcon;
+    QString _healthIconPath;
 
     QString _jobUrl;
     QString _name;
