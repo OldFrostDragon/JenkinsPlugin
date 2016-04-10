@@ -2,16 +2,14 @@
 #define JENKINSDATAFETCHER_H
 
 #include <QObject>
-
-#include "jenkinssettings.h"
 #include <QtNetwork/QNetworkAccessManager>
-#include <QAuthenticator>
-#include <QNetworkReply>
 #include <QTimer>
 
+#include <memory>
+
+#include "jenkinssettings.h"
 #include "restrequestbuilder.h"
 #include "jenkinsjob.h"
-#include <memory>
 
 namespace JenkinsPlugin
 {

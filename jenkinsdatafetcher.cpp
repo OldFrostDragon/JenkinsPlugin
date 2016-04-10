@@ -1,7 +1,8 @@
 #include "jenkinsdatafetcher.h"
 
 #include <QDebug>
-#include <QNetworkRequest>
+#include <QNetworkReply>
+
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -195,11 +196,9 @@ JenkinsJob JenkinsDataFetcher::fillBuildDetails(QNetworkReply *reply)
     {
         return job;
     }
-    QString buildUrl = jsonObject[QStringLiteral("url")].toString();
     // TODO: maybe better to use URL from reply?
-    QString expectedJobUrl = _restRequestBuilder->buildUrlToJobUrl(buildUrl);
+    QString expectedJobUrl = jsonObject[QStringLiteral("url")].toString();
 
-    qDebug() << expectedJobUrl;
     // find Job to detalize
     int jobIndex = -1;
     for (int i = 0; i < _jobsForDetalization.size(); ++i)

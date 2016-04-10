@@ -26,18 +26,18 @@ QString RestRequestBuilder::cutRestApiUrlPart(const QString &url)
     return localUrl;
 }
 
-QString RestRequestBuilder::buildUrlToJobUrl(QString buildUrl)
+QString RestRequestBuilder::lastBuildUrlToJobUrl(QString buildUrl)
 {
     QString localBuildUrl = buildUrl;
-    //    if (localBuildUrl.endsWith(QStringLiteral("/")))
-    //        localBuildUrl.chop(1);
-    //    int lastSlashIndex = localBuildUrl.lastIndexOf(QLatin1Char('/'));
-    //    if (lastSlashIndex == -1)
-    //        return buildUrl;
-    //    // remove all after last '/'
-    //    int startIndex = lastSlashIndex + 1;
-    //    int length = localBuildUrl.size() - startIndex;
-    //    localBuildUrl.chop(length);
+    if (localBuildUrl.endsWith(QStringLiteral("/")))
+        localBuildUrl.chop(1);
+    int lastSlashIndex = localBuildUrl.lastIndexOf(QLatin1Char('/'));
+    if (lastSlashIndex == -1)
+        return buildUrl;
+    // remove all after last '/'
+    int startIndex = lastSlashIndex + 1;
+    int length = localBuildUrl.size() - startIndex;
+    localBuildUrl.chop(length);
     return localBuildUrl;
 }
 

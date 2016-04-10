@@ -5,7 +5,7 @@
 #include "jenkinstreeitem.h"
 #include "jenkinssettings.h"
 
-#include "jenkinsdatafetcher.h"
+#include "jenkinsjob.h"
 
 namespace JenkinsPlugin
 {

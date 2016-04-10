@@ -1,6 +1,5 @@
 #include "buildhistorymodel.h"
 
-#include <QIcon>
 using namespace JenkinsPlugin::Internal;
 
 BuildHistoryModel::BuildHistoryModel(BuildHistoryFetcher *buildHistoryFetcher)

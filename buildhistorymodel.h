@@ -4,7 +4,7 @@
 #include <QAbstractListModel>
 
 #include "buildhistoryfetcher.h"
-#include "jenkinsdatafetcher.h"
+#include "jenkinsjob.h"
 
 namespace JenkinsPlugin
 {

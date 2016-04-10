@@ -5,6 +5,7 @@
 #include <QHeaderView>
 #include <QMenu>
 #include <QDesktopServices>
+#include <QUrl>
 
 using namespace JenkinsPlugin::Internal;
 
@@ -22,7 +23,7 @@ JenkinsPane::JenkinsPane(QObject *parent) : Core::IOutputPane(parent)
     _view->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(_view, &QTreeView::customContextMenuRequested, this,
             &JenkinsPane::onCustomContextMenuRequested);
-    //_view->setItemDelegateForColumn(0, new JenkinsTreeItemDelegate(this));
+    _view->setItemDelegateForColumn(0, new JenkinsTreeItemDelegate(this));
 }
 
 JenkinsPane::~JenkinsPane() { delete _view; }

@@ -2,7 +2,7 @@
 #define JENKINSTREEITEM_H
 
 #include <utils/treemodel.h>
-#include "jenkinsdatafetcher.h"
+#include "jenkinsjob.h"
 
 namespace JenkinsPlugin
 {
