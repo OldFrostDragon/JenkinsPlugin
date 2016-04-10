@@ -25,7 +25,7 @@ QVariant BuildHistoryModel::data(const QModelIndex &index, int role) const
             return _buildHistory[index.row()].displayName();
         else if (index.column() == Timestamp)
             return _buildHistory[index.row()].timestamp().toString(
-                QStringLiteral("dd.MM.yyyy hh:mm:ss"));
+                QStringLiteral("dd MMMM yyyy hh:mm:ss"));
         else if (index.column() == Duration)
         {
             int durationInSeconds = _buildHistory[index.row()].duration() / 1000;
