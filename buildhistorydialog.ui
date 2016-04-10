@@ -17,6 +17,13 @@
    <item row="0" column="0">
     <widget class="QTreeView" name="treeView"/>
    </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>NOTE: double-click on concrete build to open it in browser</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources/>

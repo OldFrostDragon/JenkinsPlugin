@@ -22,6 +22,9 @@ public:
                                 QWidget *parent = 0);
     ~BuildHistoryDialog();
 
+private slots:
+    void onBuildEntryDoubleClicked(QModelIndex index);
+
 private:
     Ui::BuildHistoryDialog *ui;
     BuildHistoryModel *_buildHistoryModel{nullptr};

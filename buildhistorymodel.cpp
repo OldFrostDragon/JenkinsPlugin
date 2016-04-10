@@ -22,7 +22,9 @@ QVariant BuildHistoryModel::data(const QModelIndex &index, int role) const
         if (index.column() == Number)
             return _buildHistory[index.row()].number();
         else if (index.column() == BuildName)
+        {
             return _buildHistory[index.row()].displayName();
+        }
         else if (index.column() == Timestamp)
             return _buildHistory[index.row()].timestamp().toString(
                 QStringLiteral("dd MMMM yyyy hh:mm:ss"));
@@ -90,6 +92,15 @@ QVariant BuildHistoryModel::headerData(int section, Qt::Orientation orientation,
     }
     else
         return QVariant();
+}
+
+QString BuildHistoryModel::getUrl(QModelIndex index)
+{
+    if(!index.isValid())
+        return QString();
+    if(index.row() >= _buildHistory.size())
+        return QString();
+    return _buildHistory[index.row()].url();
 }
 
 void BuildHistoryModel::fetchBuildHistoryFor(JenkinsJob job)

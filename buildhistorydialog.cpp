@@ -1,6 +1,8 @@
 #include "buildhistorydialog.h"
 #include "ui_buildhistorydialog.h"
 
+#include <QDesktopServices>
+
 using namespace JenkinsPlugin::Internal;
 
 BuildHistoryDialog::BuildHistoryDialog(JenkinsJob job, BuildHistoryModel *buildHistoryModel,
@@ -17,10 +19,20 @@ BuildHistoryDialog::BuildHistoryDialog(JenkinsJob job, BuildHistoryModel *buildH
     ui->treeView->header()->setSectionResizeMode(3, QHeaderView::Stretch);
     _buildHistoryModel->fetchBuildHistoryFor(job);
     setWindowTitle(QString(QStringLiteral("Build history: %1")).arg(job.name()));
+
+    connect(ui->treeView, &QTreeView::doubleClicked, this,
+            &BuildHistoryDialog::onBuildEntryDoubleClicked);
 }
 
 BuildHistoryDialog::~BuildHistoryDialog()
 {
     delete ui;
     _buildHistoryModel->deleteLater();
+}
+
+void BuildHistoryDialog::onBuildEntryDoubleClicked(QModelIndex index)
+{
+    QString url = _buildHistoryModel->getUrl(index);
+    if (!url.isEmpty())
+        QDesktopServices::openUrl(QUrl(url));
 }
