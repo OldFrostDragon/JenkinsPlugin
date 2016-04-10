@@ -5,7 +5,7 @@ QT += network
 
 CONFIG += c++14
 
-SOURCES += jenkinspluginplugin.cpp \
+SOURCES += \
     jenkinssettings.cpp \
     jenkinsdatafetcher.cpp \
     jenkinstreeitem.cpp \
@@ -19,9 +19,10 @@ SOURCES += jenkinspluginplugin.cpp \
     buildhistorydialog.cpp \
     buildhistorymodel.cpp \
     jenkinsjob.cpp \
-    buildinfo.cpp
+    buildinfo.cpp \
+    jenkinsplugin.cpp
 
-HEADERS += jenkinspluginplugin.h \
+HEADERS += \
         jenkinsplugin_global.h \
         jenkinspluginconstants.h \
     jenkinssettings.h \
@@ -37,7 +38,8 @@ HEADERS += jenkinspluginplugin.h \
     buildhistorydialog.h \
     buildhistorymodel.h \
     jenkinsjob.h \
-    buildinfo.h
+    buildinfo.h \
+    jenkinsplugin.h
 
 CONFIG += c++14
 # Qt Creator linking

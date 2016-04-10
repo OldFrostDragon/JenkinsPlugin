@@ -1,4 +1,4 @@
-#include "jenkinspluginplugin.h"
+#include "jenkinsplugin.h"
 #include "jenkinspluginconstants.h"
 
 #include <coreplugin/icore.h>
