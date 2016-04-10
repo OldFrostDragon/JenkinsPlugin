@@ -41,8 +41,6 @@ private:
 
     QList<BuildInfo> _buildHistory;
     BuildHistoryFetcher *_buildHistoryFetcher;
-
-
 };
 }
 }
