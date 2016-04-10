@@ -77,6 +77,25 @@ QString JenkinsJob::healthIconPath() const
     return _healthIconPath;
 }
 
+bool JenkinsJob::isBuildable() const
+{
+    return _isBuildable;
+}
+
+void JenkinsJob::setIsBuildable(bool isBuildable)
+{
+    _isBuildable = isBuildable;
+}
+
+bool JenkinsJob::isQueued() const
+{
+    return _isQueued;
+}
+
+void JenkinsJob::setIsQueued(bool isQueued)
+{
+    _isQueued = isQueued;
+}
 
 HealthReport::HealthReport(const int score, const QString &description,
                            const QString &iconClassName)

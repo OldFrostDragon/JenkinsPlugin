@@ -69,6 +69,12 @@ public:
 
     QString healthIconPath() const;
 
+    bool isBuildable() const;
+    void setIsBuildable(bool isBuildable);
+
+    bool isQueued() const;
+    void setIsQueued(bool isQueued);
+
 private:
     QIcon _healthIcon;
     QString _healthIconPath;
@@ -80,6 +86,9 @@ private:
     QList< BuildUrl > _buildUrls;
     bool _isRunning{false};
     QString _colorIcon;
+
+    bool _isBuildable{true};
+    bool _isQueued{false};
 };
 
 }

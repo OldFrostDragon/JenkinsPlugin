@@ -253,6 +253,16 @@ JenkinsJob JenkinsDataFetcher::fillBuildDetails(QNetworkReply *reply)
         job.setBuildUrls(urls);
     }
 
+    if(jsonObject.contains(QStringLiteral("buildable")))
+        job.setIsBuildable(jsonObject[QStringLiteral("buildable")].toBool());
+    else
+        job.setIsBuildable(true);
+
+    if(jsonObject.contains(QStringLiteral("inQueue")))
+        job.setIsQueued(jsonObject[QStringLiteral("inQueue")].toBool());
+    else
+        job.setIsQueued(false);
+
     return job;
 }
 
