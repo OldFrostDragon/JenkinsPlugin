@@ -15,5 +15,7 @@
         <file>Resources/health-60to79.png</file>
         <file>Resources/health-80plus.png</file>
         <file>Resources/server.png</file>
+        <file>Resources/build_history.png</file>
+        <file>Resources/open_in_browser.png</file>
     </qresource>
 </RCC>

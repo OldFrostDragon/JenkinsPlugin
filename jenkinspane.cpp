@@ -1,6 +1,7 @@
 #include "jenkinspane.h"
 
 #include "jenkinstreeitemdelegate.h"
+#include "jenkinspluginconstants.h"
 
 #include <QHeaderView>
 #include <QMenu>
@@ -60,12 +61,14 @@ void JenkinsPane::onCustomContextMenuRequested(const QPoint &point)
     QMenu *contextMenu = new QMenu(_view);
 
     QAction *openInBrowserEntry = new QAction(QObject::tr("open in browser"), contextMenu);
+    openInBrowserEntry->setIcon(QIcon(QLatin1String(JenkinsPlugin::Constants::OPEN_IN_BROWSER_ICON)));
     contextMenu->addAction(openInBrowserEntry);
     connect(openInBrowserEntry, &QAction::triggered, this, &JenkinsPane::openInBrowser);
 
     if (item->itemType() == JenkinsTreeItem::Type::Job)
     {
         QAction *buildHistoryEntry = new QAction(QObject::tr("show build history"), contextMenu);
+        buildHistoryEntry->setIcon(QIcon(QLatin1String(JenkinsPlugin::Constants::BUILD_HISTORY_ICON)));
         contextMenu->addAction(buildHistoryEntry);
         connect(buildHistoryEntry, &QAction::triggered, this, &JenkinsPane::requestBuildHistory);
     }

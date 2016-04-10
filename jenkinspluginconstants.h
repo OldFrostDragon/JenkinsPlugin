@@ -15,6 +15,8 @@ const char NOT_BUILT_ICON[] = ":/icons/Resources/grey_ball.ico";
 
 const char JENKINS_LOGO[] = ":/icons/Resources/jenkins_logo.png";
 const char JENKINS_SERVER_ICON[] = ":/icons/Resources/server.png";
+const char OPEN_IN_BROWSER_ICON[] = ":/icons/Resources/open_in_browser.png";
+const char BUILD_HISTORY_ICON[] = ":/icons/Resources/build_history.png";
 
 //settings
 const char SETTINGS_GROUP[] = "JenkinsPlugin";
