@@ -82,7 +82,7 @@ QVariant JenkinsTreeItem::data(int column, int role) const
             case 2:
             {
                 if (_itemType == Type::Job)
-                    return QStringLiteral("TBD");
+                    return _job.lastBuildDate().toString(QStringLiteral("dd MMMM yyyy hh:mm:ss"));
                 else
                     return QVariant();
             }

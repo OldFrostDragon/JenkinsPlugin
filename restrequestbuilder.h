@@ -21,6 +21,7 @@ public:
     QNetworkRequest buildRequest(const QString urlString) const;
     QNetworkRequest buildAvaliableJobsRequest() const;
     QNetworkRequest buildBuildInfoRequest(const QString url) const;
+    QNetworkRequest buildLastBuildInfoRequest(const QString &jobUrl) const;
 
     JenkinsSettings jenkinsSettings() const;
     void setJenkinsSettings(const JenkinsSettings &jenkinsSettings);
@@ -31,6 +32,7 @@ signals:
 
 private:
     static const QString REST_API_URL_SUFFIX;
+    static const QString LAST_BUILD_URL_SUFFIX;
     JenkinsSettings _jenkinsSettings;
 };
 

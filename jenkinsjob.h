@@ -3,6 +3,7 @@
 
 #include <QIcon>
 #include <QMap>
+#include <QDateTime>
 
 namespace JenkinsPlugin
 {
@@ -75,6 +76,10 @@ public:
     bool isQueued() const;
     void setIsQueued(bool isQueued);
 
+    QDateTime lastBuildDate() const;
+    void setLastBuildDate(const QDateTime &lastBuildDate);
+    void setLastBuildDate(const quint64 &timestamp);
+
 private:
     QIcon _healthIcon;
     QString _healthIconPath;
@@ -89,6 +94,8 @@ private:
 
     bool _isBuildable{true};
     bool _isQueued{false};
+
+    QDateTime _lastBuildDate;
 };
 
 }

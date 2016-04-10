@@ -38,6 +38,7 @@ void JenkinsDataFetcher::resetFetchProgress()
 {
     // TODO: update for new host only?
     _jobsForDetalization.clear();
+    _jobsForLastBuildDetalization.clear();
     _state = State::Ready;
     switchToNextFetchStep();
 }
@@ -68,7 +69,22 @@ void JenkinsDataFetcher::readReply(QNetworkReply *reply)
             {
                 detailedJob = fillBuildDetails(reply);
             }
-
+            _jobsForLastBuildDetalization.append(detailedJob);
+            switchToNextFetchStep();
+        }
+        break;
+        case State::FetchingLastBuild:
+        {
+            JenkinsJob detailedJob;
+            if (reply->error() != QNetworkReply::NoError)
+            {
+                // TODO: Maybe better to retry request?
+                detailedJob = _jobsForLastBuildDetalization.takeFirst();
+            }
+            else
+            {
+                detailedJob = fillLastBuildInfoDetails(reply);
+            }
             if (detailedJob.isValid())
                 emit jobUpdated(detailedJob);
             switchToNextFetchStep();
@@ -115,13 +131,36 @@ void JenkinsDataFetcher::switchToNextFetchStep()
 
             if (_jobsForDetalization.isEmpty())
             {
+                if (_jobsForLastBuildDetalization.isEmpty())
+                {
+                    qDebug() << "transition:"
+                             << "Fetching details -> Ready";
+                    _state = State::Ready;
+                    _timer->start();
+                }
+                else
+                {
+                    _state = State::FetchingLastBuild;
+                    qDebug() << "transition:"
+                             << "Fetching details -> FetchingLastBuild";
+                    sendLastBuildInfoForFirstJob();
+                }
+            }
+            else
+                sendDetailsRequestForFirstJob();
+        }
+        break;
+        case State::FetchingLastBuild:
+        {
+            if (_jobsForLastBuildDetalization.isEmpty())
+            {
                 qDebug() << "transition:"
-                         << "Fetching details -> Ready";
+                         << "FetchingLastBuild -> Ready";
                 _state = State::Ready;
                 _timer->start();
             }
             else
-                sendDetailsRequestForFirstJob();
+                sendLastBuildInfoForFirstJob();
         }
         break;
         default:
@@ -166,6 +205,73 @@ QList< JenkinsJob > JenkinsDataFetcher::fetchJobList(QNetworkReply *reply)
         parsedJobs.append(jenkinsJob);
     }
     return parsedJobs;
+}
+
+void JenkinsDataFetcher::readHealthReportsPartFor(QJsonObject &jsonObject, JenkinsJob &job)
+{
+    if (jsonObject.contains(QStringLiteral("healthReport")))
+    {
+        QJsonArray healthArray = jsonObject[QStringLiteral("healthReport")].toArray();
+        QList< HealthReport > reportList;
+        foreach (auto item, healthArray)
+        {
+            HealthReport report;
+            QJsonObject healthObject = item.toObject();
+            if (healthObject.contains(QStringLiteral("score")))
+                report.setScore(healthObject[QStringLiteral("score")].toInt());
+            if (healthObject.contains(QStringLiteral("description")))
+                report.setDescription(healthObject[QStringLiteral("description")].toString());
+            if (healthObject.contains(QStringLiteral("iconClassName")))
+                report.setIconClassName(healthObject[QStringLiteral("iconClassName")].toString());
+            reportList.append(report);
+        }
+        job.setHealthReports(reportList);
+    }
+}
+
+void JenkinsDataFetcher::readBuildsListFor(JenkinsJob &job, QJsonObject &jsonObject)
+{
+    if (jsonObject.contains(QStringLiteral("builds")))
+    {
+        QJsonArray buildsArray = jsonObject[QStringLiteral("builds")].toArray();
+        QList< JenkinsJob::BuildUrl > urls;
+        foreach (auto build, buildsArray)
+        {
+            QJsonObject buildObject = build.toObject();
+            if (buildObject.contains(QStringLiteral("number"))
+                && buildObject.contains(QStringLiteral("url")))
+            {
+                int number = buildObject[QStringLiteral("number")].toInt();
+                QString url = buildObject[QStringLiteral("url")].toString();
+                urls.append(JenkinsJob::BuildUrl(number, url));
+            }
+        }
+        job.setBuildUrls(urls);
+    }
+}
+
+void JenkinsDataFetcher::readBuildableFlagFor(JenkinsJob &job, QJsonObject &jsonObject)
+{
+    if (jsonObject.contains(QStringLiteral("buildable")))
+        job.setIsBuildable(jsonObject[QStringLiteral("buildable")].toBool());
+    else
+        job.setIsBuildable(true);
+}
+
+void JenkinsDataFetcher::readIsQueuedFlagFor(QJsonObject &jsonObject, JenkinsJob &job)
+{
+    if (jsonObject.contains(QStringLiteral("inQueue")))
+        job.setIsQueued(jsonObject[QStringLiteral("inQueue")].toBool());
+    else
+        job.setIsQueued(false);
+}
+
+void JenkinsDataFetcher::readBuildInfoFor(JenkinsJob &job, QJsonObject &jsonObject)
+{
+    readHealthReportsPartFor(jsonObject, job);
+    readBuildsListFor(job, jsonObject);
+    readBuildableFlagFor(job, jsonObject);
+    readIsQueuedFlagFor(jsonObject, job);
 }
 
 /*!
@@ -216,53 +322,59 @@ JenkinsJob JenkinsDataFetcher::fillBuildDetails(QNetworkReply *reply)
     }
     job = _jobsForDetalization.takeAt(jobIndex);
 
-    if (jsonObject.contains(QStringLiteral("healthReport")))
+    readBuildInfoFor(job, jsonObject);
+    return job;
+}
+
+JenkinsJob JenkinsDataFetcher::fillLastBuildInfoDetails(QNetworkReply *reply)
+{
+    // TODO: these checks are copy-pasted from fillBuildDetails
+    JenkinsJob job;
+    if (reply == nullptr)
     {
-        QJsonArray healthArray = jsonObject[QStringLiteral("healthReport")].toArray();
-        QList< HealthReport > reportList;
-        foreach (auto item, healthArray)
-        {
-            HealthReport report;
-            QJsonObject healthObject = item.toObject();
-            if (healthObject.contains(QStringLiteral("score")))
-                report.setScore(healthObject[QStringLiteral("score")].toInt());
-            if (healthObject.contains(QStringLiteral("description")))
-                report.setDescription(healthObject[QStringLiteral("description")].toString());
-            if (healthObject.contains(QStringLiteral("iconClassName")))
-                report.setIconClassName(healthObject[QStringLiteral("iconClassName")].toString());
-            reportList.append(report);
-        }
-        job.setHealthReports(reportList);
+        qDebug() << Q_FUNC_INFO << "reply is null";
+        return job;
     }
 
-    if (jsonObject.contains(QStringLiteral("builds")))
+    QByteArray data = reply->readAll();
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
+    if (jsonDoc.isNull())
     {
-        QJsonArray buildsArray = jsonObject[QStringLiteral("builds")].toArray();
-        QList< JenkinsJob::BuildUrl > urls;
-        foreach (auto build, buildsArray)
-        {
-            QJsonObject buildObject = build.toObject();
-            if (buildObject.contains(QStringLiteral("number"))
-                && buildObject.contains(QStringLiteral("url")))
-            {
-                int number = buildObject[QStringLiteral("number")].toInt();
-                QString url = buildObject[QStringLiteral("url")].toString();
-                urls.append(JenkinsJob::BuildUrl(number, url));
-            }
-        }
-        job.setBuildUrls(urls);
+        qDebug() << Q_FUNC_INFO << "json is null";
+        return job;
     }
 
-    if(jsonObject.contains(QStringLiteral("buildable")))
-        job.setIsBuildable(jsonObject[QStringLiteral("buildable")].toBool());
-    else
-        job.setIsBuildable(true);
+    QJsonObject jsonObject = jsonDoc.object();
+    if (!jsonObject.contains(QStringLiteral("url")))
+    {
+        return job;
+    }
+    // TODO: maybe better to use URL from reply?
+    QString expectedJobUrl = jsonObject[QStringLiteral("url")].toString();
+    expectedJobUrl = _restRequestBuilder->lastBuildUrlToJobUrl(expectedJobUrl);
 
-    if(jsonObject.contains(QStringLiteral("inQueue")))
-        job.setIsQueued(jsonObject[QStringLiteral("inQueue")].toBool());
-    else
-        job.setIsQueued(false);
+    // TODO: search copy-pasted from fillBuildDetails
+    // find Job to detalize
+    int jobIndex = -1;
+    for (int i = 0; i < _jobsForLastBuildDetalization.size(); ++i)
+    {
+        if (_jobsForLastBuildDetalization[i].jobUrl() == expectedJobUrl)
+        {
+            jobIndex = i;
+            break;
+        }
+    }
+    if (jobIndex == -1)
+    {
+        qDebug() << "failed to find job with URL" << expectedJobUrl;
+        return job;
+    }
 
+    job = _jobsForLastBuildDetalization.takeAt(jobIndex);
+    if (jsonObject.contains(QStringLiteral("timestamp")))
+    {
+        job.setLastBuildDate(jsonObject[QStringLiteral("timestamp")].toVariant().toULongLong());
+    }
     return job;
 }
 
@@ -273,5 +385,14 @@ void JenkinsDataFetcher::sendDetailsRequestForFirstJob()
     QString queryUrl = _restRequestBuilder->urlToRestApiUrl(
         _jobsForDetalization.at(0).jobUrl() /*+ QStringLiteral("lastBuild/")*/);
     QNetworkRequest request = _restRequestBuilder->buildRequest(queryUrl);
+    _manager->get(request);
+}
+
+void JenkinsDataFetcher::sendLastBuildInfoForFirstJob()
+{
+    if (_jobsForLastBuildDetalization.isEmpty())
+        return;
+    QNetworkRequest request = _restRequestBuilder->buildLastBuildInfoRequest(
+        _jobsForLastBuildDetalization.at(0).jobUrl());
     _manager->get(request);
 }

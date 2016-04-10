@@ -25,6 +25,8 @@ public:
 
     void getAvaliableJobs();
 
+    void readIsQueuedFlagFor(QJsonObject &jsonObject, JenkinsJob &job);
+
 signals:
     void jobsUpdated(QList< JenkinsJob >);
     void jobUpdated(JenkinsJob);
@@ -44,18 +46,30 @@ private:
         Ready,
         FetchingJobs,
         FetchingJobDetails,
+        FetchingLastBuild,
     };
 
     QList< JenkinsJob > fetchJobList(QNetworkReply *reply);
     JenkinsJob fillBuildDetails(QNetworkReply *reply);
+    JenkinsJob fillLastBuildInfoDetails(QNetworkReply *reply);
+
     void sendDetailsRequestForFirstJob();
 
+    void sendLastBuildInfoForFirstJob();
+
+    void readBuildInfoFor(JenkinsJob &job, QJsonObject &jsonObject);
+    void readHealthReportsPartFor(QJsonObject &jsonObject, JenkinsJob &job);
+    void readBuildsListFor(JenkinsJob &job, QJsonObject &jsonObject);
+    void readBuildableFlagFor(JenkinsJob &job, QJsonObject &jsonObject);
+
     QList< JenkinsJob > _jobsForDetalization;
+    QList<JenkinsJob> _jobsForLastBuildDetalization;
 
     QNetworkAccessManager *_manager;
     State _state{State::Ready};
     QTimer *_timer;
     std::shared_ptr< RestRequestBuilder > _restRequestBuilder;
+
 };
 }
 }

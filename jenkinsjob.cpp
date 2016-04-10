@@ -97,6 +97,22 @@ void JenkinsJob::setIsQueued(bool isQueued)
     _isQueued = isQueued;
 }
 
+QDateTime JenkinsJob::lastBuildDate() const
+{
+    return _lastBuildDate;
+}
+
+void JenkinsJob::setLastBuildDate(const QDateTime &lastBuildDate)
+{
+    _lastBuildDate = lastBuildDate;
+}
+
+void JenkinsJob::setLastBuildDate(const quint64 &timestamp)
+{
+    //Jenkins returns timestamp value in miliseconds, but fromTime_t require seconds
+    _lastBuildDate = QDateTime::fromTime_t(timestamp / 1000);
+}
+
 HealthReport::HealthReport(const int score, const QString &description,
                            const QString &iconClassName)
     : _score(score), _description(description), _iconClassName(iconClassName)

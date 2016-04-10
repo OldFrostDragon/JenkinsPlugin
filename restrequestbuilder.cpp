@@ -3,6 +3,7 @@
 using namespace JenkinsPlugin::Internal;
 
 const QString RestRequestBuilder::REST_API_URL_SUFFIX = QStringLiteral("api/json");
+const QString RestRequestBuilder::LAST_BUILD_URL_SUFFIX = QStringLiteral("lastBuild");
 
 RestRequestBuilder::RestRequestBuilder(const JenkinsSettings &settings) : _jenkinsSettings(settings)
 {
@@ -65,6 +66,21 @@ QNetworkRequest RestRequestBuilder::buildAvaliableJobsRequest() const
 QNetworkRequest RestRequestBuilder::buildBuildInfoRequest(const QString url) const
 {
     QNetworkRequest request = buildRequest(urlToRestApiUrl(url));
+    return request;
+}
+
+QNetworkRequest RestRequestBuilder::buildLastBuildInfoRequest(const QString &jobUrl) const
+{
+    QString localUrl = jobUrl;
+    if(!localUrl.endsWith(LAST_BUILD_URL_SUFFIX))
+    {
+        if(!localUrl.endsWith(QLatin1Char('/')))
+            localUrl.append(QString(QLatin1Char('/') + LAST_BUILD_URL_SUFFIX));
+        else
+            localUrl.append(LAST_BUILD_URL_SUFFIX);
+    }
+
+    QNetworkRequest request = buildRequest(urlToRestApiUrl(localUrl));
     return request;
 }
 
