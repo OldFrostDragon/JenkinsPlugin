@@ -17,7 +17,8 @@ SOURCES += jenkinspluginplugin.cpp \
     restrequestbuilder.cpp \
     buildhistoryfetcher.cpp \
     buildhistorydialog.cpp \
-    buildhistorymodel.cpp
+    buildhistorymodel.cpp \
+    jenkinsjob.cpp
 
 HEADERS += jenkinspluginplugin.h \
         jenkinsplugin_global.h \
@@ -33,7 +34,8 @@ HEADERS += jenkinspluginplugin.h \
     restrequestbuilder.h \
     buildhistoryfetcher.h \
     buildhistorydialog.h \
-    buildhistorymodel.h
+    buildhistorymodel.h \
+    jenkinsjob.h
 
 CONFIG += c++14
 # Qt Creator linking
