@@ -15,7 +15,6 @@ namespace Internal
 class JenkinsJobsModel : public Utils::TreeModel
 {
 public:
-    JenkinsJobsModel();
     static JenkinsJobsModel* instance();
     void updateHeader();
 

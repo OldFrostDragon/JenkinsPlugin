@@ -47,13 +47,16 @@ QNetworkRequest RestRequestBuilder::buildRequest(const QString urlString) const
     QUrl url(urlString);
     url.setPort(_jenkinsSettings.port());
     QNetworkRequest request(url);
-    request.setRawHeader(QByteArray("Authorization"),
-                         QByteArray("Basic ")
-                             + QByteArray(QString(QStringLiteral("%1:%2"))
-                                              .arg(_jenkinsSettings.username())
-                                              .arg(_jenkinsSettings.apiToken())
-                                              .toLocal8Bit())
-                                   .toBase64());
+    if(!_jenkinsSettings.username().isEmpty() && !_jenkinsSettings.apiToken().isEmpty())
+    {
+        request.setRawHeader(QByteArray("Authorization"),
+                             QByteArray("Basic ")
+                                 + QByteArray(QString(QStringLiteral("%1:%2"))
+                                                  .arg(_jenkinsSettings.username())
+                                                  .arg(_jenkinsSettings.apiToken())
+                                                  .toLocal8Bit())
+                                       .toBase64());
+    }
     return request;
 }
 

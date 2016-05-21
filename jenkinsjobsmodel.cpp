@@ -4,7 +4,7 @@ using namespace JenkinsPlugin::Internal;
 
 static JenkinsJobsModel *_instance = nullptr;
 
-JenkinsJobsModel::JenkinsJobsModel() { updateHeader(); }
+//JenkinsJobsModel::JenkinsJobsModel() {  }
 
 JenkinsJobsModel *JenkinsJobsModel::instance()
 {
@@ -28,6 +28,7 @@ void JenkinsJobsModel::updateHeader()
 JenkinsJobsModel::JenkinsJobsModel(QObject *parent)
     : TreeModel(parent), _rootItem(new JenkinsTreeItem(tr("Jenkins"), JenkinsTreeItem::Type::Root))
 {
+    updateHeader();
     rootItem()->appendChild(_rootItem);
 }
 
