@@ -1,6 +1,8 @@
 #ifndef JENKINSJOBSMODEL_H
 #define JENKINSJOBSMODEL_H
 
+#include <QTimer>
+
 #include <utils/treemodel.h>
 #include "jenkinstreeitem.h"
 #include "jenkinssettings.h"
@@ -14,6 +16,7 @@ namespace Internal
 
 class JenkinsJobsModel : public Utils::TreeModel
 {
+    Q_OBJECT
 public:
     static JenkinsJobsModel* instance();
     void updateHeader();
@@ -24,15 +27,19 @@ public:
     void setOrUpdateJob(JenkinsJob job);
     virtual int columnCount(const QModelIndex &) const override {return 3;}
 
+signals:
+    void animationRepaintRequested();
+
 private:
     explicit JenkinsJobsModel(QObject *parent = 0);
     void resetJobs(QList<JenkinsJob> newJobs);
+    void updateAnimationRecursively(Utils::TreeItem *rootItem);
 
     JenkinsTreeItem *_rootItem;
 
     //static JenkinsJobsModel *_instance;
     JenkinsSettings _jenkinsSettings;
-
+    QTimer *_animationTimer{nullptr};
 };
 
 }

@@ -13,6 +13,8 @@ namespace Internal
 {
 
 class JenkinsJob;
+class JenkinsTreeItemDelegate;
+class JenkinsJobsModel;
 
 class JenkinsPane : public Core::IOutputPane
 {
@@ -53,6 +55,8 @@ private:
     QTreeView *_view;
     QModelIndex _contextMenuIndex;
     JenkinsSettings _settings;
+    JenkinsTreeItemDelegate *_delegate;
+    JenkinsJobsModel *_model;
 };
 }
 }

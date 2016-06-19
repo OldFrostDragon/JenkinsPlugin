@@ -19,7 +19,8 @@ public:
 
     enum JobRoles
     {
-        IsRunningRole = Qt::UserRole + 1
+        IsRunningRole = Qt::UserRole + 1,
+        AnimationOpacity = Qt::UserRole + 2,
     };
 
     JenkinsTreeItem(const QString &name, const Type type);
@@ -35,9 +36,10 @@ public:
     void setName(const QString &name);
 
     JenkinsTreeItem *childItem(int row) const;
-    // TreeItem interface
+
 public:
-    QVariant data(int column, int role) const;
+    QVariant data(int column, int role) const override;
+    virtual bool setData(int column, const QVariant &data, int role) override;
 
     JenkinsJob job() const;
     void setJob(const JenkinsJob &job);
@@ -45,6 +47,8 @@ public:
     QString itemUrl() const;
     void setItemUrl(const QString &itemUrl);
 
+    qreal currentOpacityValue() const;
+    qreal getNextOpacityValue() const;
 private:
     Type _itemType;
     QString _name;
@@ -52,6 +56,8 @@ private:
 
     JenkinsJob _job;
     QIcon _serverIcon;
+    qreal _currectOpacityValue{1.0};
+    bool _isAscendingOpacityChange{false};
 };
 }
 }

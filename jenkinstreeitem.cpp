@@ -3,6 +3,8 @@
 #include <QIcon>
 #include "jenkinspluginconstants.h"
 
+#include <limits>
+
 using namespace JenkinsPlugin::Internal;
 
 JenkinsTreeItem::JenkinsTreeItem(const QString &name, const Type type)
@@ -134,10 +136,35 @@ QVariant JenkinsTreeItem::data(int column, int role) const
     {
         return _job.isRunning();
     }
-
+    else if (role == JobRoles::AnimationOpacity && column == 0 && _itemType == Type::Job)
+    {
+        if (_job.isRunning())
+            return _currectOpacityValue;
+        else
+            return 1.0;
+    }
     else
         return QVariant();
     return QVariant();
+}
+
+bool JenkinsTreeItem::setData(int column, const QVariant &data, int role)
+{
+    if (column != 0)
+        return false;
+    if (static_cast< JobRoles >(role) != JobRoles::AnimationOpacity)
+        return false;
+    double newOpacity = data.toDouble();
+    if (std::isgreater(newOpacity, 1.0))
+        newOpacity = 1.0;
+    if (std::isless(newOpacity, 0.0))
+        newOpacity = 0.0;
+    _currectOpacityValue = newOpacity;
+    if(std::abs(_currectOpacityValue - 1.0) < std::numeric_limits<qreal>::epsilon())
+        _isAscendingOpacityChange = false;
+    else if(std::abs(_currectOpacityValue - 0.1) < std::numeric_limits<qreal>::epsilon())
+        _isAscendingOpacityChange = true;
+    return true;
 }
 
 JenkinsJob JenkinsTreeItem::job() const { return _job; }
@@ -147,3 +174,16 @@ void JenkinsTreeItem::setJob(const JenkinsJob &job) { _job = job; }
 QString JenkinsTreeItem::itemUrl() const { return _itemUrl; }
 
 void JenkinsTreeItem::setItemUrl(const QString &itemUrl) { _itemUrl = itemUrl; }
+
+qreal JenkinsTreeItem::currentOpacityValue() const
+{
+    return _currectOpacityValue;
+}
+
+qreal JenkinsTreeItem::getNextOpacityValue() const
+{
+    if(_isAscendingOpacityChange)
+        return _currectOpacityValue + 0.1;
+    else
+        return _currectOpacityValue - 0.1;
+}

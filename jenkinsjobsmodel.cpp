@@ -28,7 +28,14 @@ JenkinsJobsModel::JenkinsJobsModel(QObject *parent)
 {
     updateHeader();
     rootItem()->appendChild(_rootItem);
-}
+    _animationTimer = new QTimer(this);
+    _animationTimer->setSingleShot(false);
+    connect(_animationTimer, &QTimer::timeout, [=]()
+            {
+                updateAnimationRecursively(_rootItem);
+            });
+    _animationTimer->start(100);
+};
 
 void JenkinsJobsModel::resetJobs(QList< JenkinsJob > newJobs)
 {
@@ -36,6 +43,31 @@ void JenkinsJobsModel::resetJobs(QList< JenkinsJob > newJobs)
     foreach (JenkinsJob job, newJobs)
     {
         _rootItem->appendChild(new JenkinsTreeItem(job.name(), JenkinsTreeItem::Type::Job));
+    }
+}
+
+void JenkinsJobsModel::updateAnimationRecursively(Utils::TreeItem *rootItem)
+{
+    if (rootItem == nullptr)
+        return;
+    foreach (Utils::TreeItem *child, rootItem->children())
+    {
+        updateAnimationRecursively(child);
+    }
+    auto castedItem = static_cast< JenkinsTreeItem * >(rootItem);
+
+    if (castedItem->itemType() == JenkinsTreeItem::Type::Job)
+    {
+            setData(castedItem->index(), castedItem->getNextOpacityValue(),
+                    static_cast< int >(JenkinsTreeItem::JobRoles::AnimationOpacity));
+    }
+    else
+    {
+        if (std::isless(castedItem->currentOpacityValue(), 1.0))
+        {
+            setData(castedItem->index(), 1.0,
+                    static_cast< int >(JenkinsTreeItem::JobRoles::AnimationOpacity));
+        }
     }
 }
 

@@ -25,11 +25,20 @@ void JenkinsTreeItemDelegate::paint(QPainter *painter, const QStyleOptionViewIte
         doc.setHtml(opt.text);
 
     opt.text = QStringLiteral("");
-//    opt.state &= ~QStyle::State_Selected;
-//    opt.state &= ~QStyle::State_HasFocus;
-//    opt.state &= ~QStyle::State_MouseOver;
+    //    opt.state &= ~QStyle::State_Selected;
+    //    opt.state &= ~QStyle::State_HasFocus;
+    //    opt.state &= ~QStyle::State_MouseOver;
 
-    opt.widget->style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
+    if (isRunning)
+    {
+        auto currentOpacity = index.data(JenkinsTreeItem::JobRoles::AnimationOpacity).toDouble();
+        auto opacity = painter->opacity();
+        painter->setOpacity(currentOpacity);
+        opt.widget->style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
+        painter->setOpacity(opacity);
+    }
+    else
+        opt.widget->style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
 
     painter->translate(opt.rect.left() + 20, opt.rect.top());
     QRect clip(0, 0, opt.rect.width(), opt.rect.height());

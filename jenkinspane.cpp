@@ -14,8 +14,8 @@ JenkinsPane::JenkinsPane(QObject *parent) : Core::IOutputPane(parent)
 {
     _view = new QTreeView();
     _view->setHeaderHidden(false);
-    JenkinsJobsModel *model = JenkinsJobsModel::instance();
-    _view->setModel(model);
+    _model = JenkinsJobsModel::instance();
+    _view->setModel(_model);
 
     _view->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
     _view->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
@@ -24,7 +24,8 @@ JenkinsPane::JenkinsPane(QObject *parent) : Core::IOutputPane(parent)
     _view->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(_view, &QTreeView::customContextMenuRequested, this,
             &JenkinsPane::onCustomContextMenuRequested);
-    _view->setItemDelegateForColumn(0, new JenkinsTreeItemDelegate(this));
+    _delegate = new JenkinsTreeItemDelegate(this);
+    _view->setItemDelegateForColumn(0, _delegate);
 }
 
 JenkinsPane::~JenkinsPane() { delete _view; }
