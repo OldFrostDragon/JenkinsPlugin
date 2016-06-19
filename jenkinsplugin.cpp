@@ -120,6 +120,7 @@ void JenkinsPluginPlugin::updateJob(JenkinsJob job)
 void JenkinsPluginPlugin::onSettingsChanged(const JenkinsSettings &settings)
 {
     _settings = settings;
+    _settings.save(Core::ICore::settings());
     JenkinsJobsModel::instance()->setJenkinsSettings(settings);
     _restRequestBuilder->setJenkinsSettings(settings);
 }
