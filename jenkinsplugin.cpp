@@ -47,18 +47,6 @@ bool JenkinsPluginPlugin::initialize(const QStringList &arguments, QString *erro
     Q_UNUSED(arguments)
     Q_UNUSED(errorString)
 
-//    QAction *action = new QAction(tr("JenkinsPlugin action"), this);
-//    Core::Command *cmd
-//        = Core::ActionManager::registerAction(action, Constants::ACTION_ID,
-//                                              Core::Context(Core::Constants::C_GLOBAL));
-//    cmd->setDefaultKeySequence(QKeySequence(tr("Ctrl+Alt+Meta+A")));
-//    connect(action, SIGNAL(triggered()), this, SLOT(triggerAction()));
-
-//    Core::ActionContainer *menu = Core::ActionManager::createMenu(Constants::MENU_ID);
-//    menu->menu()->setTitle(tr("JenkinsPlugin"));
-//    menu->addAction(cmd);
-//    Core::ActionManager::actionContainer(Core::Constants::M_TOOLS)->addMenu(menu);
-
     _pane = new JenkinsPane();
     addAutoReleasedObject(_pane);
     connect(_pane, &JenkinsPane::buildHistoryRequested, this, &JenkinsPluginPlugin::showJobHistoryDialog);
@@ -92,28 +80,13 @@ ExtensionSystem::IPlugin::ShutdownFlag JenkinsPluginPlugin::aboutToShutdown()
     return SynchronousShutdown;
 }
 
-void JenkinsPluginPlugin::triggerAction()
-{
-    //    _fetcher->getAvaliableJobs();
-    QMessageBox::information(Core::ICore::mainWindow(), tr("Action triggered"),
-                             tr("This is an action from JenkinsPlugin."));
-}
-
 void JenkinsPluginPlugin::updateJobs(QList< JenkinsJob > jobs)
 {
-    //    foreach (auto job, jobs) {
-    //        qDebug() << "job:";
-    //        qDebug() << "    name:" << job.name();
-    //        qDebug() << "    url:" << job.jobUrl();
-    //    }
     JenkinsJobsModel::instance()->setJenkinsJobs(jobs);
 }
 
 void JenkinsPluginPlugin::updateJob(JenkinsJob job)
 {
-    //    qDebug() << "updated job:";
-    //    qDebug() << "    name:" << job.name();
-    //    qDebug() << "    url:" << job.jobUrl();
     JenkinsJobsModel::instance()->setOrUpdateJob(job);
 }
 

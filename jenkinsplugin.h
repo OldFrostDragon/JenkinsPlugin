@@ -31,7 +31,6 @@ public:
     ShutdownFlag aboutToShutdown();
 
 private slots:
-    void triggerAction();
     void updateJobs(QList< JenkinsJob > jobs);
     void updateJob(JenkinsJob job);
 
