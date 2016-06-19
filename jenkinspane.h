@@ -23,8 +23,8 @@ public:
 
     // IOutputPane interface
 public:
-    QWidget *outputWidget(QWidget *) {return _view; }
-    QList<QWidget *> toolBarWidgets() const;
+    QWidget *outputWidget(QWidget *) { return _view; }
+    QList< QWidget * > toolBarWidgets() const;
     QString displayName() const;
     int priorityInStatusBar() const;
     void clearContents() {}
@@ -41,6 +41,9 @@ public:
 signals:
     void buildHistoryRequested(const JenkinsJob job);
 
+public slots:
+    void setJenkinsSettings(JenkinsSettings settings);
+
 private slots:
     void onCustomContextMenuRequested(const QPoint &point);
     void requestBuildHistory();
@@ -49,8 +52,8 @@ private slots:
 private:
     QTreeView *_view;
     QModelIndex _contextMenuIndex;
+    JenkinsSettings _settings;
 };
-
 }
 }
 

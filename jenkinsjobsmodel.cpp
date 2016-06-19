@@ -4,8 +4,6 @@ using namespace JenkinsPlugin::Internal;
 
 static JenkinsJobsModel *_instance = nullptr;
 
-//JenkinsJobsModel::JenkinsJobsModel() {  }
-
 JenkinsJobsModel *JenkinsJobsModel::instance()
 {
     if (_instance == nullptr)

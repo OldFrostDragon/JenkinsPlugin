@@ -2,9 +2,11 @@
 
 using namespace JenkinsPlugin::Internal;
 
-BuildHistoryModel::BuildHistoryModel(BuildHistoryFetcher *buildHistoryFetcher)
+BuildHistoryModel::BuildHistoryModel(BuildHistoryFetcher *buildHistoryFetcher,
+                                     JenkinsSettings settings)
 {
     _buildHistoryFetcher = buildHistoryFetcher;
+    _settings = settings;
     connect(_buildHistoryFetcher, &BuildHistoryFetcher::buildInfoFetched, this,
             &BuildHistoryModel::appendBuildInfo);
 }
@@ -94,13 +96,15 @@ QVariant BuildHistoryModel::headerData(int section, Qt::Orientation orientation,
         return QVariant();
 }
 
-QString BuildHistoryModel::getUrl(QModelIndex index)
+QUrl BuildHistoryModel::getUrl(QModelIndex index)
 {
-    if(!index.isValid())
+    if (!index.isValid())
         return QString();
-    if(index.row() >= _buildHistory.size())
+    if (index.row() >= _buildHistory.size())
         return QString();
-    return _buildHistory[index.row()].url();
+    QUrl formedUrl(_buildHistory[index.row()].url());
+    formedUrl.setPort(_settings.port());
+    return formedUrl;
 }
 
 void BuildHistoryModel::fetchBuildHistoryFor(JenkinsJob job)

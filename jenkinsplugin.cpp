@@ -49,9 +49,10 @@ bool JenkinsPluginPlugin::initialize(const QStringList &arguments, QString *erro
 
     _pane = new JenkinsPane();
     addAutoReleasedObject(_pane);
-    connect(_pane, &JenkinsPane::buildHistoryRequested, this, &JenkinsPluginPlugin::showJobHistoryDialog);
+    connect(_pane, &JenkinsPane::buildHistoryRequested, this,
+            &JenkinsPluginPlugin::showJobHistoryDialog);
 
-    _restRequestBuilder = std::make_shared<RestRequestBuilder>(_settings);
+    _restRequestBuilder = std::make_shared< RestRequestBuilder >(_settings);
 
     _fetcher = new JenkinsDataFetcher(_restRequestBuilder);
     addAutoReleasedObject(_fetcher);
@@ -96,6 +97,7 @@ void JenkinsPluginPlugin::onSettingsChanged(const JenkinsSettings &settings)
     _settings.save(Core::ICore::settings());
     JenkinsJobsModel::instance()->setJenkinsSettings(settings);
     _restRequestBuilder->setJenkinsSettings(settings);
+    _pane->setJenkinsSettings(_settings);
 }
 
 void JenkinsPluginPlugin::showJobHistoryDialog(JenkinsJob job)
@@ -116,6 +118,6 @@ void JenkinsPluginPlugin::createOptionsPage()
 BuildHistoryModel *JenkinsPluginPlugin::createBuildHistoryModel()
 {
     BuildHistoryFetcher *_fetcher = new BuildHistoryFetcher(_restRequestBuilder);
-    BuildHistoryModel *model = new BuildHistoryModel(_fetcher);
+    BuildHistoryModel *model = new BuildHistoryModel(_fetcher, _settings);
     return model;
 }

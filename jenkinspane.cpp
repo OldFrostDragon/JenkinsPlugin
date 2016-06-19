@@ -49,6 +49,11 @@ bool JenkinsPane::canNext() const { return false; }
 
 bool JenkinsPane::canPrevious() const { return false; }
 
+void JenkinsPane::setJenkinsSettings(JenkinsSettings settings)
+{
+    _settings = settings;
+}
+
 void JenkinsPane::onCustomContextMenuRequested(const QPoint &point)
 {
     _contextMenuIndex = _view->indexAt(point);
@@ -90,5 +95,7 @@ void JenkinsPane::openInBrowser()
     JenkinsTreeItem *item = static_cast< JenkinsTreeItem * >(_contextMenuIndex.internalPointer());
     if (item == nullptr)
         return;
-    QDesktopServices::openUrl(QUrl(item->itemUrl()));
+    QUrl itemUrl(item->itemUrl());
+    itemUrl.setPort(_settings.port());
+    QDesktopServices::openUrl(itemUrl);
 }

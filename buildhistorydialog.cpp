@@ -32,7 +32,7 @@ BuildHistoryDialog::~BuildHistoryDialog()
 
 void BuildHistoryDialog::onBuildEntryDoubleClicked(QModelIndex index)
 {
-    QString url = _buildHistoryModel->getUrl(index);
+    QUrl url = _buildHistoryModel->getUrl(index);
     if (!url.isEmpty())
-        QDesktopServices::openUrl(QUrl(url));
+        QDesktopServices::openUrl(url);
 }
