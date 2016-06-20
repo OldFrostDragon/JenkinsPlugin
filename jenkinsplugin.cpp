@@ -20,6 +20,10 @@
 #include "jenkinsjobsmodel.h"
 #include "buildhistorydialog.h"
 
+#include <projectexplorer/taskhub.h>
+#include <projectexplorer/task.h>
+#include <projectexplorer/projectexplorerconstants.h>
+
 using namespace JenkinsPlugin::Internal;
 
 JenkinsPluginPlugin::JenkinsPluginPlugin()
@@ -60,7 +64,8 @@ bool JenkinsPluginPlugin::initialize(const QStringList &arguments, QString *erro
 
     connect(_fetcher, &JenkinsDataFetcher::jobsUpdated, this, &JenkinsPluginPlugin::updateJobs);
     connect(_fetcher, &JenkinsDataFetcher::jobUpdated, this, &JenkinsPluginPlugin::updateJob);
-
+    connect(JenkinsJobsModel::instance(), &JenkinsJobsModel::jobFailed, this,
+            &JenkinsPluginPlugin::addFailedJobMessageToIssues);
     createOptionsPage();
 
     return true;
@@ -95,6 +100,8 @@ void JenkinsPluginPlugin::onSettingsChanged(const JenkinsSettings &settings)
 {
     _settings = settings;
     _settings.save(Core::ICore::settings());
+
+    _alreadyReportedFailures.clear();
     JenkinsJobsModel::instance()->setJenkinsSettings(settings);
     _restRequestBuilder->setJenkinsSettings(settings);
     _pane->setJenkinsSettings(_settings);
@@ -105,6 +112,31 @@ void JenkinsPluginPlugin::showJobHistoryDialog(JenkinsJob job)
     BuildHistoryDialog *dialog = new BuildHistoryDialog(job, createBuildHistoryModel(), nullptr);
     dialog->setAttribute(Qt::WA_DeleteOnClose, true);
     dialog->show();
+}
+
+void JenkinsPluginPlugin::addFailedJobMessageToIssues(const JenkinsJob job)
+{
+    if(!_settings.notifyAboutFailedBuilds())
+        return;
+    JenkinsJob::BuildUrl lastBuildUrl = job.getLastBuildUrl();
+    if (_alreadyReportedFailures.contains(job.name()))
+    {
+        JenkinsJob::BuildUrl reportedUrl = _alreadyReportedFailures[job.name()];
+        if (reportedUrl == lastBuildUrl)
+            return;
+    }
+    QUrl url(lastBuildUrl.url);
+    url.setPort(_settings.port());
+    QString message = QCoreApplication::translate("JenkinsPlugin::Task",
+                                                  "Jenkins: %1 Build #%2 failed. Build date: %3.\n "
+                                                  "See %4 for details")
+                          .arg(job.name())
+                          .arg(lastBuildUrl.number)
+                          .arg(job.lastBuildDate().toString(QStringLiteral("dd.MM.yyyy hh:mm:ss")))
+                          .arg(url.toString());
+    ProjectExplorer::TaskHub::addTask(ProjectExplorer::Task::Error, message,
+                                      ProjectExplorer::Constants::TASK_CATEGORY_BUILDSYSTEM);
+    _alreadyReportedFailures.insert(job.name(), lastBuildUrl);
 }
 
 void JenkinsPluginPlugin::createOptionsPage()

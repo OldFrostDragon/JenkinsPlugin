@@ -29,6 +29,7 @@ public:
 
 signals:
     void animationRepaintRequested();
+    void jobFailed(const JenkinsJob job);
 
 private:
     explicit JenkinsJobsModel(QObject *parent = 0);

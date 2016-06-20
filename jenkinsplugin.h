@@ -9,6 +9,7 @@
 #include "optionspage.h"
 #include "jenkinspane.h"
 #include "restrequestbuilder.h"
+#include "jenkinsjob.h"
 
 namespace JenkinsPlugin
 {
@@ -36,6 +37,7 @@ private slots:
 
     void onSettingsChanged(const JenkinsSettings &settings);
     void showJobHistoryDialog(JenkinsJob job);
+    void addFailedJobMessageToIssues(const JenkinsJob job);
 
 private:
     void createOptionsPage();
@@ -48,6 +50,9 @@ private:
     OptionsPage *_optionsPage;
     JenkinsSettings _settings;
     JenkinsPane *_pane;
+
+    //key - job name
+    QMap<QString, JenkinsJob::BuildUrl> _alreadyReportedFailures;
 };
 
 }  // namespace Internal

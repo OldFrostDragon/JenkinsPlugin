@@ -31,13 +31,25 @@ void JenkinsJob::setBuildStatus(const QString &colorEntry)
     else
         _isRunning = false;
     if (entry == QStringLiteral("blue"))
+    {
+        _buildStatus = BuildStatus::Success;
         _colorIcon = QLatin1String(JenkinsPlugin::Constants::SUCCESS_ICON);
+    }
     else if (entry == QStringLiteral("red"))
+    {
+        _buildStatus = BuildStatus::Fail;
         _colorIcon = QLatin1String(JenkinsPlugin::Constants::FAIL_ICON);
+    }
     else if (entry == QStringLiteral("yellow"))
+    {
+        _buildStatus = BuildStatus::Unstable;
         _colorIcon = QLatin1String(JenkinsPlugin::Constants::UNSTABLE_ICON);
+    }
     else
+    {
+        _buildStatus = BuildStatus::NotBuilt;
         _colorIcon = QLatin1String(JenkinsPlugin::Constants::NOT_BUILT_ICON);
+    }
 }
 
 bool JenkinsJob::isRunning() const { return _isRunning; }
@@ -72,35 +84,28 @@ QList< JenkinsJob::BuildUrl > JenkinsJob::buildUrls() const { return _buildUrls;
 
 void JenkinsJob::setBuildUrls(const QList< BuildUrl > &buildUrls) { _buildUrls = buildUrls; }
 
-QString JenkinsJob::healthIconPath() const
+JenkinsJob::BuildUrl JenkinsJob::getLastBuildUrl() const
 {
-    return _healthIconPath;
+    BuildUrl lastBuildUrl;
+    foreach (BuildUrl buildUrl, _buildUrls)
+    {
+        if (buildUrl.number > lastBuildUrl.number)
+            lastBuildUrl = buildUrl;
+    }
+    return lastBuildUrl;
 }
 
-bool JenkinsJob::isBuildable() const
-{
-    return _isBuildable;
-}
+QString JenkinsJob::healthIconPath() const { return _healthIconPath; }
 
-void JenkinsJob::setIsBuildable(bool isBuildable)
-{
-    _isBuildable = isBuildable;
-}
+bool JenkinsJob::isBuildable() const { return _isBuildable; }
 
-bool JenkinsJob::isQueued() const
-{
-    return _isQueued;
-}
+void JenkinsJob::setIsBuildable(bool isBuildable) { _isBuildable = isBuildable; }
 
-void JenkinsJob::setIsQueued(bool isQueued)
-{
-    _isQueued = isQueued;
-}
+bool JenkinsJob::isQueued() const { return _isQueued; }
 
-QDateTime JenkinsJob::lastBuildDate() const
-{
-    return _lastBuildDate;
-}
+void JenkinsJob::setIsQueued(bool isQueued) { _isQueued = isQueued; }
+
+QDateTime JenkinsJob::lastBuildDate() const { return _lastBuildDate; }
 
 void JenkinsJob::setLastBuildDate(const QDateTime &lastBuildDate)
 {
@@ -109,9 +114,11 @@ void JenkinsJob::setLastBuildDate(const QDateTime &lastBuildDate)
 
 void JenkinsJob::setLastBuildDate(const quint64 &timestamp)
 {
-    //Jenkins returns timestamp value in miliseconds, but fromTime_t require seconds
+    // Jenkins returns timestamp value in miliseconds, but fromTime_t require seconds
     _lastBuildDate = QDateTime::fromTime_t(timestamp / 1000);
 }
+
+JenkinsJob::BuildStatus JenkinsJob::buildStatus() const { return _buildStatus; }
 
 HealthReport::HealthReport(const int score, const QString &description,
                            const QString &iconClassName)
@@ -133,4 +140,3 @@ void HealthReport::setIconClassName(const QString &iconClassName)
 {
     _iconClassName = iconClassName;
 }
-

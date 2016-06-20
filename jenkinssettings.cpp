@@ -16,6 +16,8 @@ void JenkinsSettings::save(QSettings *settings) const
     settings->setValue(QLatin1String(JenkinsPlugin::Constants::PORT), _port);
     settings->setValue(QLatin1String(JenkinsPlugin::Constants::USERNAME), _username);
     settings->setValue(QLatin1String(JenkinsPlugin::Constants::API_TOKEN), _apiToken);
+    settings->setValue(QLatin1String(JenkinsPlugin::Constants::NOTIFY_ABOUT_FAILED_BUILD),
+                       _notifyAboutFailedBuilds);
     settings->endGroup();
 }
 
@@ -27,6 +29,9 @@ void JenkinsSettings::load(QSettings *settings)
     _port = settings->value(QLatin1String(JenkinsPlugin::Constants::PORT), 80).toInt();
     _username = settings->value(QLatin1String(JenkinsPlugin::Constants::USERNAME)).toString();
     _apiToken = settings->value(QLatin1String(JenkinsPlugin::Constants::API_TOKEN)).toString();
+    _notifyAboutFailedBuilds
+        = settings->value(QLatin1String(JenkinsPlugin::Constants::NOTIFY_ABOUT_FAILED_BUILD), true)
+              .toBool();
     settings->endGroup();
 }
 
@@ -41,7 +46,8 @@ void JenkinsSettings::setUsername(const QString &username) { _username = usernam
 bool JenkinsSettings::equals(const JenkinsSettings &other) const
 {
     return _jenkinsUrl == other._jenkinsUrl && _port == other._port && _username == other._username
-           && _apiToken == other._apiToken;
+           && _apiToken == other._apiToken
+           && _notifyAboutFailedBuilds == other._notifyAboutFailedBuilds;
 }
 
 void JenkinsSettings::setDefaults()
@@ -50,11 +56,19 @@ void JenkinsSettings::setDefaults()
     _port = 80;
     _username.clear();
     _apiToken.clear();
+    _notifyAboutFailedBuilds = true;
 }
 
 QString JenkinsSettings::apiToken() const { return _apiToken; }
 
 void JenkinsSettings::setApiToken(const QString &apiToken) { _apiToken = apiToken; }
+
+bool JenkinsSettings::notifyAboutFailedBuilds() const { return _notifyAboutFailedBuilds; }
+
+void JenkinsSettings::setNotifyAboutFailedBuilds(bool notifyAboutFailedBuilds)
+{
+    _notifyAboutFailedBuilds = notifyAboutFailedBuilds;
+}
 
 bool operator==(const JenkinsPlugin::Internal::JenkinsSettings &first,
                 const JenkinsPlugin::Internal::JenkinsSettings &second)

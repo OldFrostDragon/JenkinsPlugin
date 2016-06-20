@@ -44,6 +44,19 @@ public:
         }
         int number{1};
         QString url;
+        bool operator==(const BuildUrl &rhs) const
+        {
+            return  number == rhs.number && url == rhs.url;
+        }
+    };
+
+    enum BuildStatus
+    {
+        Success,
+        Unstable,
+        NotBuilt,
+        Fail,
+        Unknown
     };
 
     JenkinsJob() {}
@@ -67,6 +80,7 @@ public:
 
     QList< BuildUrl > buildUrls() const;
     void setBuildUrls(const QList< BuildUrl > &buildUrls);
+    BuildUrl getLastBuildUrl() const;
 
     QString healthIconPath() const;
 
@@ -79,6 +93,8 @@ public:
     QDateTime lastBuildDate() const;
     void setLastBuildDate(const QDateTime &lastBuildDate);
     void setLastBuildDate(const quint64 &timestamp);
+
+    BuildStatus buildStatus() const;
 
 private:
     QIcon _healthIcon;
@@ -96,6 +112,7 @@ private:
     bool _isQueued{false};
 
     QDateTime _lastBuildDate;
+    BuildStatus _buildStatus{BuildStatus::Unknown};
 };
 
 }

@@ -21,6 +21,7 @@ void JenkinsSettingsWidget::settingsToUi(const JenkinsSettings &settings)
     ui->portSpinBox->setValue(settings.port());
     ui->usernameLineEdit->setText(settings.username());
     ui->apiTokenLineEdit->setText(settings.apiToken());
+    ui->notifyAboutFailedBuilds->setChecked(settings.notifyAboutFailedBuilds());
 }
 
 JenkinsSettings JenkinsSettingsWidget::settingsFromUi() const
@@ -30,6 +31,7 @@ JenkinsSettings JenkinsSettingsWidget::settingsFromUi() const
     settings.setPort(ui->portSpinBox->value());
     settings.setUsername(ui->usernameLineEdit->text());
     settings.setApiToken(ui->apiTokenLineEdit->text());
+    settings.setNotifyAboutFailedBuilds(ui->notifyAboutFailedBuilds->isChecked());
     return settings;
 }
 

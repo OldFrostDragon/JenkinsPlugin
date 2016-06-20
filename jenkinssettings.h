@@ -32,11 +32,16 @@ public:
     QString apiToken() const;
     void setApiToken(const QString &apiToken);
 
+    bool notifyAboutFailedBuilds() const;
+    void setNotifyAboutFailedBuilds(bool notifyAboutFailedBuilds);
+
 private:
     QString _jenkinsUrl{QStringLiteral("https://ci.jenkins-ci.org/view/Libraries/")};
     int _port;
     QString _username;
     QString _apiToken;
+
+    bool _notifyAboutFailedBuilds{true};
     //  QString _jenkinsUrl{QStringLiteral("http://jenkins.cyanogenmod.com")};
     //  QString _jenkinsUrl{QStringLiteral("http://dotnet-ci.cloudapp.net/view/Roslyn/")};
 };

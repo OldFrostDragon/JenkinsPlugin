@@ -58,8 +58,8 @@ void JenkinsJobsModel::updateAnimationRecursively(Utils::TreeItem *rootItem)
 
     if (castedItem->itemType() == JenkinsTreeItem::Type::Job)
     {
-            setData(castedItem->index(), castedItem->getNextOpacityValue(),
-                    static_cast< int >(JenkinsTreeItem::JobRoles::AnimationOpacity));
+        setData(castedItem->index(), castedItem->getNextOpacityValue(),
+                static_cast< int >(JenkinsTreeItem::JobRoles::AnimationOpacity));
     }
     else
     {
@@ -92,6 +92,11 @@ void JenkinsJobsModel::setOrUpdateJob(JenkinsJob job)
     {
         if (castedItems[i]->job().jobUrl() == job.jobUrl())
         {
+            JenkinsJob exitingJob = castedItems[i]->job();
+            if (exitingJob.buildStatus() != JenkinsJob::BuildStatus::Unknown
+                && job.buildStatus() == JenkinsJob::BuildStatus::Fail && !job.isRunning())
+                emit jobFailed(job);
+
             castedItems[i]->setJob(job);
             emit dataChanged(QAbstractItemModel::createIndex(i, 0, castedItems[i]->parent()),
                              QAbstractItemModel::createIndex(i, 0, castedItems[i]->parent()));

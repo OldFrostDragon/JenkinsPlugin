@@ -96,6 +96,16 @@
          </layout>
         </item>
         <item>
+         <widget class="QCheckBox" name="notifyAboutFailedBuilds">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If checked, error message will be added to &amp;quot;Issues&amp;quot; pane, when build is failed&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="text">
+           <string>notify about failed builds</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="verticalSpacer">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
