@@ -6,6 +6,7 @@
 
 #include <QTreeView>
 #include "jenkinsjobsmodel.h"
+#include "jenkinsviewcombobox.h"
 
 namespace JenkinsPlugin
 {
@@ -45,6 +46,7 @@ signals:
 
 public slots:
     void setJenkinsSettings(JenkinsSettings settings);
+    void updateViews(const QSet<ViewInfo> &views);
 
 private slots:
     void onCustomContextMenuRequested(const QPoint &point);
@@ -57,6 +59,7 @@ private:
     JenkinsSettings _settings;
     JenkinsTreeItemDelegate *_delegate;
     JenkinsJobsModel *_model;
+    JenkinsViewComboBox *_jenkinsViewComboBox;
 };
 }
 }

@@ -60,14 +60,21 @@ bool JenkinsPluginPlugin::initialize(const QStringList &arguments, QString *erro
 
     _fetcher = new JenkinsDataFetcher(_restRequestBuilder);
     addAutoReleasedObject(_fetcher);
+
+    _viewFetcher = new JenkinsViewFetcher(_restRequestBuilder);
+    addAutoReleasedObject(_viewFetcher);
+
     onSettingsChanged(_settings);
 
     connect(_fetcher, &JenkinsDataFetcher::jobsUpdated, this, &JenkinsPluginPlugin::updateJobs);
     connect(_fetcher, &JenkinsDataFetcher::jobUpdated, this, &JenkinsPluginPlugin::updateJob);
+
+    connect(_viewFetcher, &JenkinsViewFetcher::viewsFetched, _pane, &JenkinsPane::updateViews);
     connect(JenkinsJobsModel::instance(), &JenkinsJobsModel::jobFailed, this,
             &JenkinsPluginPlugin::addFailedJobMessageToIssues);
     createOptionsPage();
 
+    _viewFetcher->fetchViews();
     return true;
 }
 

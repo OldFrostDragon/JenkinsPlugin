@@ -20,7 +20,9 @@ SOURCES += \
     buildhistorymodel.cpp \
     jenkinsjob.cpp \
     buildinfo.cpp \
-    jenkinsplugin.cpp
+    jenkinsplugin.cpp \
+    jenkinsviewfetcher.cpp \
+    jenkinsviewcombobox.cpp
 
 HEADERS += \
         jenkinsplugin_global.h \
@@ -39,7 +41,9 @@ HEADERS += \
     buildhistorymodel.h \
     jenkinsjob.h \
     buildinfo.h \
-    jenkinsplugin.h
+    jenkinsplugin.h \
+    jenkinsviewfetcher.h \
+    jenkinsviewcombobox.h
 
 CONFIG += c++14
 # Qt Creator linking

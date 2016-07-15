@@ -26,11 +26,20 @@ JenkinsPane::JenkinsPane(QObject *parent) : Core::IOutputPane(parent)
             &JenkinsPane::onCustomContextMenuRequested);
     _delegate = new JenkinsTreeItemDelegate(this);
     _view->setItemDelegateForColumn(0, _delegate);
+
+    _jenkinsViewComboBox = new JenkinsViewComboBox(_settings);
 }
 
-JenkinsPane::~JenkinsPane() { delete _view; }
+JenkinsPane::~JenkinsPane()
+{
+    delete _view;
+    delete _jenkinsViewComboBox;
+}
 
-QList< QWidget * > JenkinsPane::toolBarWidgets() const { return QList< QWidget * >{}; }
+QList< QWidget * > JenkinsPane::toolBarWidgets() const
+{
+    return QList< QWidget * >{_jenkinsViewComboBox};
+}
 
 QString JenkinsPane::displayName() const { return tr("Jenkins"); }
 
@@ -53,6 +62,12 @@ bool JenkinsPane::canPrevious() const { return false; }
 void JenkinsPane::setJenkinsSettings(JenkinsSettings settings)
 {
     _settings = settings;
+    _jenkinsViewComboBox->setJenkinsSettings(_settings);
+}
+
+void JenkinsPane::updateViews(const QSet<ViewInfo> &views)
+{
+    _jenkinsViewComboBox->updateViews(views);
 }
 
 void JenkinsPane::onCustomContextMenuRequested(const QPoint &point)
@@ -67,14 +82,16 @@ void JenkinsPane::onCustomContextMenuRequested(const QPoint &point)
     QMenu *contextMenu = new QMenu(_view);
 
     QAction *openInBrowserEntry = new QAction(QObject::tr("open in browser"), contextMenu);
-    openInBrowserEntry->setIcon(QIcon(QLatin1String(JenkinsPlugin::Constants::OPEN_IN_BROWSER_ICON)));
+    openInBrowserEntry->setIcon(
+        QIcon(QLatin1String(JenkinsPlugin::Constants::OPEN_IN_BROWSER_ICON)));
     contextMenu->addAction(openInBrowserEntry);
     connect(openInBrowserEntry, &QAction::triggered, this, &JenkinsPane::openInBrowser);
 
     if (item->itemType() == JenkinsTreeItem::Type::Job)
     {
         QAction *buildHistoryEntry = new QAction(QObject::tr("show build history"), contextMenu);
-        buildHistoryEntry->setIcon(QIcon(QLatin1String(JenkinsPlugin::Constants::BUILD_HISTORY_ICON)));
+        buildHistoryEntry->setIcon(
+            QIcon(QLatin1String(JenkinsPlugin::Constants::BUILD_HISTORY_ICON)));
         contextMenu->addAction(buildHistoryEntry);
         connect(buildHistoryEntry, &QAction::triggered, this, &JenkinsPane::requestBuildHistory);
     }

@@ -10,6 +10,7 @@
 #include "jenkinspane.h"
 #include "restrequestbuilder.h"
 #include "jenkinsjob.h"
+#include "jenkinsviewfetcher.h"
 
 namespace JenkinsPlugin
 {
@@ -47,6 +48,7 @@ private:
     std::shared_ptr<RestRequestBuilder> _restRequestBuilder;
 
     JenkinsDataFetcher *_fetcher;
+    JenkinsViewFetcher *_viewFetcher;
     OptionsPage *_optionsPage;
     JenkinsSettings _settings;
     JenkinsPane *_pane;

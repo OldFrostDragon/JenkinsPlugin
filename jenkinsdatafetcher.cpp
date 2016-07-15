@@ -17,7 +17,7 @@ JenkinsDataFetcher::JenkinsDataFetcher(std::shared_ptr< RestRequestBuilder > res
 {
     _restRequestBuilder = restRequestBuilder;
     connect(_restRequestBuilder.get(), &RestRequestBuilder::settingsChanged, this,
-            &JenkinsDataFetcher::resetFetchProgress);
+            &JenkinsDataFetcher::forceRefetch);
 
     _manager = new QNetworkAccessManager(this);
     connect(_manager, &QNetworkAccessManager::finished, this, &JenkinsDataFetcher::readReply);
@@ -34,7 +34,7 @@ void JenkinsDataFetcher::getAvaliableJobs()
     _manager->get(request);
 }
 
-void JenkinsDataFetcher::resetFetchProgress()
+void JenkinsDataFetcher::forceRefetch()
 {
     // TODO: update for new host only?
     _jobsForDetalization.clear();
@@ -101,8 +101,8 @@ void JenkinsDataFetcher::switchToNextFetchStep()
     {
         case State::Ready:
         {
-            qDebug() << "transition:"
-                     << "Ready -> Fetching jobs";
+//            qDebug() << "transition:"
+//                     << "Ready -> Fetching jobs";
             _timer->stop();
             _state = State::FetchingJobs;
             getAvaliableJobs();
@@ -112,15 +112,15 @@ void JenkinsDataFetcher::switchToNextFetchStep()
         {
             if (_jobsForDetalization.isEmpty())
             {
-                qDebug() << "transition:"
-                         << "Fetching jobs -> Ready";
+//                qDebug() << "transition:"
+//                         << "Fetching jobs -> Ready";
                 _state = State::Ready;
                 _timer->start();
             }
             else
             {
-                qDebug() << "transition:"
-                         << "Fetching jobs -> Fetching details";
+//                qDebug() << "transition:"
+//                         << "Fetching jobs -> Fetching details";
                 _state = State::FetchingJobDetails;
                 sendDetailsRequestForFirstJob();
             }
@@ -133,16 +133,16 @@ void JenkinsDataFetcher::switchToNextFetchStep()
             {
                 if (_jobsForLastBuildDetalization.isEmpty())
                 {
-                    qDebug() << "transition:"
-                             << "Fetching details -> Ready";
+//                    qDebug() << "transition:"
+//                             << "Fetching details -> Ready";
                     _state = State::Ready;
                     _timer->start();
                 }
                 else
                 {
                     _state = State::FetchingLastBuild;
-                    qDebug() << "transition:"
-                             << "Fetching details -> FetchingLastBuild";
+//                    qDebug() << "transition:"
+//                             << "Fetching details -> FetchingLastBuild";
                     sendLastBuildInfoForFirstJob();
                 }
             }
@@ -154,8 +154,8 @@ void JenkinsDataFetcher::switchToNextFetchStep()
         {
             if (_jobsForLastBuildDetalization.isEmpty())
             {
-                qDebug() << "transition:"
-                         << "FetchingLastBuild -> Ready";
+//                qDebug() << "transition:"
+//                         << "FetchingLastBuild -> Ready";
                 _state = State::Ready;
                 _timer->start();
             }

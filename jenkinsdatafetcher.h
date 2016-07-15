@@ -32,9 +32,9 @@ signals:
     void jobUpdated(JenkinsJob);
 
 public slots:
+    void forceRefetch();
 
 private slots:
-    void resetFetchProgress();
 
     void readReply(QNetworkReply *reply);
     void switchToNextFetchStep();
