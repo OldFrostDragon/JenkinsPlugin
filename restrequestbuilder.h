@@ -19,7 +19,7 @@ public:
     static QString lastBuildUrlToJobUrl(QString buildUrl);
 
     QNetworkRequest buildRequest(const QString urlString) const;
-    QNetworkRequest buildAvaliableJobsRequest() const;
+    QNetworkRequest buildAvaliableJobsRequest(QUrl viewUrl) const;
     QNetworkRequest buildBuildInfoRequest(const QString url) const;
     QNetworkRequest buildLastBuildInfoRequest(const QString &jobUrl) const;
 

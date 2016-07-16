@@ -21,10 +21,12 @@ public:
     static JenkinsJobsModel* instance();
     void updateHeader();
 
-    JenkinsSettings jenkinsSettings() const;
-    void setJenkinsSettings(const JenkinsSettings &jenkinsSettings);
+    void resetModel(const QString &jenkinsUrlString);
+
+    void resetJobs(QList<JenkinsJob> newJobs);
     void setJenkinsJobs(QList<JenkinsJob> jobs);
     void setOrUpdateJob(JenkinsJob job);
+
     virtual int columnCount(const QModelIndex &) const override {return 3;}
 
 signals:
@@ -33,13 +35,12 @@ signals:
 
 private:
     explicit JenkinsJobsModel(QObject *parent = 0);
-    void resetJobs(QList<JenkinsJob> newJobs);
     void updateAnimationRecursively(Utils::TreeItem *rootItem);
 
     JenkinsTreeItem *_rootItem;
 
     //static JenkinsJobsModel *_instance;
-    JenkinsSettings _jenkinsSettings;
+    QString _jenkinsUrlString;
     QTimer *_animationTimer{nullptr};
 };
 

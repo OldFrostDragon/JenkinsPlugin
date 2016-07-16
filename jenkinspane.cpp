@@ -28,6 +28,16 @@ JenkinsPane::JenkinsPane(QObject *parent) : Core::IOutputPane(parent)
     _view->setItemDelegateForColumn(0, _delegate);
 
     _jenkinsViewComboBox = new JenkinsViewComboBox(_settings);
+    connect(_jenkinsViewComboBox, &JenkinsViewComboBox::jobResetRequired, this, [=]()
+            {
+                _model->resetJobs({});
+            });
+
+    connect(_jenkinsViewComboBox,
+            static_cast< void (QComboBox::*)(int) >(&QComboBox::currentIndexChanged), [=](int)
+            {
+                emit currentViewChanged();
+            });
 }
 
 JenkinsPane::~JenkinsPane()
@@ -59,13 +69,18 @@ bool JenkinsPane::canNext() const { return false; }
 
 bool JenkinsPane::canPrevious() const { return false; }
 
+ViewInfo JenkinsPane::getSelectedOrDefaultView() const
+{
+    return _jenkinsViewComboBox->getSelectedOrDefaultView();
+}
+
 void JenkinsPane::setJenkinsSettings(JenkinsSettings settings)
 {
     _settings = settings;
     _jenkinsViewComboBox->setJenkinsSettings(_settings);
 }
 
-void JenkinsPane::updateViews(const QSet<ViewInfo> &views)
+void JenkinsPane::updateViews(const QSet< ViewInfo > &views)
 {
     _jenkinsViewComboBox->updateViews(views);
 }

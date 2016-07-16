@@ -16,8 +16,8 @@ JenkinsJobsModel *JenkinsJobsModel::instance()
 
 void JenkinsJobsModel::updateHeader()
 {
-    _rootItem->setName(QString(QStringLiteral("Jenkins [%1]")).arg(_jenkinsSettings.jenkinsUrl()));
-    _rootItem->setItemUrl(_jenkinsSettings.jenkinsUrl());
+    _rootItem->setName(QString(QStringLiteral("Jenkins [%1]")).arg(_jenkinsUrlString));
+    _rootItem->setItemUrl(_jenkinsUrlString);
     emit dataChanged(QAbstractItemModel::createIndex(0, 0, _rootItem->parent()),
                      QAbstractItemModel::createIndex(0, 2, _rootItem->parent()),
                      QVector< int >() << Qt::DisplayRole);
@@ -71,11 +71,9 @@ void JenkinsJobsModel::updateAnimationRecursively(Utils::TreeItem *rootItem)
     }
 }
 
-JenkinsSettings JenkinsJobsModel::jenkinsSettings() const { return _jenkinsSettings; }
-
-void JenkinsJobsModel::setJenkinsSettings(const JenkinsSettings &jenkinsSettings)
+void JenkinsJobsModel::resetModel(const QString &jenkinsUrlString)
 {
-    _jenkinsSettings = jenkinsSettings;
+    _jenkinsUrlString = jenkinsUrlString;
     resetJobs(QList< JenkinsJob >{});
     updateHeader();
 }

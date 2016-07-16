@@ -11,6 +11,7 @@
 #include "restrequestbuilder.h"
 #include "jenkinsjob.h"
 #include "jenkinsviewfetcher.h"
+#include "fetchingtimeoutmanager.h"
 
 namespace JenkinsPlugin
 {
@@ -52,7 +53,7 @@ private:
     OptionsPage *_optionsPage;
     JenkinsSettings _settings;
     JenkinsPane *_pane;
-
+    FetchingTimeoutManager *_fetchTimeoutManager;
     //key - job name
     QMap<QString, JenkinsJob::BuildUrl> _alreadyReportedFailures;
 };

@@ -22,7 +22,8 @@ SOURCES += \
     buildinfo.cpp \
     jenkinsplugin.cpp \
     jenkinsviewfetcher.cpp \
-    jenkinsviewcombobox.cpp
+    jenkinsviewcombobox.cpp \
+    fetchingtimeoutmanager.cpp
 
 HEADERS += \
         jenkinsplugin_global.h \
@@ -43,7 +44,8 @@ HEADERS += \
     buildinfo.h \
     jenkinsplugin.h \
     jenkinsviewfetcher.h \
-    jenkinsviewcombobox.h
+    jenkinsviewcombobox.h \
+    fetchingtimeoutmanager.h
 
 CONFIG += c++14
 # Qt Creator linking

@@ -23,22 +23,18 @@ public:
     explicit JenkinsDataFetcher(std::shared_ptr< RestRequestBuilder > restRequestBuilder,
                                 QObject *parent = 0);
 
-    void getAvaliableJobs();
 
-    void readIsQueuedFlagFor(QJsonObject &jsonObject, JenkinsJob &job);
 
 signals:
-    void jobsUpdated(QList< JenkinsJob >);
     void jobUpdated(JenkinsJob);
 
 public slots:
-    void forceRefetch();
+    void forceRefetch(QUrl viewUrl);
+    void fetchJobs(QUrl viewUrl);
 
 private slots:
-
     void readReply(QNetworkReply *reply);
     void switchToNextFetchStep();
-    //    void authentificateUser();
 
 private:
     enum class State
@@ -62,14 +58,16 @@ private:
     void readBuildsListFor(JenkinsJob &job, QJsonObject &jsonObject);
     void readBuildableFlagFor(JenkinsJob &job, QJsonObject &jsonObject);
 
+    void readIsQueuedFlagFor(QJsonObject &jsonObject, JenkinsJob &job);
+    void getAvaliableJobs();
+
     QList< JenkinsJob > _jobsForDetalization;
     QList<JenkinsJob> _jobsForLastBuildDetalization;
 
     QNetworkAccessManager *_manager;
     State _state{State::Ready};
-    QTimer *_timer;
     std::shared_ptr< RestRequestBuilder > _restRequestBuilder;
-
+    QUrl _viewUrl;
 };
 }
 }

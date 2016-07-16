@@ -41,8 +41,10 @@ public:
     void goToNext() {}
     void goToPrev() {}
 
+    ViewInfo getSelectedOrDefaultView() const;
 signals:
     void buildHistoryRequested(const JenkinsJob job);
+    void currentViewChanged();
 
 public slots:
     void setJenkinsSettings(JenkinsSettings settings);

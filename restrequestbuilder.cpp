@@ -60,9 +60,9 @@ QNetworkRequest RestRequestBuilder::buildRequest(const QString urlString) const
     return request;
 }
 
-QNetworkRequest RestRequestBuilder::buildAvaliableJobsRequest() const
+QNetworkRequest RestRequestBuilder::buildAvaliableJobsRequest(QUrl viewUrl) const
 {
-    QNetworkRequest request = buildRequest(urlToRestApiUrl(_jenkinsSettings.jenkinsUrl()));
+    QNetworkRequest request = buildRequest(urlToRestApiUrl(viewUrl.url()));
     return request;
 }
 

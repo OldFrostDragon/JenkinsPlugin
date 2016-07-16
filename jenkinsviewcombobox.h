@@ -12,6 +12,7 @@ namespace Internal
 {
 class JenkinsViewComboBox : public QComboBox
 {
+    Q_OBJECT
 public:
     JenkinsViewComboBox(JenkinsSettings settings, QWidget *parent = nullptr);
 
@@ -19,6 +20,9 @@ public:
 
     ViewInfo getSelectedOrDefaultView() const;
     void setJenkinsSettings(const JenkinsSettings &settings);
+
+signals:
+    void jobResetRequired();
 
 private:
     QList< ViewInfo > _jenkinsViews;

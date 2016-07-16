@@ -5,6 +5,10 @@ using namespace JenkinsPlugin::Internal;
 JenkinsViewComboBox::JenkinsViewComboBox(JenkinsSettings settings, QWidget *parent)
     : QComboBox(parent), _settings(settings)
 {
+    connect(this, static_cast< void (QComboBox::*)(int) >(&QComboBox::currentIndexChanged), [=](int)
+            {
+                emit jobResetRequired();
+            });
 }
 
 void JenkinsViewComboBox::updateViews(const QSet< ViewInfo > &jenkinsViews)
@@ -20,7 +24,7 @@ void JenkinsViewComboBox::updateViews(const QSet< ViewInfo > &jenkinsViews)
                   return first.name < second.name;
               });
 
-    int newIndexOfExitingView = 0;
+    int newIndexOfExitingView = -1;
 
     bool wasBlocked = blockSignals(true);
     clear();
@@ -30,24 +34,48 @@ void JenkinsViewComboBox::updateViews(const QSet< ViewInfo > &jenkinsViews)
             newIndexOfExitingView = i;
         addItem(_jenkinsViews[i].name);
     }
-    setCurrentIndex(newIndexOfExitingView);
+
+    // do not force job update only if view is present and do not changed
+    bool isJobUpdateRequired = !(newIndexOfExitingView >= 0 && currentViewIndex >= 0);
+    if (newIndexOfExitingView != -1)
+    {
+        setCurrentIndex(newIndexOfExitingView);
+    }
+    else
+    {
+        newIndexOfExitingView = 0;
+        setCurrentIndex(newIndexOfExitingView);
+    }
     blockSignals(wasBlocked);
+    if (isJobUpdateRequired)
+    {
+        qDebug() << "job reset requested";
+        emit jobResetRequired();
+    }
+    else
+        qDebug() << "job reset was not requested";
 }
 
 ViewInfo JenkinsViewComboBox::getSelectedOrDefaultView() const
 {
+    qDebug() << "try to get current view";
     ViewInfo currentView;
-    if(currentIndex() == -1)
+    if (currentIndex() == -1)
     {
         currentView.name = QStringLiteral("root");
         currentView.url = QUrl(_settings.jenkinsUrl());
+        qDebug() << "    default view";
     }
     else
+    {
         currentView = _jenkinsViews.at(currentIndex());
-    return  currentView;
+        qDebug() << "    last used view";
+    }
+    return currentView;
 }
 
 void JenkinsViewComboBox::setJenkinsSettings(const JenkinsSettings &settings)
 {
     _settings = settings;
+    clear();
 }

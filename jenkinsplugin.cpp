@@ -58,23 +58,47 @@ bool JenkinsPluginPlugin::initialize(const QStringList &arguments, QString *erro
 
     _restRequestBuilder = std::make_shared< RestRequestBuilder >(_settings);
 
+    _fetchTimeoutManager = new FetchingTimeoutManager();
+    addAutoReleasedObject(_fetchTimeoutManager);
+
     _fetcher = new JenkinsDataFetcher(_restRequestBuilder);
     addAutoReleasedObject(_fetcher);
 
     _viewFetcher = new JenkinsViewFetcher(_restRequestBuilder);
     addAutoReleasedObject(_viewFetcher);
 
-    onSettingsChanged(_settings);
+    //    onSettingsChanged(_settings);
 
-    connect(_fetcher, &JenkinsDataFetcher::jobsUpdated, this, &JenkinsPluginPlugin::updateJobs);
+    _alreadyReportedFailures.clear();
+    JenkinsJobsModel::instance()->resetModel(_settings.jenkinsUrl());
+    _pane->setJenkinsSettings(_settings);
+
+    connect(_fetchTimeoutManager, &FetchingTimeoutManager::viewUpdateRequested, _viewFetcher,
+            &JenkinsViewFetcher::fetchViews);
+    connect(_fetchTimeoutManager, &FetchingTimeoutManager::jobDataUpdateRequested, this, [=]()
+            {
+                qDebug() << "fetch jobs for" << _pane->getSelectedOrDefaultView().url;
+                _fetcher->fetchJobs(_pane->getSelectedOrDefaultView().url);
+            });
+
     connect(_fetcher, &JenkinsDataFetcher::jobUpdated, this, &JenkinsPluginPlugin::updateJob);
+    connect(_viewFetcher, &JenkinsViewFetcher::viewsFetched, this, [=](QSet< ViewInfo > info)
+            {
+                _pane->updateViews(info);
+                _fetchTimeoutManager->setIsViewsFetched(!info.isEmpty());
+            });
 
-    connect(_viewFetcher, &JenkinsViewFetcher::viewsFetched, _pane, &JenkinsPane::updateViews);
+    connect(_pane, &JenkinsPane::currentViewChanged, this, [=]()
+            {
+                qDebug() << "force jobs update for" << _pane->getSelectedOrDefaultView().url;
+                _fetcher->forceRefetch(_pane->getSelectedOrDefaultView().url);
+            });
+
     connect(JenkinsJobsModel::instance(), &JenkinsJobsModel::jobFailed, this,
             &JenkinsPluginPlugin::addFailedJobMessageToIssues);
     createOptionsPage();
 
-    _viewFetcher->fetchViews();
+    _fetchTimeoutManager->startTimer();
     return true;
 }
 
@@ -109,9 +133,12 @@ void JenkinsPluginPlugin::onSettingsChanged(const JenkinsSettings &settings)
     _settings.save(Core::ICore::settings());
 
     _alreadyReportedFailures.clear();
-    JenkinsJobsModel::instance()->setJenkinsSettings(settings);
+    JenkinsJobsModel::instance()->resetModel(settings.jenkinsUrl());
     _restRequestBuilder->setJenkinsSettings(settings);
     _pane->setJenkinsSettings(_settings);
+    _fetchTimeoutManager->setIsViewsFetched(false);
+    _pane->updateViews({}); // reset all views
+    _fetchTimeoutManager->triggerFetching();
 }
 
 void JenkinsPluginPlugin::showJobHistoryDialog(JenkinsJob job)
@@ -123,7 +150,7 @@ void JenkinsPluginPlugin::showJobHistoryDialog(JenkinsJob job)
 
 void JenkinsPluginPlugin::addFailedJobMessageToIssues(const JenkinsJob job)
 {
-    if(!_settings.notifyAboutFailedBuilds())
+    if (!_settings.notifyAboutFailedBuilds())
         return;
     JenkinsJob::BuildUrl lastBuildUrl = job.getLastBuildUrl();
     if (_alreadyReportedFailures.contains(job.name()))
