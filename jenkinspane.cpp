@@ -28,6 +28,7 @@ JenkinsPane::JenkinsPane(const std::shared_ptr< RestRequestBuilder > builder, QO
     _delegate = new JenkinsTreeItemDelegate(this);
     _view->setItemDelegateForColumn(0, _delegate);
 
+    _viewLabel = new QLabel(tr("View: "));
     _jenkinsViewComboBox = new JenkinsViewComboBox();
     connect(_jenkinsViewComboBox, &JenkinsViewComboBox::currentViewChanged, this, [=]()
             {
@@ -44,12 +45,13 @@ JenkinsPane::JenkinsPane(const std::shared_ptr< RestRequestBuilder > builder, QO
 JenkinsPane::~JenkinsPane()
 {
     delete _view;
+    delete _viewLabel;
     delete _jenkinsViewComboBox;
 }
 
 QList< QWidget * > JenkinsPane::toolBarWidgets() const
 {
-    return QList< QWidget * >{_jenkinsViewComboBox};
+    return QList< QWidget * >{_viewLabel, _jenkinsViewComboBox};
 }
 
 QString JenkinsPane::displayName() const { return tr("Jenkins"); }
@@ -93,7 +95,7 @@ void JenkinsPane::onCustomContextMenuRequested(const QPoint &point)
 
     QMenu *contextMenu = new QMenu(_view);
 
-    QAction *openInBrowserEntry = new QAction(QObject::tr("open in browser"), contextMenu);
+    QAction *openInBrowserEntry = new QAction(tr("open in browser"), contextMenu);
     openInBrowserEntry->setIcon(
         QIcon(QLatin1String(JenkinsPlugin::Constants::OPEN_IN_BROWSER_ICON)));
     contextMenu->addAction(openInBrowserEntry);
@@ -101,7 +103,7 @@ void JenkinsPane::onCustomContextMenuRequested(const QPoint &point)
 
     if (item->itemType() == JenkinsTreeItem::Type::Job)
     {
-        QAction *buildHistoryEntry = new QAction(QObject::tr("show build history"), contextMenu);
+        QAction *buildHistoryEntry = new QAction(tr("show build history"), contextMenu);
         buildHistoryEntry->setIcon(
             QIcon(QLatin1String(JenkinsPlugin::Constants::BUILD_HISTORY_ICON)));
         contextMenu->addAction(buildHistoryEntry);

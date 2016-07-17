@@ -5,6 +5,8 @@
 #include <utils/outputformat.h>
 
 #include <QTreeView>
+#include <QLabel>
+
 #include "jenkinsjobsmodel.h"
 #include "jenkinsviewcombobox.h"
 #include "restrequestbuilder.h"
@@ -61,6 +63,7 @@ private:
     QModelIndex _contextMenuIndex;
     JenkinsTreeItemDelegate *_delegate;
     JenkinsJobsModel *_model;
+    QLabel *_viewLabel;
     JenkinsViewComboBox *_jenkinsViewComboBox;
 
     std::shared_ptr<RestRequestBuilder> _restRequestBuilder;
