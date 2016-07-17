@@ -15,8 +15,6 @@
 
 #include <QtPlugin>
 
-#include <QDebug>
-
 #include "jenkinsjobsmodel.h"
 #include "buildhistorydialog.h"
 

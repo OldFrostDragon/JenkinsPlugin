@@ -18,15 +18,18 @@ JenkinsPane::JenkinsPane(const std::shared_ptr< RestRequestBuilder > builder, QO
     _model = JenkinsJobsModel::instance();
     _view->setModel(_model);
 
-    _view->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-    _view->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
-    _view->header()->setSectionResizeMode(2, QHeaderView::Stretch);
-
+    _view->header()->setStretchLastSection(true);
     _view->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(_view, &QTreeView::customContextMenuRequested, this,
-            &JenkinsPane::onCustomContextMenuRequested);
     _delegate = new JenkinsTreeItemDelegate(this);
     _view->setItemDelegateForColumn(0, _delegate);
+
+    connect(_view, &QTreeView::customContextMenuRequested, this,
+            &JenkinsPane::onCustomContextMenuRequested);
+    connect(_model, &JenkinsJobsModel::rootItemUpdated, [=](){
+        QFontMetrics metrics(_view->font());
+        int width = metrics.width(_model->getRootItemContent());
+        _view->header()->resizeSection(0, width);
+    });
 
     _viewLabel = new QLabel(tr("View: "));
     _jenkinsViewComboBox = new JenkinsViewComboBox();

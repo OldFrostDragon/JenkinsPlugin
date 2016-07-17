@@ -21,6 +21,7 @@ void JenkinsJobsModel::updateHeader()
     emit dataChanged(QAbstractItemModel::createIndex(0, 0, _rootItem->parent()),
                      QAbstractItemModel::createIndex(0, 2, _rootItem->parent()),
                      QVector< int >() << Qt::DisplayRole);
+    emit rootItemUpdated();
 }
 
 JenkinsJobsModel::JenkinsJobsModel(QObject *parent)

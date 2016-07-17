@@ -29,8 +29,9 @@ public:
 
     virtual int columnCount(const QModelIndex &) const override {return 3;}
 
+    QString getRootItemContent() const {return  _rootItem->name();}
 signals:
-    void animationRepaintRequested();
+    void rootItemUpdated();
     void jobFailed(const JenkinsJob job);
 
 private:
