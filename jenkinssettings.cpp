@@ -18,6 +18,8 @@ void JenkinsSettings::save(QSettings *settings) const
     settings->setValue(QLatin1String(JenkinsPlugin::Constants::API_TOKEN), _apiToken);
     settings->setValue(QLatin1String(JenkinsPlugin::Constants::NOTIFY_ABOUT_FAILED_BUILD),
                        _notifyAboutFailedBuilds);
+    settings->setValue(QLatin1String(JenkinsPlugin::Constants::SELECTED_VIEW_URL),
+                       _selectedViewUrl);
     settings->endGroup();
 }
 
@@ -32,6 +34,9 @@ void JenkinsSettings::load(QSettings *settings)
     _notifyAboutFailedBuilds
         = settings->value(QLatin1String(JenkinsPlugin::Constants::NOTIFY_ABOUT_FAILED_BUILD), true)
               .toBool();
+    _selectedViewUrl
+        = settings->value(QLatin1String(JenkinsPlugin::Constants::SELECTED_VIEW_URL), _jenkinsUrl)
+              .toString();
     settings->endGroup();
 }
 
@@ -47,7 +52,8 @@ bool JenkinsSettings::equals(const JenkinsSettings &other) const
 {
     return _jenkinsUrl == other._jenkinsUrl && _port == other._port && _username == other._username
            && _apiToken == other._apiToken
-           && _notifyAboutFailedBuilds == other._notifyAboutFailedBuilds;
+           && _notifyAboutFailedBuilds == other._notifyAboutFailedBuilds
+           && _selectedViewUrl == other._selectedViewUrl;
 }
 
 void JenkinsSettings::setDefaults()
@@ -57,6 +63,7 @@ void JenkinsSettings::setDefaults()
     _username.clear();
     _apiToken.clear();
     _notifyAboutFailedBuilds = true;
+    _selectedViewUrl.clear();
 }
 
 QString JenkinsSettings::apiToken() const { return _apiToken; }
@@ -68,6 +75,19 @@ bool JenkinsSettings::notifyAboutFailedBuilds() const { return _notifyAboutFaile
 void JenkinsSettings::setNotifyAboutFailedBuilds(bool notifyAboutFailedBuilds)
 {
     _notifyAboutFailedBuilds = notifyAboutFailedBuilds;
+}
+
+QString JenkinsSettings::selectedViewUrl() const { return _selectedViewUrl; }
+
+void JenkinsSettings::setSelectedViewUrl(const QString &selectedViewUrl)
+{
+    _selectedViewUrl = selectedViewUrl;
+}
+
+bool JenkinsSettings::isServerSettingsDiffers(const JenkinsSettings &other) const
+{
+    return _jenkinsUrl != other._jenkinsUrl || _port != other._port || _username != other._username
+           || _apiToken != other._apiToken;
 }
 
 bool operator==(const JenkinsPlugin::Internal::JenkinsSettings &first,

@@ -35,13 +35,19 @@ public:
     bool notifyAboutFailedBuilds() const;
     void setNotifyAboutFailedBuilds(bool notifyAboutFailedBuilds);
 
+    QString selectedViewUrl() const;
+    void setSelectedViewUrl(const QString &selectedViewUrl);
+
+
+    bool isServerSettingsDiffers(const JenkinsSettings &other) const;
+
 private:
     QString _jenkinsUrl{QStringLiteral("https://ci.jenkins-ci.org/view/Libraries/")};
     int _port;
     QString _username;
     QString _apiToken;
-
     bool _notifyAboutFailedBuilds{true};
+    QString _selectedViewUrl;
     //  QString _jenkinsUrl{QStringLiteral("http://jenkins.cyanogenmod.com")};
     //  QString _jenkinsUrl{QStringLiteral("http://dotnet-ci.cloudapp.net/view/Roslyn/")};
 };

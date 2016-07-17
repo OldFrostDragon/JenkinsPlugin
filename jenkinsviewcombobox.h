@@ -22,7 +22,7 @@ public:
     void clearViews();
 
 signals:
-    void jobResetRequired();
+    void currentViewChanged();
 
 private:
     QList< ViewInfo > _jenkinsViews;

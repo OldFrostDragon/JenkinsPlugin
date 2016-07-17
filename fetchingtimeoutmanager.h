@@ -12,17 +12,25 @@ namespace Internal
 class FetchingTimeoutManager : public QObject
 {
     Q_OBJECT
+
 public:
+    enum class FetchType
+    {
+        NormalJobFetching,
+        ForcedJobFetching
+    };
+
     explicit FetchingTimeoutManager(QObject *parent = 0);
 
     bool isViewsFetched() const;
     void setIsViewsFetched(bool isViewsFetched);
 
-    void triggerFetching();
+    void triggerFetching(FetchType fetchType);
 
 signals:
     void viewUpdateRequested();
     void jobDataUpdateRequested();
+    void jobForcedUpdateRequested();
 
 public slots:
     void startTimer();
@@ -33,6 +41,7 @@ private slots:
 private:
     QTimer *_timer;
     bool _isViewsFetched{false};
+    bool _forcedJobUpdateRequested{false};
 };
 }
 }

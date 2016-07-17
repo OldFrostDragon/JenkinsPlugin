@@ -58,7 +58,6 @@ bool JenkinsPluginPlugin::initialize(const QStringList &arguments, QString *erro
     connect(_pane, &JenkinsPane::buildHistoryRequested, this,
             &JenkinsPluginPlugin::showJobHistoryDialog);
 
-
     _fetchTimeoutManager = new FetchingTimeoutManager();
     addAutoReleasedObject(_fetchTimeoutManager);
 
@@ -81,6 +80,12 @@ bool JenkinsPluginPlugin::initialize(const QStringList &arguments, QString *erro
                     _pane->getSelectedView().url.toString());
                 _fetcher->fetchJobs(currentViewUrl);
             });
+    connect(_fetchTimeoutManager, &FetchingTimeoutManager::jobForcedUpdateRequested, this, [=]()
+            {
+                QUrl currentViewUrl = _restRequestBuilder->buildThisOrDefaultViewUrl(
+                    _pane->getSelectedView().url.toString());
+                _fetcher->forceRefetch(currentViewUrl);
+            });
 
     connect(_fetcher, &JenkinsDataFetcher::jobUpdated, this, &JenkinsPluginPlugin::updateJob);
     connect(_viewFetcher, &JenkinsViewFetcher::viewsFetched, this, [=](QSet< ViewInfo > info)
@@ -93,7 +98,10 @@ bool JenkinsPluginPlugin::initialize(const QStringList &arguments, QString *erro
             {
                 QUrl currentViewUrl = _restRequestBuilder->buildThisOrDefaultViewUrl(
                     _pane->getSelectedView().url.toString());
-                _fetcher->forceRefetch(currentViewUrl);
+                QUrl settingsUrl = currentViewUrl;
+                settingsUrl.setPort(-1);
+                _settings.setSelectedViewUrl(settingsUrl.toString());
+                onSettingsChanged(_settings);
             });
 
     connect(JenkinsJobsModel::instance(), &JenkinsJobsModel::jobFailed, this,
@@ -131,15 +139,18 @@ void JenkinsPluginPlugin::updateJob(JenkinsJob job)
 
 void JenkinsPluginPlugin::onSettingsChanged(const JenkinsSettings &settings)
 {
-    _settings = settings;
-    _settings.save(Core::ICore::settings());
+    settings.save(Core::ICore::settings());
 
     _alreadyReportedFailures.clear();
     JenkinsJobsModel::instance()->resetModel(settings.jenkinsUrl());
     _restRequestBuilder->setJenkinsSettings(settings);
     _fetchTimeoutManager->setIsViewsFetched(false);
-    _pane->clearViews();
-    _fetchTimeoutManager->triggerFetching();
+    // reset view list only when user update jenkins server settings in options
+    if (_settings.isServerSettingsDiffers(settings))
+        _pane->clearViews();
+    _fetchTimeoutManager->triggerFetching(FetchingTimeoutManager::FetchType::ForcedJobFetching);
+
+    _settings = settings;
 }
 
 void JenkinsPluginPlugin::showJobHistoryDialog(JenkinsJob job)

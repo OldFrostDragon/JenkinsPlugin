@@ -29,7 +29,7 @@ JenkinsPane::JenkinsPane(const std::shared_ptr< RestRequestBuilder > builder, QO
     _view->setItemDelegateForColumn(0, _delegate);
 
     _jenkinsViewComboBox = new JenkinsViewComboBox();
-    connect(_jenkinsViewComboBox, &JenkinsViewComboBox::jobResetRequired, this, [=]()
+    connect(_jenkinsViewComboBox, &JenkinsViewComboBox::currentViewChanged, this, [=]()
             {
                 _model->resetJobs({});
             });

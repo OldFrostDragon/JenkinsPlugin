@@ -13,21 +13,31 @@ void FetchingTimeoutManager::processTimeout()
 {
     emit viewUpdateRequested();
     if (_isViewsFetched)
-        emit jobDataUpdateRequested();
+    {
+        if (_forcedJobUpdateRequested)
+        {
+            _forcedJobUpdateRequested = false;
+            emit jobForcedUpdateRequested();
+        }
+        else
+            emit jobDataUpdateRequested();
+    }
 }
 
 bool FetchingTimeoutManager::isViewsFetched() const { return _isViewsFetched; }
 
 void FetchingTimeoutManager::setIsViewsFetched(bool isViewsFetched)
 {
-    if(!_isViewsFetched && isViewsFetched)
+    if (!_isViewsFetched && isViewsFetched)
         emit jobDataUpdateRequested();
     _isViewsFetched = isViewsFetched;
 }
 
-void FetchingTimeoutManager::triggerFetching()
+void FetchingTimeoutManager::triggerFetching(FetchType fetchType)
 {
     _timer->stop();
+    if (fetchType == FetchType::ForcedJobFetching)
+        _forcedJobUpdateRequested = true;
     processTimeout();
     _timer->start();
 }

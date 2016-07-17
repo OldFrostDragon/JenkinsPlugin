@@ -7,7 +7,7 @@ JenkinsViewComboBox::JenkinsViewComboBox(QWidget *parent)
 {
     connect(this, static_cast< void (QComboBox::*)(int) >(&QComboBox::currentIndexChanged), [=](int)
             {
-                emit jobResetRequired();
+                emit currentViewChanged();
             });
 }
 
@@ -48,7 +48,7 @@ void JenkinsViewComboBox::updateViews(const QSet< ViewInfo > &jenkinsViews)
     }
     blockSignals(wasBlocked);
     if (isJobUpdateRequired)
-        emit jobResetRequired();
+        emit currentViewChanged();
 }
 
 ViewInfo JenkinsViewComboBox::getSelectedView() const
@@ -63,5 +63,5 @@ void JenkinsViewComboBox::clearViews()
 {
     clear();
     _jenkinsViews.clear();
-    emit jobResetRequired();
+    emit currentViewChanged();
 }
