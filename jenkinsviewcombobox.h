@@ -14,7 +14,7 @@ class JenkinsViewComboBox : public QComboBox
 {
     Q_OBJECT
 public:
-    JenkinsViewComboBox(QWidget *parent = nullptr);
+    JenkinsViewComboBox(QString lastUsedViewUrl, QWidget *parent = nullptr);
 
     void updateViews(const QSet< ViewInfo > &jenkinsViews);
 
@@ -26,6 +26,7 @@ signals:
 
 private:
     QList< ViewInfo > _jenkinsViews;
+    ViewInfo _lastUsedInfo;
 };
 }
 }

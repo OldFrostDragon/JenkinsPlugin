@@ -32,7 +32,7 @@ JenkinsPane::JenkinsPane(const std::shared_ptr< RestRequestBuilder > builder, QO
     });
 
     _viewLabel = new QLabel(tr("View: "));
-    _jenkinsViewComboBox = new JenkinsViewComboBox();
+    _jenkinsViewComboBox = new JenkinsViewComboBox(builder->jenkinsSettings().selectedViewUrl());
     connect(_jenkinsViewComboBox, &JenkinsViewComboBox::currentViewChanged, this, [=]()
             {
                 _model->resetJobs({});

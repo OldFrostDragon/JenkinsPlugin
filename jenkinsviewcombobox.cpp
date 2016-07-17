@@ -2,9 +2,10 @@
 
 using namespace JenkinsPlugin::Internal;
 
-JenkinsViewComboBox::JenkinsViewComboBox(QWidget *parent)
+JenkinsViewComboBox::JenkinsViewComboBox(QString lastUsedViewUrl, QWidget *parent)
     : QComboBox(parent)
 {
+    _lastUsedInfo.url = lastUsedViewUrl;
     connect(this, static_cast< void (QComboBox::*)(int) >(&QComboBox::currentIndexChanged), [=](int)
             {
                 emit currentViewChanged();
@@ -17,6 +18,9 @@ void JenkinsViewComboBox::updateViews(const QSet< ViewInfo > &jenkinsViews)
     ViewInfo selectedInfo;
     if (currentViewIndex >= 0)
         selectedInfo = _jenkinsViews.at(currentViewIndex);
+    else
+        selectedInfo = _lastUsedInfo;
+
     _jenkinsViews = jenkinsViews.toList();
     std::sort(_jenkinsViews.begin(), _jenkinsViews.end(),
               [](const ViewInfo first, const ViewInfo second)
@@ -46,6 +50,9 @@ void JenkinsViewComboBox::updateViews(const QSet< ViewInfo > &jenkinsViews)
         newIndexOfExitingView = 0;
         setCurrentIndex(newIndexOfExitingView);
     }
+    if(newIndexOfExitingView < _jenkinsViews.size())
+        _lastUsedInfo = _jenkinsViews[newIndexOfExitingView];
+
     blockSignals(wasBlocked);
     if (isJobUpdateRequired)
         emit currentViewChanged();
