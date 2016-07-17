@@ -78,11 +78,11 @@ QVariant BuildHistoryModel::headerData(int section, Qt::Orientation orientation,
         if (section == Number)
             return QString(QStringLiteral("#"));
         else if (section == BuildName)
-            return QObject::tr("Name");
+            return tr("Name");
         else if (section == Timestamp)
-            return QObject::tr("Time");
+            return tr("Time");
         else if (section == Duration)
-            return QObject::tr("Duration");
+            return tr("Duration");
         else
             return QVariant();
     }
