@@ -51,12 +51,13 @@ bool JenkinsPluginPlugin::initialize(const QStringList &arguments, QString *erro
     Q_UNUSED(arguments)
     Q_UNUSED(errorString)
 
-    _pane = new JenkinsPane();
+    _restRequestBuilder = std::make_shared< RestRequestBuilder >(_settings);
+
+    _pane = new JenkinsPane(_restRequestBuilder);
     addAutoReleasedObject(_pane);
     connect(_pane, &JenkinsPane::buildHistoryRequested, this,
             &JenkinsPluginPlugin::showJobHistoryDialog);
 
-    _restRequestBuilder = std::make_shared< RestRequestBuilder >(_settings);
 
     _fetchTimeoutManager = new FetchingTimeoutManager();
     addAutoReleasedObject(_fetchTimeoutManager);
@@ -71,14 +72,14 @@ bool JenkinsPluginPlugin::initialize(const QStringList &arguments, QString *erro
 
     _alreadyReportedFailures.clear();
     JenkinsJobsModel::instance()->resetModel(_settings.jenkinsUrl());
-    _pane->setJenkinsSettings(_settings);
 
     connect(_fetchTimeoutManager, &FetchingTimeoutManager::viewUpdateRequested, _viewFetcher,
             &JenkinsViewFetcher::fetchViews);
     connect(_fetchTimeoutManager, &FetchingTimeoutManager::jobDataUpdateRequested, this, [=]()
             {
-                qDebug() << "fetch jobs for" << _pane->getSelectedOrDefaultView().url;
-                _fetcher->fetchJobs(_pane->getSelectedOrDefaultView().url);
+                QUrl currentViewUrl = _restRequestBuilder->buildThisOrDefaultViewUrl(
+                    _pane->getSelectedView().url.toString());
+                _fetcher->fetchJobs(currentViewUrl);
             });
 
     connect(_fetcher, &JenkinsDataFetcher::jobUpdated, this, &JenkinsPluginPlugin::updateJob);
@@ -90,8 +91,9 @@ bool JenkinsPluginPlugin::initialize(const QStringList &arguments, QString *erro
 
     connect(_pane, &JenkinsPane::currentViewChanged, this, [=]()
             {
-                qDebug() << "force jobs update for" << _pane->getSelectedOrDefaultView().url;
-                _fetcher->forceRefetch(_pane->getSelectedOrDefaultView().url);
+                QUrl currentViewUrl = _restRequestBuilder->buildThisOrDefaultViewUrl(
+                    _pane->getSelectedView().url.toString());
+                _fetcher->forceRefetch(currentViewUrl);
             });
 
     connect(JenkinsJobsModel::instance(), &JenkinsJobsModel::jobFailed, this,
@@ -135,9 +137,8 @@ void JenkinsPluginPlugin::onSettingsChanged(const JenkinsSettings &settings)
     _alreadyReportedFailures.clear();
     JenkinsJobsModel::instance()->resetModel(settings.jenkinsUrl());
     _restRequestBuilder->setJenkinsSettings(settings);
-    _pane->setJenkinsSettings(_settings);
     _fetchTimeoutManager->setIsViewsFetched(false);
-    _pane->updateViews({}); // reset all views
+    _pane->clearViews();
     _fetchTimeoutManager->triggerFetching();
 }
 
@@ -184,6 +185,6 @@ void JenkinsPluginPlugin::createOptionsPage()
 BuildHistoryModel *JenkinsPluginPlugin::createBuildHistoryModel()
 {
     BuildHistoryFetcher *_fetcher = new BuildHistoryFetcher(_restRequestBuilder);
-    BuildHistoryModel *model = new BuildHistoryModel(_fetcher, _settings);
+    BuildHistoryModel *model = new BuildHistoryModel(_fetcher);
     return model;
 }

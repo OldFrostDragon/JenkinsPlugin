@@ -13,7 +13,7 @@ namespace Internal
 class BuildHistoryModel : public QAbstractListModel
 {
 public:
-    BuildHistoryModel(BuildHistoryFetcher *buildHistoryFetcher, JenkinsSettings settings);
+    BuildHistoryModel(BuildHistoryFetcher *buildHistoryFetcher);
     ~BuildHistoryModel();
 
     // QAbstractItemModel interface
@@ -43,7 +43,6 @@ private:
 
     QList< BuildInfo > _buildHistory;
     BuildHistoryFetcher *_buildHistoryFetcher;
-    JenkinsSettings _settings;
 };
 }
 }

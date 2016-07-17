@@ -2,8 +2,8 @@
 
 using namespace JenkinsPlugin::Internal;
 
-JenkinsViewComboBox::JenkinsViewComboBox(JenkinsSettings settings, QWidget *parent)
-    : QComboBox(parent), _settings(settings)
+JenkinsViewComboBox::JenkinsViewComboBox(QWidget *parent)
+    : QComboBox(parent)
 {
     connect(this, static_cast< void (QComboBox::*)(int) >(&QComboBox::currentIndexChanged), [=](int)
             {
@@ -48,34 +48,20 @@ void JenkinsViewComboBox::updateViews(const QSet< ViewInfo > &jenkinsViews)
     }
     blockSignals(wasBlocked);
     if (isJobUpdateRequired)
-    {
-        qDebug() << "job reset requested";
         emit jobResetRequired();
-    }
-    else
-        qDebug() << "job reset was not requested";
 }
 
-ViewInfo JenkinsViewComboBox::getSelectedOrDefaultView() const
+ViewInfo JenkinsViewComboBox::getSelectedView() const
 {
-    qDebug() << "try to get current view";
     ViewInfo currentView;
-    if (currentIndex() == -1)
-    {
-        currentView.name = QStringLiteral("root");
-        currentView.url = QUrl(_settings.jenkinsUrl());
-        qDebug() << "    default view";
-    }
-    else
-    {
+    if (currentIndex() != -1)
         currentView = _jenkinsViews.at(currentIndex());
-        qDebug() << "    last used view";
-    }
     return currentView;
 }
 
-void JenkinsViewComboBox::setJenkinsSettings(const JenkinsSettings &settings)
+void JenkinsViewComboBox::clearViews()
 {
-    _settings = settings;
     clear();
+    _jenkinsViews.clear();
+    emit jobResetRequired();
 }

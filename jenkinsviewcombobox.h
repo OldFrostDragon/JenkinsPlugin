@@ -14,19 +14,18 @@ class JenkinsViewComboBox : public QComboBox
 {
     Q_OBJECT
 public:
-    JenkinsViewComboBox(JenkinsSettings settings, QWidget *parent = nullptr);
+    JenkinsViewComboBox(QWidget *parent = nullptr);
 
     void updateViews(const QSet< ViewInfo > &jenkinsViews);
 
-    ViewInfo getSelectedOrDefaultView() const;
-    void setJenkinsSettings(const JenkinsSettings &settings);
+    ViewInfo getSelectedView() const; //may be empty
+    void clearViews();
 
 signals:
     void jobResetRequired();
 
 private:
     QList< ViewInfo > _jenkinsViews;
-    JenkinsSettings _settings;
 };
 }
 }

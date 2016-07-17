@@ -18,6 +18,9 @@ public:
     static QString cutRestApiUrlPart(const QString &url);
     static QString lastBuildUrlToJobUrl(QString buildUrl);
 
+    QUrl buildUrl(QString urlString) const;
+    QUrl buildThisOrDefaultViewUrl(QString urlString) const;
+
     QNetworkRequest buildRequest(const QString urlString) const;
     QNetworkRequest buildAvaliableJobsRequest(QUrl viewUrl) const;
     QNetworkRequest buildBuildInfoRequest(const QString url) const;

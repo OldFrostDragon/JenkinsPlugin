@@ -7,6 +7,7 @@
 #include <QTreeView>
 #include "jenkinsjobsmodel.h"
 #include "jenkinsviewcombobox.h"
+#include "restrequestbuilder.h"
 
 namespace JenkinsPlugin
 {
@@ -21,7 +22,7 @@ class JenkinsPane : public Core::IOutputPane
 {
     Q_OBJECT
 public:
-    JenkinsPane(QObject *parent = 0);
+    JenkinsPane(const std::shared_ptr<RestRequestBuilder> builder, QObject *parent = 0);
     ~JenkinsPane();
 
     // IOutputPane interface
@@ -41,13 +42,13 @@ public:
     void goToNext() {}
     void goToPrev() {}
 
-    ViewInfo getSelectedOrDefaultView() const;
+    ViewInfo getSelectedView() const;
 signals:
     void buildHistoryRequested(const JenkinsJob job);
     void currentViewChanged();
 
 public slots:
-    void setJenkinsSettings(JenkinsSettings settings);
+    void clearViews();
     void updateViews(const QSet<ViewInfo> &views);
 
 private slots:
@@ -58,10 +59,11 @@ private slots:
 private:
     QTreeView *_view;
     QModelIndex _contextMenuIndex;
-    JenkinsSettings _settings;
     JenkinsTreeItemDelegate *_delegate;
     JenkinsJobsModel *_model;
     JenkinsViewComboBox *_jenkinsViewComboBox;
+
+    std::shared_ptr<RestRequestBuilder> _restRequestBuilder;
 };
 }
 }

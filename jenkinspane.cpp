@@ -10,7 +10,8 @@
 
 using namespace JenkinsPlugin::Internal;
 
-JenkinsPane::JenkinsPane(QObject *parent) : Core::IOutputPane(parent)
+JenkinsPane::JenkinsPane(const std::shared_ptr< RestRequestBuilder > builder, QObject *parent)
+    : Core::IOutputPane(parent), _restRequestBuilder(builder)
 {
     _view = new QTreeView();
     _view->setHeaderHidden(false);
@@ -27,7 +28,7 @@ JenkinsPane::JenkinsPane(QObject *parent) : Core::IOutputPane(parent)
     _delegate = new JenkinsTreeItemDelegate(this);
     _view->setItemDelegateForColumn(0, _delegate);
 
-    _jenkinsViewComboBox = new JenkinsViewComboBox(_settings);
+    _jenkinsViewComboBox = new JenkinsViewComboBox();
     connect(_jenkinsViewComboBox, &JenkinsViewComboBox::jobResetRequired, this, [=]()
             {
                 _model->resetJobs({});
@@ -69,15 +70,11 @@ bool JenkinsPane::canNext() const { return false; }
 
 bool JenkinsPane::canPrevious() const { return false; }
 
-ViewInfo JenkinsPane::getSelectedOrDefaultView() const
-{
-    return _jenkinsViewComboBox->getSelectedOrDefaultView();
-}
+ViewInfo JenkinsPane::getSelectedView() const { return _jenkinsViewComboBox->getSelectedView(); }
 
-void JenkinsPane::setJenkinsSettings(JenkinsSettings settings)
+void JenkinsPane::clearViews()
 {
-    _settings = settings;
-    _jenkinsViewComboBox->setJenkinsSettings(_settings);
+    _jenkinsViewComboBox->updateViews({});
 }
 
 void JenkinsPane::updateViews(const QSet< ViewInfo > &views)
@@ -128,7 +125,6 @@ void JenkinsPane::openInBrowser()
     JenkinsTreeItem *item = static_cast< JenkinsTreeItem * >(_contextMenuIndex.internalPointer());
     if (item == nullptr)
         return;
-    QUrl itemUrl(item->itemUrl());
-    itemUrl.setPort(_settings.port());
+    QUrl itemUrl = _restRequestBuilder->buildUrl(item->itemUrl());
     QDesktopServices::openUrl(itemUrl);
 }

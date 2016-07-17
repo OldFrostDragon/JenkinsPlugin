@@ -24,6 +24,8 @@ public:
     explicit BuildHistoryFetcher(std::shared_ptr< RestRequestBuilder > restRequestBuilder,
                                  QObject *parent = 0);
 
+    std::shared_ptr<RestRequestBuilder> restRequestBuilder() const;
+
 signals:
     void buildInfoFetched(const BuildInfo &buildInfo);
     void nextBuildInfoFetchRequested();

@@ -2,11 +2,9 @@
 
 using namespace JenkinsPlugin::Internal;
 
-BuildHistoryModel::BuildHistoryModel(BuildHistoryFetcher *buildHistoryFetcher,
-                                     JenkinsSettings settings)
+BuildHistoryModel::BuildHistoryModel(BuildHistoryFetcher *buildHistoryFetcher)
 {
     _buildHistoryFetcher = buildHistoryFetcher;
-    _settings = settings;
     connect(_buildHistoryFetcher, &BuildHistoryFetcher::buildInfoFetched, this,
             &BuildHistoryModel::appendBuildInfo);
 }
@@ -102,8 +100,8 @@ QUrl BuildHistoryModel::getUrl(QModelIndex index)
         return QString();
     if (index.row() >= _buildHistory.size())
         return QString();
-    QUrl formedUrl(_buildHistory[index.row()].url());
-    formedUrl.setPort(_settings.port());
+    QUrl formedUrl
+        = _buildHistoryFetcher->restRequestBuilder()->buildUrl(_buildHistory[index.row()].url());
     return formedUrl;
 }
 

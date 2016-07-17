@@ -77,3 +77,8 @@ void BuildHistoryFetcher::processFirstPendingUrl()
     QNetworkRequest request = _restRequestBuilder->buildBuildInfoRequest(url);
     _manager->get(request);
 }
+
+std::shared_ptr<RestRequestBuilder> BuildHistoryFetcher::restRequestBuilder() const
+{
+    return _restRequestBuilder;
+}

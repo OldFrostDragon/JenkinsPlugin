@@ -42,6 +42,21 @@ QString RestRequestBuilder::lastBuildUrlToJobUrl(QString buildUrl)
     return localBuildUrl;
 }
 
+QUrl RestRequestBuilder::buildUrl(QString urlString) const
+{
+    QUrl url(urlString);
+    url.setPort(_jenkinsSettings.port());
+    return url;
+}
+
+QUrl RestRequestBuilder::buildThisOrDefaultViewUrl(QString urlString) const
+{
+    if(urlString.isEmpty())
+        return  buildUrl(_jenkinsSettings.jenkinsUrl());
+    else
+        return  buildUrl(urlString);
+}
+
 QNetworkRequest RestRequestBuilder::buildRequest(const QString urlString) const
 {
     QUrl url(urlString);
