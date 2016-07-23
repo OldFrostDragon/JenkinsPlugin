@@ -30,10 +30,6 @@ You can also reconfigure default port and add credentials. If authorization is
 not required - leave "Username" and "API token" empty.
 ![](./Screenshots/settings.png)
 
-## TODO
-
-* implement "Views" support
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details
