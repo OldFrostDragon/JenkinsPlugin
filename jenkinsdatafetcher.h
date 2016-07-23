@@ -16,14 +16,19 @@ namespace JenkinsPlugin
 namespace Internal
 {
 
+/*!
+ * \brief The JenkinsDataFetcher class fetch information about avaliable jobs for specified view.
+ * It works asynchronously and emit \c jobUpated(JenkinsJob) signal when info about some job is
+ * parsed. Method fetchJobs starts to work only when JenkinsDataFetcher have already finished
+ * previous data fetch request processing. Otherwise JenkinsDataFetcher ignores it.
+ * \c forceRefetch(QUrl) cancels current fetch process and starts new for given viewUrl.
+ */
 class JenkinsDataFetcher : public QObject
 {
     Q_OBJECT
 public:
     explicit JenkinsDataFetcher(std::shared_ptr< RestRequestBuilder > restRequestBuilder,
                                 QObject *parent = 0);
-
-
 
 signals:
     void jobUpdated(JenkinsJob);
@@ -62,7 +67,7 @@ private:
     void getAvaliableJobs();
 
     QList< JenkinsJob > _jobsForDetalization;
-    QList<JenkinsJob> _jobsForLastBuildDetalization;
+    QList< JenkinsJob > _jobsForLastBuildDetalization;
 
     QNetworkAccessManager *_manager;
     State _state{State::Ready};

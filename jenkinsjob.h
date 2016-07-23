@@ -9,6 +9,11 @@ namespace JenkinsPlugin
 {
 namespace Internal
 {
+
+/*!
+ * \brief The HealthReport class holds information about health status of job. Use "healthReport" part
+ * in JSON reply
+ */
 class HealthReport
 {
 public:
@@ -33,6 +38,9 @@ private:
     QString _iconClassName;
 };
 
+/*!
+ * \brief The JenkinsJob class holds information about job. Use entry of "jobs" array in JSON reply
+ */
 class JenkinsJob
 {
 public:

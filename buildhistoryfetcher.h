@@ -17,6 +17,12 @@ namespace Internal
 
 class BuildInfo;
 
+/*!
+ * \brief The BuildHistoryFetcher class fetch information about builds using its URLs. It depends on
+ * \c RestRequestBuilder and automatically convert given URLs to REST API URLs. It works
+ * asynchronously and emit \c buildInfoFetched(const BuildInfo) signal when new BuildInfo data was
+ * parsed. \c fetchBuildHistory(QStringList) always cancels exeting fetch process and starts new one
+ */
 class BuildHistoryFetcher : public QObject
 {
     Q_OBJECT
@@ -24,7 +30,7 @@ public:
     explicit BuildHistoryFetcher(std::shared_ptr< RestRequestBuilder > restRequestBuilder,
                                  QObject *parent = 0);
 
-    std::shared_ptr<RestRequestBuilder> restRequestBuilder() const;
+    std::shared_ptr< RestRequestBuilder > restRequestBuilder() const;
 
 signals:
     void buildInfoFetched(const BuildInfo &buildInfo);
@@ -39,7 +45,7 @@ private slots:
 
 private:
     QStringList _urlsToFetch;
-    std::unique_ptr<QNetworkAccessManager> _manager;
+    std::unique_ptr< QNetworkAccessManager > _manager;
     std::shared_ptr< RestRequestBuilder > _restRequestBuilder;
 };
 }

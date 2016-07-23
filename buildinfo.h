@@ -9,6 +9,9 @@ namespace JenkinsPlugin
 namespace Internal
 {
 
+/*!
+ * \brief The BuildInfo class holds information about specific build for job.
+ */
 class BuildInfo
 {
 public:

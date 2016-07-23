@@ -9,6 +9,12 @@ namespace JenkinsPlugin
 namespace Internal
 {
 
+/*!
+ * \brief The FetchingTimeoutManager class schedules views and job fetching process. It syncronize
+ * all avaliable Jenkins fetchers.
+ * Typical flow is to fetch avaliable views and then, if user selected view is present is fetched
+ * ones, fetch avaliable jobs for selected view. It use timer for continious fetch triggering.
+ */
 class FetchingTimeoutManager : public QObject
 {
     Q_OBJECT
