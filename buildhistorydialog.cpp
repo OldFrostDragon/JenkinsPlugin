@@ -3,7 +3,7 @@
 
 #include <QDesktopServices>
 
-using namespace JenkinsPlugin::Internal;
+using namespace JenkinsCI::Internal;
 
 BuildHistoryDialog::BuildHistoryDialog(JenkinsJob job, BuildHistoryModel *buildHistoryModel,
                                        QWidget *parent)

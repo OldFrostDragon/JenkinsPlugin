@@ -1,6 +1,6 @@
 #include "fetchingtimeoutmanager.h"
 
-using namespace JenkinsPlugin::Internal;
+using namespace JenkinsCI::Internal;
 
 FetchingTimeoutManager::FetchingTimeoutManager(QObject *parent) : QObject(parent)
 {

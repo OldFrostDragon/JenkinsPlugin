@@ -1,7 +1,7 @@
 #include "jenkinssettings.h"
 #include "jenkinspluginconstants.h"
 
-using namespace JenkinsPlugin::Internal;
+using namespace JenkinsCI::Internal;
 
 JenkinsSettings::JenkinsSettings() {}
 
@@ -11,14 +11,14 @@ void JenkinsSettings::setJenkinsUrl(const QString &jenkinsUrl) { _jenkinsUrl = j
 
 void JenkinsSettings::save(QSettings *settings) const
 {
-    settings->beginGroup(QLatin1String(JenkinsPlugin::Constants::SETTINGS_GROUP));
-    settings->setValue(QLatin1String(JenkinsPlugin::Constants::URL), _jenkinsUrl);
-    settings->setValue(QLatin1String(JenkinsPlugin::Constants::PORT), _port);
-    settings->setValue(QLatin1String(JenkinsPlugin::Constants::USERNAME), _username);
-    settings->setValue(QLatin1String(JenkinsPlugin::Constants::API_TOKEN), _apiToken);
-    settings->setValue(QLatin1String(JenkinsPlugin::Constants::NOTIFY_ABOUT_FAILED_BUILD),
+    settings->beginGroup(QLatin1String(JenkinsCI::Constants::SETTINGS_GROUP));
+    settings->setValue(QLatin1String(JenkinsCI::Constants::URL), _jenkinsUrl);
+    settings->setValue(QLatin1String(JenkinsCI::Constants::PORT), _port);
+    settings->setValue(QLatin1String(JenkinsCI::Constants::USERNAME), _username);
+    settings->setValue(QLatin1String(JenkinsCI::Constants::API_TOKEN), _apiToken);
+    settings->setValue(QLatin1String(JenkinsCI::Constants::NOTIFY_ABOUT_FAILED_BUILD),
                        _notifyAboutFailedBuilds);
-    settings->setValue(QLatin1String(JenkinsPlugin::Constants::SELECTED_VIEW_URL),
+    settings->setValue(QLatin1String(JenkinsCI::Constants::SELECTED_VIEW_URL),
                        _selectedViewUrl);
     settings->endGroup();
 }
@@ -26,16 +26,16 @@ void JenkinsSettings::save(QSettings *settings) const
 void JenkinsSettings::load(QSettings *settings)
 {
     setDefaults();
-    settings->beginGroup(QLatin1String(JenkinsPlugin::Constants::SETTINGS_GROUP));
-    _jenkinsUrl = settings->value(QLatin1String(JenkinsPlugin::Constants::URL)).toString();
-    _port = settings->value(QLatin1String(JenkinsPlugin::Constants::PORT), 80).toInt();
-    _username = settings->value(QLatin1String(JenkinsPlugin::Constants::USERNAME)).toString();
-    _apiToken = settings->value(QLatin1String(JenkinsPlugin::Constants::API_TOKEN)).toString();
+    settings->beginGroup(QLatin1String(JenkinsCI::Constants::SETTINGS_GROUP));
+    _jenkinsUrl = settings->value(QLatin1String(JenkinsCI::Constants::URL)).toString();
+    _port = settings->value(QLatin1String(JenkinsCI::Constants::PORT), 80).toInt();
+    _username = settings->value(QLatin1String(JenkinsCI::Constants::USERNAME)).toString();
+    _apiToken = settings->value(QLatin1String(JenkinsCI::Constants::API_TOKEN)).toString();
     _notifyAboutFailedBuilds
-        = settings->value(QLatin1String(JenkinsPlugin::Constants::NOTIFY_ABOUT_FAILED_BUILD), true)
+        = settings->value(QLatin1String(JenkinsCI::Constants::NOTIFY_ABOUT_FAILED_BUILD), true)
               .toBool();
     _selectedViewUrl
-        = settings->value(QLatin1String(JenkinsPlugin::Constants::SELECTED_VIEW_URL), _jenkinsUrl)
+        = settings->value(QLatin1String(JenkinsCI::Constants::SELECTED_VIEW_URL), _jenkinsUrl)
               .toString();
     settings->endGroup();
 }
@@ -90,14 +90,14 @@ bool JenkinsSettings::isServerSettingsDiffers(const JenkinsSettings &other) cons
            || _apiToken != other._apiToken;
 }
 
-bool operator==(const JenkinsPlugin::Internal::JenkinsSettings &first,
-                const JenkinsPlugin::Internal::JenkinsSettings &second)
+bool operator==(const JenkinsCI::Internal::JenkinsSettings &first,
+                const JenkinsCI::Internal::JenkinsSettings &second)
 {
     return first.equals(second);
 }
 
-bool operator!=(const JenkinsPlugin::Internal::JenkinsSettings &first,
-                const JenkinsPlugin::Internal::JenkinsSettings &second)
+bool operator!=(const JenkinsCI::Internal::JenkinsSettings &first,
+                const JenkinsCI::Internal::JenkinsSettings &second)
 {
     return !first.equals(second);
 }

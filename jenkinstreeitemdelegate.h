@@ -3,7 +3,7 @@
 
 #include <QStyledItemDelegate>
 
-namespace JenkinsPlugin
+namespace JenkinsCI
 {
 namespace Internal
 {

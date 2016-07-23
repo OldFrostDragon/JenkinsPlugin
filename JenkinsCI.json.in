@@ -1,11 +1,11 @@
 {
-    \"Name\" : \"JenkinsPlugin\",
-    \"Version\" : \"0.0.1\",
-    \"CompatVersion\" : \"0.0.1\",
+    \"Name\" : \"JenkinsCI\",
+    \"Version\" : \"0.9.0\",
+    \"CompatVersion\" : \"0.9.0\",
     \"Vendor\" : \"Vyacheslav Shevchuk\",
     \"Copyright\" : \"(C) MyCompany\",
     \"License\" : \"MIT license\",
     \"Description\" : \"Simple Qt Creator plugin for Jenkins job status monitoring \",
-    \"Url\" : \"https://github.com/FrostDragon/JenkinsPlugin\",
+    \"Url\" : \"https://github.com/OldFrostDragon/JenkinsPlugin\",
     $$dependencyList
 }

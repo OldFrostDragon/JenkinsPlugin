@@ -5,7 +5,7 @@
 
 #include <limits>
 
-using namespace JenkinsPlugin::Internal;
+using namespace JenkinsCI::Internal;
 
 JenkinsTreeItem::JenkinsTreeItem(const QString &name, const Type type)
     : _itemType(type), _name(name)

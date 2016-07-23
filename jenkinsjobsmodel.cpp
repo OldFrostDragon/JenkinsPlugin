@@ -1,6 +1,6 @@
 #include "jenkinsjobsmodel.h"
 
-using namespace JenkinsPlugin::Internal;
+using namespace JenkinsCI::Internal;
 
 static JenkinsJobsModel *_instance = nullptr;
 

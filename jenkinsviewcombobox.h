@@ -6,7 +6,7 @@
 #include "jenkinsviewfetcher.h"
 #include "jenkinssettings.h"
 
-namespace JenkinsPlugin
+namespace JenkinsCI
 {
 namespace Internal
 {

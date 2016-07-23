@@ -1,7 +1,7 @@
 #include "buildinfo.h"
 #include "jenkinspluginconstants.h"
 
-using namespace JenkinsPlugin::Internal;
+using namespace JenkinsCI::Internal;
 
 QString BuildInfo::url() const { return _url; }
 
@@ -27,17 +27,17 @@ QString BuildInfo::getResultIcon() const
     switch (_result)
     {
         case Result::Success:
-            return QLatin1String(JenkinsPlugin::Constants::SUCCESS_ICON);
+            return QLatin1String(JenkinsCI::Constants::SUCCESS_ICON);
         case Result::Failure:
-            return QLatin1String(JenkinsPlugin::Constants::FAIL_ICON);
+            return QLatin1String(JenkinsCI::Constants::FAIL_ICON);
         case Result::Unstable:
-            return QLatin1String(JenkinsPlugin::Constants::UNSTABLE_ICON);
+            return QLatin1String(JenkinsCI::Constants::UNSTABLE_ICON);
         case Result::NotBuilt:
         case Result::Aborted:
         case Result::Unknown:
-            return QLatin1String(JenkinsPlugin::Constants::NOT_BUILT_ICON);
+            return QLatin1String(JenkinsCI::Constants::NOT_BUILT_ICON);
     }
-    return QLatin1String(JenkinsPlugin::Constants::NOT_BUILT_ICON);
+    return QLatin1String(JenkinsCI::Constants::NOT_BUILT_ICON);
 }
 
 void BuildInfo::setResult(const Result &result) { _result = result; }

@@ -6,7 +6,7 @@
 #include <QJsonObject>
 #include <QNetworkReply>
 
-using namespace JenkinsPlugin::Internal;
+using namespace JenkinsCI::Internal;
 
 BuildHistoryFetcher::BuildHistoryFetcher(std::shared_ptr< RestRequestBuilder > restRequestBuilder,
                                          QObject *parent)

@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QTimer>
 
-namespace JenkinsPlugin
+namespace JenkinsCI
 {
 namespace Internal
 {

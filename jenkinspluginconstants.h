@@ -1,7 +1,7 @@
 #ifndef JENKINSPLUGINCONSTANTS_H
 #define JENKINSPLUGINCONSTANTS_H
 
-namespace JenkinsPlugin {
+namespace JenkinsCI {
 namespace Constants {
 
 const char ACTION_ID[] = "JenkinsPlugin.Action";

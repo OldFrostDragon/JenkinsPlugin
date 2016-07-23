@@ -22,22 +22,22 @@
 #include <projectexplorer/task.h>
 #include <projectexplorer/projectexplorerconstants.h>
 
-using namespace JenkinsPlugin::Internal;
+using namespace JenkinsCI::Internal;
 
-JenkinsPluginPlugin::JenkinsPluginPlugin()
+JenkinsCIPlugin::JenkinsCIPlugin()
 {
     // Create your members
     _settings.load(Core::ICore::settings());
 }
 
-JenkinsPluginPlugin::~JenkinsPluginPlugin()
+JenkinsCIPlugin::~JenkinsCIPlugin()
 {
     // Unregister objects from the plugin manager's object pool
     // Delete members
     _settings.save(Core::ICore::settings());
 }
 
-bool JenkinsPluginPlugin::initialize(const QStringList &arguments, QString *errorString)
+bool JenkinsCIPlugin::initialize(const QStringList &arguments, QString *errorString)
 {
     // Register objects in the plugin manager's object pool
     // Load settings
@@ -54,7 +54,7 @@ bool JenkinsPluginPlugin::initialize(const QStringList &arguments, QString *erro
     _pane = new JenkinsPane(_restRequestBuilder);
     addAutoReleasedObject(_pane);
     connect(_pane, &JenkinsPane::buildHistoryRequested, this,
-            &JenkinsPluginPlugin::showJobHistoryDialog);
+            &JenkinsCIPlugin::showJobHistoryDialog);
 
     _fetchTimeoutManager = new FetchingTimeoutManager();
     addAutoReleasedObject(_fetchTimeoutManager);
@@ -85,7 +85,7 @@ bool JenkinsPluginPlugin::initialize(const QStringList &arguments, QString *erro
                 _fetcher->forceRefetch(currentViewUrl);
             });
 
-    connect(_fetcher, &JenkinsDataFetcher::jobUpdated, this, &JenkinsPluginPlugin::updateJob);
+    connect(_fetcher, &JenkinsDataFetcher::jobUpdated, this, &JenkinsCIPlugin::updateJob);
     connect(_viewFetcher, &JenkinsViewFetcher::viewsFetched, this, [=](QSet< ViewInfo > info)
             {
                 _pane->updateViews(info);
@@ -103,21 +103,21 @@ bool JenkinsPluginPlugin::initialize(const QStringList &arguments, QString *erro
             });
 
     connect(JenkinsJobsModel::instance(), &JenkinsJobsModel::jobFailed, this,
-            &JenkinsPluginPlugin::addFailedJobMessageToIssues);
+            &JenkinsCIPlugin::addFailedJobMessageToIssues);
     createOptionsPage();
 
     _fetchTimeoutManager->startTimer();
     return true;
 }
 
-void JenkinsPluginPlugin::extensionsInitialized()
+void JenkinsCIPlugin::extensionsInitialized()
 {
     // Retrieve objects from the plugin manager's object pool
     // In the extensionsInitialized function, a plugin can be sure that all
     // plugins that depend on it are completely initialized.
 }
 
-ExtensionSystem::IPlugin::ShutdownFlag JenkinsPluginPlugin::aboutToShutdown()
+ExtensionSystem::IPlugin::ShutdownFlag JenkinsCIPlugin::aboutToShutdown()
 {
     // Save settings
     // Disconnect from signals that are not needed during shutdown
@@ -125,17 +125,17 @@ ExtensionSystem::IPlugin::ShutdownFlag JenkinsPluginPlugin::aboutToShutdown()
     return SynchronousShutdown;
 }
 
-void JenkinsPluginPlugin::updateJobs(QList< JenkinsJob > jobs)
+void JenkinsCIPlugin::updateJobs(QList< JenkinsJob > jobs)
 {
     JenkinsJobsModel::instance()->setJenkinsJobs(jobs);
 }
 
-void JenkinsPluginPlugin::updateJob(JenkinsJob job)
+void JenkinsCIPlugin::updateJob(JenkinsJob job)
 {
     JenkinsJobsModel::instance()->setOrUpdateJob(job);
 }
 
-void JenkinsPluginPlugin::onSettingsChanged(const JenkinsSettings &settings)
+void JenkinsCIPlugin::onSettingsChanged(const JenkinsSettings &settings)
 {
     settings.save(Core::ICore::settings());
 
@@ -151,14 +151,14 @@ void JenkinsPluginPlugin::onSettingsChanged(const JenkinsSettings &settings)
     _settings = settings;
 }
 
-void JenkinsPluginPlugin::showJobHistoryDialog(JenkinsJob job)
+void JenkinsCIPlugin::showJobHistoryDialog(JenkinsJob job)
 {
     BuildHistoryDialog *dialog = new BuildHistoryDialog(job, createBuildHistoryModel(), nullptr);
     dialog->setAttribute(Qt::WA_DeleteOnClose, true);
     dialog->show();
 }
 
-void JenkinsPluginPlugin::addFailedJobMessageToIssues(const JenkinsJob job)
+void JenkinsCIPlugin::addFailedJobMessageToIssues(const JenkinsJob job)
 {
     if (!_settings.notifyAboutFailedBuilds())
         return;
@@ -183,15 +183,15 @@ void JenkinsPluginPlugin::addFailedJobMessageToIssues(const JenkinsJob job)
     _alreadyReportedFailures.insert(job.name(), lastBuildUrl);
 }
 
-void JenkinsPluginPlugin::createOptionsPage()
+void JenkinsCIPlugin::createOptionsPage()
 {
     _optionsPage = new OptionsPage(_settings);
     addAutoReleasedObject(_optionsPage);
     connect(_optionsPage, &OptionsPage::settingsChanged, this,
-            &JenkinsPluginPlugin::onSettingsChanged);
+            &JenkinsCIPlugin::onSettingsChanged);
 }
 
-BuildHistoryModel *JenkinsPluginPlugin::createBuildHistoryModel()
+BuildHistoryModel *JenkinsCIPlugin::createBuildHistoryModel()
 {
     BuildHistoryFetcher *_fetcher = new BuildHistoryFetcher(_restRequestBuilder);
     BuildHistoryModel *model = new BuildHistoryModel(_fetcher);

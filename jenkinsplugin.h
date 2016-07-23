@@ -1,7 +1,7 @@
 #ifndef JENKINSPLUGIN_H
 #define JENKINSPLUGIN_H
 
-#include "jenkinsplugin_global.h"
+#include "jenkinsci_global.h"
 
 #include <extensionsystem/iplugin.h>
 
@@ -13,21 +13,21 @@
 #include "jenkinsviewfetcher.h"
 #include "fetchingtimeoutmanager.h"
 
-namespace JenkinsPlugin
+namespace JenkinsCI
 {
 namespace Internal
 {
 
 class BuildHistoryModel;
 
-class JenkinsPluginPlugin : public ExtensionSystem::IPlugin
+class JenkinsCIPlugin : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QtCreatorPlugin" FILE "JenkinsPlugin.json")
+    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QtCreatorPlugin" FILE "JenkinsCI.json")
 
 public:
-    JenkinsPluginPlugin();
-    ~JenkinsPluginPlugin();
+    JenkinsCIPlugin();
+    ~JenkinsCIPlugin();
 
     bool initialize(const QStringList &arguments, QString *errorString);
     void extensionsInitialized();

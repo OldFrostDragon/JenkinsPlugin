@@ -9,7 +9,7 @@
 #include "jenkinssettings.h"
 #include "jenkinssettingswidget.h"
 
-namespace JenkinsPlugin
+namespace JenkinsCI
 {
 namespace Internal
 {

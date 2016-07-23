@@ -4,7 +4,7 @@
 #include <QString>
 #include <QDateTime>
 
-namespace JenkinsPlugin
+namespace JenkinsCI
 {
 namespace Internal
 {

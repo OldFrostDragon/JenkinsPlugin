@@ -10,7 +10,7 @@
 #include "restrequestbuilder.h"
 #include "buildinfo.h"
 
-namespace JenkinsPlugin
+namespace JenkinsCI
 {
 namespace Internal
 {

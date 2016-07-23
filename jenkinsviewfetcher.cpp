@@ -6,7 +6,7 @@
 #include <QJsonArray>
 #include <QNetworkReply>
 
-using namespace JenkinsPlugin::Internal;
+using namespace JenkinsCI::Internal;
 
 JenkinsViewFetcher::JenkinsViewFetcher(const std::shared_ptr< RestRequestBuilder > builder)
     : _builder(builder)

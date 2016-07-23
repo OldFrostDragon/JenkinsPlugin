@@ -10,7 +10,7 @@ namespace Ui
 class JenkinsSettingsWidget;
 }
 
-namespace JenkinsPlugin
+namespace JenkinsCI
 {
 namespace Internal
 {

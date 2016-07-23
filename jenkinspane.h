@@ -11,7 +11,7 @@
 #include "jenkinsviewcombobox.h"
 #include "restrequestbuilder.h"
 
-namespace JenkinsPlugin
+namespace JenkinsCI
 {
 namespace Internal
 {

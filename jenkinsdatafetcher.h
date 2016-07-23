@@ -11,7 +11,7 @@
 #include "restrequestbuilder.h"
 #include "jenkinsjob.h"
 
-namespace JenkinsPlugin
+namespace JenkinsCI
 {
 namespace Internal
 {

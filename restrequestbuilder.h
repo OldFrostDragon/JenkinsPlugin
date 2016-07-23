@@ -4,7 +4,7 @@
 #include "jenkinssettings.h"
 #include <QNetworkRequest>
 
-namespace JenkinsPlugin
+namespace JenkinsCI
 {
 namespace Internal
 {

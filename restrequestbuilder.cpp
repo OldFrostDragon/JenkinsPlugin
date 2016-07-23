@@ -1,6 +1,6 @@
 #include "restrequestbuilder.h"
 
-using namespace JenkinsPlugin::Internal;
+using namespace JenkinsCI::Internal;
 
 const QString RestRequestBuilder::REST_API_URL_SUFFIX = QStringLiteral("api/json");
 const QString RestRequestBuilder::LAST_BUILD_URL_SUFFIX = QStringLiteral("lastBuild");

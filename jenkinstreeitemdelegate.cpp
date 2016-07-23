@@ -4,7 +4,7 @@
 #include <QPainter>
 #include <QTextDocument>
 
-using namespace JenkinsPlugin::Internal;
+using namespace JenkinsCI::Internal;
 
 JenkinsTreeItemDelegate::JenkinsTreeItemDelegate(QObject *parent) : QStyledItemDelegate(parent) {}
 

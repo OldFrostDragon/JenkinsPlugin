@@ -5,7 +5,7 @@
 #include <QMap>
 #include <QDateTime>
 
-namespace JenkinsPlugin
+namespace JenkinsCI
 {
 namespace Internal
 {

@@ -4,7 +4,7 @@
 #include <QString>
 #include <QSettings>
 
-namespace JenkinsPlugin
+namespace JenkinsCI
 {
 namespace Internal
 {

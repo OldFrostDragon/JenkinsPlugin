@@ -1,7 +1,7 @@
 #include "jenkinssettingswidget.h"
 #include "ui_jenkinssettingswidget.h"
 
-using namespace JenkinsPlugin::Internal;
+using namespace JenkinsCI::Internal;
 
 JenkinsSettingsWidget::JenkinsSettingsWidget(QWidget *parent) :
     QWidget(parent),

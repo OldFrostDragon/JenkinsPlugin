@@ -4,7 +4,7 @@
 #include <utils/treemodel.h>
 #include "jenkinsjob.h"
 
-namespace JenkinsPlugin
+namespace JenkinsCI
 {
 namespace Internal
 {

@@ -1,6 +1,6 @@
 #include "buildhistorymodel.h"
 
-using namespace JenkinsPlugin::Internal;
+using namespace JenkinsCI::Internal;
 
 BuildHistoryModel::BuildHistoryModel(BuildHistoryFetcher *buildHistoryFetcher)
 {

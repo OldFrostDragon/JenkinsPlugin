@@ -1,7 +1,7 @@
 #include "optionspage.h"
 #include "jenkinspluginconstants.h"
 
-using namespace JenkinsPlugin::Internal;
+using namespace JenkinsCI::Internal;
 
 OptionsPage::OptionsPage(const JenkinsSettings settings, QObject *parent) : Core::IOptionsPage(parent)
 {
@@ -10,7 +10,7 @@ OptionsPage::OptionsPage(const JenkinsSettings settings, QObject *parent) : Core
     setDisplayName(tr("Jenkins"));
     setCategory("Jenkins");
     setDisplayCategory(tr("Jenkins"));
-    setCategoryIcon(QLatin1String(JenkinsPlugin::Constants::JENKINS_LOGO));
+    setCategoryIcon(QLatin1String(JenkinsCI::Constants::JENKINS_LOGO));
 }
 
 QWidget *OptionsPage::widget()

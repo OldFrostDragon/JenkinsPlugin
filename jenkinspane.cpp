@@ -8,7 +8,7 @@
 #include <QDesktopServices>
 #include <QUrl>
 
-using namespace JenkinsPlugin::Internal;
+using namespace JenkinsCI::Internal;
 
 JenkinsPane::JenkinsPane(const std::shared_ptr< RestRequestBuilder > builder, QObject *parent)
     : Core::IOutputPane(parent), _restRequestBuilder(builder)
@@ -100,7 +100,7 @@ void JenkinsPane::onCustomContextMenuRequested(const QPoint &point)
 
     QAction *openInBrowserEntry = new QAction(tr("open in browser"), contextMenu);
     openInBrowserEntry->setIcon(
-        QIcon(QLatin1String(JenkinsPlugin::Constants::OPEN_IN_BROWSER_ICON)));
+        QIcon(QLatin1String(JenkinsCI::Constants::OPEN_IN_BROWSER_ICON)));
     contextMenu->addAction(openInBrowserEntry);
     connect(openInBrowserEntry, &QAction::triggered, this, &JenkinsPane::openInBrowser);
 
@@ -108,7 +108,7 @@ void JenkinsPane::onCustomContextMenuRequested(const QPoint &point)
     {
         QAction *buildHistoryEntry = new QAction(tr("show build history"), contextMenu);
         buildHistoryEntry->setIcon(
-            QIcon(QLatin1String(JenkinsPlugin::Constants::BUILD_HISTORY_ICON)));
+            QIcon(QLatin1String(JenkinsCI::Constants::BUILD_HISTORY_ICON)));
         contextMenu->addAction(buildHistoryEntry);
         connect(buildHistoryEntry, &QAction::triggered, this, &JenkinsPane::requestBuildHistory);
     }

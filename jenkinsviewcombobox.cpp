@@ -1,6 +1,6 @@
 #include "jenkinsviewcombobox.h"
 
-using namespace JenkinsPlugin::Internal;
+using namespace JenkinsCI::Internal;
 
 JenkinsViewComboBox::JenkinsViewComboBox(QString lastUsedViewUrl, QWidget *parent)
     : QComboBox(parent)

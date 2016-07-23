@@ -1,0 +1,12 @@
+#ifndef JENKINSCI_GLOBAL_H
+#define JENKINSCI_GLOBAL_H
+
+#include <QtGlobal>
+
+#if defined(JENKINSCI_LIBRARY)
+#  define JENKINSCISHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define JENKINSCISHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // JENKINSCI_GLOBAL_H

@@ -9,7 +9,7 @@
 
 #include "jenkinspluginconstants.h"
 
-using namespace JenkinsPlugin::Internal;
+using namespace JenkinsCI::Internal;
 
 JenkinsDataFetcher::JenkinsDataFetcher(std::shared_ptr< RestRequestBuilder > restRequestBuilder,
                                        QObject *parent)

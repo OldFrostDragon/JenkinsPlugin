@@ -10,7 +10,7 @@ namespace Ui
 class BuildHistoryDialog;
 }
 
-namespace JenkinsPlugin
+namespace JenkinsCI
 {
 namespace Internal
 {

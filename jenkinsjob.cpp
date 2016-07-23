@@ -2,14 +2,14 @@
 
 #include "jenkinspluginconstants.h"
 
-using namespace JenkinsPlugin::Internal;
+using namespace JenkinsCI::Internal;
 
 const QMap< QString, QString > HealthReport::ICON_CLASS_ICONS = {
-    {QStringLiteral("icon-health-80plus"), QLatin1String(JenkinsPlugin::Constants::HEALTH_80PLUS)},
-    {QStringLiteral("icon-health-60to79"), QLatin1String(JenkinsPlugin::Constants::HEALTH_60TO79)},
-    {QStringLiteral("icon-health-40to59"), QLatin1String(JenkinsPlugin::Constants::HEALTH_40TO59)},
-    {QStringLiteral("icon-health-20to39"), QLatin1String(JenkinsPlugin::Constants::HEALTH_20TO39)},
-    {QStringLiteral("icon-health-00to19"), QLatin1String(JenkinsPlugin::Constants::HEALTH_00TO19)},
+    {QStringLiteral("icon-health-80plus"), QLatin1String(JenkinsCI::Constants::HEALTH_80PLUS)},
+    {QStringLiteral("icon-health-60to79"), QLatin1String(JenkinsCI::Constants::HEALTH_60TO79)},
+    {QStringLiteral("icon-health-40to59"), QLatin1String(JenkinsCI::Constants::HEALTH_40TO59)},
+    {QStringLiteral("icon-health-20to39"), QLatin1String(JenkinsCI::Constants::HEALTH_20TO39)},
+    {QStringLiteral("icon-health-00to19"), QLatin1String(JenkinsCI::Constants::HEALTH_00TO19)},
 };
 
 QString JenkinsJob::jobUrl() const { return _jobUrl; }
@@ -33,22 +33,22 @@ void JenkinsJob::setBuildStatus(const QString &colorEntry)
     if (entry == QStringLiteral("blue"))
     {
         _buildStatus = BuildStatus::Success;
-        _colorIcon = QLatin1String(JenkinsPlugin::Constants::SUCCESS_ICON);
+        _colorIcon = QLatin1String(JenkinsCI::Constants::SUCCESS_ICON);
     }
     else if (entry == QStringLiteral("red"))
     {
         _buildStatus = BuildStatus::Fail;
-        _colorIcon = QLatin1String(JenkinsPlugin::Constants::FAIL_ICON);
+        _colorIcon = QLatin1String(JenkinsCI::Constants::FAIL_ICON);
     }
     else if (entry == QStringLiteral("yellow"))
     {
         _buildStatus = BuildStatus::Unstable;
-        _colorIcon = QLatin1String(JenkinsPlugin::Constants::UNSTABLE_ICON);
+        _colorIcon = QLatin1String(JenkinsCI::Constants::UNSTABLE_ICON);
     }
     else
     {
         _buildStatus = BuildStatus::NotBuilt;
-        _colorIcon = QLatin1String(JenkinsPlugin::Constants::NOT_BUILT_ICON);
+        _colorIcon = QLatin1String(JenkinsCI::Constants::NOT_BUILT_ICON);
     }
 }
 

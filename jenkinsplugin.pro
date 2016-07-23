@@ -1,4 +1,4 @@
-DEFINES += JENKINSPLUGIN_LIBRARY
+DEFINES += JENKINSCI_LIBRARY
 
 # JenkinsPlugin files
 QT += network
@@ -26,7 +26,6 @@ SOURCES += \
     fetchingtimeoutmanager.cpp
 
 HEADERS += \
-        jenkinsplugin_global.h \
         jenkinspluginconstants.h \
     jenkinssettings.h \
     jenkinsdatafetcher.h \
@@ -45,7 +44,8 @@ HEADERS += \
     jenkinsplugin.h \
     jenkinsviewfetcher.h \
     jenkinsviewcombobox.h \
-    fetchingtimeoutmanager.h
+    fetchingtimeoutmanager.h \
+    jenkinsci_global.h
 
 CONFIG += c++14
 # Qt Creator linking
@@ -70,7 +70,7 @@ isEmpty(IDE_BUILD_TREE):IDE_BUILD_TREE=/home/oldfrostdragon/Sources/qt-creator-3
 ###### <dirname>_dependencies.pri, where <dirname> is the name of the directory containing the
 ###### plugin's sources.
 
-QTC_PLUGIN_NAME = JenkinsPlugin
+QTC_PLUGIN_NAME = JenkinsCI
 QTC_LIB_DEPENDS += \
     # nothing here at this time
 
@@ -92,3 +92,6 @@ FORMS += \
 
 RESOURCES += \
     resources.qrc
+
+DISTFILES += \
+    JenkinsCI.json.in
