@@ -27,8 +27,6 @@ public:
     JenkinsTreeItem(const QString &name, const QString &url, const Type type);
     JenkinsTreeItem(const Type type, const JenkinsJob &job);
 
-    JenkinsTreeItem(const JenkinsTreeItem &other);
-
     Type itemType() const;
     void setItemType(const Type &itemType);
 

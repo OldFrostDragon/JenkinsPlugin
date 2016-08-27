@@ -30,13 +30,6 @@ JenkinsTreeItem::JenkinsTreeItem(const JenkinsTreeItem::Type type, const Jenkins
         _serverIcon = QIcon(QStringLiteral(":/icons/Resources/server.png"));
 }
 
-JenkinsTreeItem::JenkinsTreeItem(const JenkinsTreeItem &other)
-    : TreeItem({other._name}), _itemType(other._itemType), _name(other._name), _job(other._job)
-{
-    for (int row = 0, count = other.childCount(); row < count; ++row)
-        appendChild(new JenkinsTreeItem(*other.childItem(row)));
-}
-
 JenkinsTreeItem::Type JenkinsTreeItem::itemType() const { return _itemType; }
 
 void JenkinsTreeItem::setItemType(const Type &itemType) { _itemType = itemType; }
@@ -47,7 +40,7 @@ void JenkinsTreeItem::setName(const QString &name) { _name = name; }
 
 JenkinsTreeItem *JenkinsTreeItem::childItem(int row) const
 {
-    return static_cast< JenkinsTreeItem * >(child(row));
+    return static_cast< JenkinsTreeItem * >(childAt(row));
 }
 
 QVariant JenkinsTreeItem::data(int column, int role) const
