@@ -22,6 +22,7 @@ void JenkinsSettingsWidget::settingsToUi(const JenkinsSettings &settings)
     ui->usernameLineEdit->setText(settings.username());
     ui->apiTokenLineEdit->setText(settings.apiToken());
     ui->notifyAboutFailedBuilds->setChecked(settings.notifyAboutFailedBuilds());
+    ui->popupShowPeriodSpinBox->setValue(settings.popupShowPeriod() / 1000);
 }
 
 JenkinsSettings JenkinsSettingsWidget::settingsFromUi() const
@@ -32,6 +33,7 @@ JenkinsSettings JenkinsSettingsWidget::settingsFromUi() const
     settings.setUsername(ui->usernameLineEdit->text());
     settings.setApiToken(ui->apiTokenLineEdit->text());
     settings.setNotifyAboutFailedBuilds(ui->notifyAboutFailedBuilds->isChecked());
+    settings.setPopupShowPeriod(ui->popupShowPeriodSpinBox->value() * 1000);
     return settings;
 }
 

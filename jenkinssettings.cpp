@@ -18,8 +18,8 @@ void JenkinsSettings::save(QSettings *settings) const
     settings->setValue(QLatin1String(JenkinsCI::Constants::API_TOKEN), _apiToken);
     settings->setValue(QLatin1String(JenkinsCI::Constants::NOTIFY_ABOUT_FAILED_BUILD),
                        _notifyAboutFailedBuilds);
-    settings->setValue(QLatin1String(JenkinsCI::Constants::SELECTED_VIEW_URL),
-                       _selectedViewUrl);
+    settings->setValue(QLatin1String(JenkinsCI::Constants::SELECTED_VIEW_URL), _selectedViewUrl);
+    settings->setValue(QLatin1String(JenkinsCI::Constants::POPUP_SHOW_PERIOD), _popupShowPeriod);
     settings->endGroup();
 }
 
@@ -37,6 +37,10 @@ void JenkinsSettings::load(QSettings *settings)
     _selectedViewUrl
         = settings->value(QLatin1String(JenkinsCI::Constants::SELECTED_VIEW_URL), _jenkinsUrl)
               .toString();
+    _popupShowPeriod = settings
+                           ->value(QLatin1String(JenkinsCI::Constants::POPUP_SHOW_PERIOD),
+                                   DEFAULT_POPUP_SHOW_PERIOD)
+                           .toInt();
     settings->endGroup();
 }
 
@@ -88,6 +92,13 @@ bool JenkinsSettings::isServerSettingsDiffers(const JenkinsSettings &other) cons
 {
     return _jenkinsUrl != other._jenkinsUrl || _port != other._port || _username != other._username
            || _apiToken != other._apiToken;
+}
+
+int JenkinsSettings::popupShowPeriod() const { return _popupShowPeriod; }
+
+void JenkinsSettings::setPopupShowPeriod(int popupShowPeriod)
+{
+    _popupShowPeriod = popupShowPeriod;
 }
 
 bool operator==(const JenkinsCI::Internal::JenkinsSettings &first,

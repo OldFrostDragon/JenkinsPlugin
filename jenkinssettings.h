@@ -41,6 +41,9 @@ public:
 
     bool isServerSettingsDiffers(const JenkinsSettings &other) const;
 
+    int popupShowPeriod() const;
+    void setPopupShowPeriod(int popupShowPeriod);
+
 private:
     QString _jenkinsUrl{QStringLiteral("https://ci.jenkins-ci.org/view/Libraries/")};
     int _port;
@@ -48,6 +51,9 @@ private:
     QString _apiToken;
     bool _notifyAboutFailedBuilds{true};
     QString _selectedViewUrl;
+    static constexpr int DEFAULT_POPUP_SHOW_PERIOD{30000}; //in miliseconds
+    int _popupShowPeriod{DEFAULT_POPUP_SHOW_PERIOD};
+
     //  QString _jenkinsUrl{QStringLiteral("http://jenkins.cyanogenmod.com")};
     //  QString _jenkinsUrl{QStringLiteral("http://dotnet-ci.cloudapp.net/view/Roslyn/")};
 };

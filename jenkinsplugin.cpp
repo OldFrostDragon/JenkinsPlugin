@@ -180,6 +180,7 @@ void JenkinsCIPlugin::addFailedJobMessageToIssues(const JenkinsJob job)
     _alreadyReportedFailures.insert(job.name(), lastBuildUrl);
 
     WarningPopup *popup = new WarningPopup(_optionsPage->widget());
+    popup->setShowPeriod(_settings.popupShowPeriod());
     popup->showPopup(
         QString("Jenkins:\n \"%1\" #%2 failed").arg(job.name()).arg(lastBuildUrl.number));
 }

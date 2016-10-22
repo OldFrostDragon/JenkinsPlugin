@@ -26,6 +26,7 @@ const char USERNAME[] = "Username";
 const char API_TOKEN[] = "ApiToken";
 const char NOTIFY_ABOUT_FAILED_BUILD[] = "NotifyAboutFailedBuild";
 const char SELECTED_VIEW_URL[] = "SelectedViewUrl";
+const char POPUP_SHOW_PERIOD[] = "PopupShowPeriod";
 
 
 //Health report icons
