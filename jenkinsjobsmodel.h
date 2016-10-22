@@ -33,6 +33,7 @@ public:
 signals:
     void rootItemUpdated();
     void jobFailed(const JenkinsJob job);
+    void jobStarted(const JenkinsJob job);
 
 private:
     explicit JenkinsJobsModel(QObject *parent = 0);

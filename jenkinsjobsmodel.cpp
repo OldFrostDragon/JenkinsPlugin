@@ -92,6 +92,9 @@ void JenkinsJobsModel::setOrUpdateJob(JenkinsJob job)
         if (castedItems[i]->job().jobUrl() == job.jobUrl())
         {
             JenkinsJob exitingJob = castedItems[i]->job();
+
+            if(!exitingJob.isRunning() && job.isRunning())
+                emit jobStarted(job);
             if (exitingJob.buildStatus() != JenkinsJob::BuildStatus::Unknown
                 && job.buildStatus() == JenkinsJob::BuildStatus::Fail && !job.isRunning())
                 emit jobFailed(job);
