@@ -23,7 +23,8 @@ SOURCES += \
     jenkinsplugin.cpp \
     jenkinsviewfetcher.cpp \
     jenkinsviewcombobox.cpp \
-    fetchingtimeoutmanager.cpp
+    fetchingtimeoutmanager.cpp \
+    warningpopup.cpp
 
 HEADERS += \
         jenkinspluginconstants.h \
@@ -45,7 +46,8 @@ HEADERS += \
     jenkinsviewfetcher.h \
     jenkinsviewcombobox.h \
     fetchingtimeoutmanager.h \
-    jenkinsci_global.h
+    jenkinsci_global.h \
+    warningpopup.h
 
 CONFIG += c++14
 # Qt Creator linking
@@ -88,7 +90,8 @@ include($$QTCREATOR_SOURCES/src/qtcreatorplugin.pri)
 FORMS += \
     jenkinsviewwidget.ui \
     jenkinssettingswidget.ui \
-    buildhistorydialog.ui
+    buildhistorydialog.ui \
+    warningpopup.ui
 
 RESOURCES += \
     resources.qrc

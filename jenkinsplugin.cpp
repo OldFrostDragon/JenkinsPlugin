@@ -1,5 +1,6 @@
 #include "jenkinsplugin.h"
 #include "jenkinspluginconstants.h"
+#include "warningpopup.h"
 
 #include <coreplugin/icore.h>
 #include <coreplugin/icontext.h>
@@ -107,6 +108,10 @@ bool JenkinsCIPlugin::initialize(const QStringList &arguments, QString *errorStr
     createOptionsPage();
 
     _fetchTimeoutManager->startTimer();
+    connect(_fetchTimeoutManager, &FetchingTimeoutManager::viewUpdateRequested, this, [=](){
+        auto popup = new WarningPopup();
+        popup->show();
+    });
     return true;
 }
 
