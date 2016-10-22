@@ -1,27 +1,28 @@
 #include "jenkinsplugin.h"
 #include "jenkinspluginconstants.h"
-#include "warningpopup.h"
 
-#include <coreplugin/icore.h>
-#include <coreplugin/icontext.h>
+#include <coreplugin/actionmanager/actioncontainer.h>
 #include <coreplugin/actionmanager/actionmanager.h>
 #include <coreplugin/actionmanager/command.h>
-#include <coreplugin/actionmanager/actioncontainer.h>
 #include <coreplugin/coreconstants.h>
+#include <coreplugin/icontext.h>
+#include <coreplugin/icore.h>
 
 #include <QAction>
-#include <QMessageBox>
 #include <QMainWindow>
 #include <QMenu>
+#include <QMessageBox>
 
 #include <QtPlugin>
 
-#include "jenkinsjobsmodel.h"
 #include "buildhistorydialog.h"
+#include "jenkinsjobsmodel.h"
 
-#include <projectexplorer/taskhub.h>
-#include <projectexplorer/task.h>
 #include <projectexplorer/projectexplorerconstants.h>
+#include <projectexplorer/task.h>
+#include <projectexplorer/taskhub.h>
+
+#include "warningpopup.h"
 
 using namespace JenkinsCI::Internal;
 
@@ -49,7 +50,6 @@ bool JenkinsCIPlugin::initialize(const QStringList &arguments, QString *errorStr
 
     Q_UNUSED(arguments)
     Q_UNUSED(errorString)
-
     _restRequestBuilder = std::make_shared< RestRequestBuilder >(_settings);
 
     _pane = new JenkinsPane(_restRequestBuilder);
@@ -73,45 +73,37 @@ bool JenkinsCIPlugin::initialize(const QStringList &arguments, QString *errorStr
 
     connect(_fetchTimeoutManager, &FetchingTimeoutManager::viewUpdateRequested, _viewFetcher,
             &JenkinsViewFetcher::fetchViews);
-    connect(_fetchTimeoutManager, &FetchingTimeoutManager::jobDataUpdateRequested, this, [=]()
-            {
-                QUrl currentViewUrl = _restRequestBuilder->buildThisOrDefaultViewUrl(
-                    _pane->getSelectedView().url.toString());
-                _fetcher->fetchJobs(currentViewUrl);
-            });
-    connect(_fetchTimeoutManager, &FetchingTimeoutManager::jobForcedUpdateRequested, this, [=]()
-            {
-                QUrl currentViewUrl = _restRequestBuilder->buildThisOrDefaultViewUrl(
-                    _pane->getSelectedView().url.toString());
-                _fetcher->forceRefetch(currentViewUrl);
-            });
+    connect(_fetchTimeoutManager, &FetchingTimeoutManager::jobDataUpdateRequested, this, [=]() {
+        QUrl currentViewUrl = _restRequestBuilder->buildThisOrDefaultViewUrl(
+            _pane->getSelectedView().url.toString());
+        _fetcher->fetchJobs(currentViewUrl);
+    });
+    connect(_fetchTimeoutManager, &FetchingTimeoutManager::jobForcedUpdateRequested, this, [=]() {
+        QUrl currentViewUrl = _restRequestBuilder->buildThisOrDefaultViewUrl(
+            _pane->getSelectedView().url.toString());
+        _fetcher->forceRefetch(currentViewUrl);
+    });
 
     connect(_fetcher, &JenkinsDataFetcher::jobUpdated, this, &JenkinsCIPlugin::updateJob);
-    connect(_viewFetcher, &JenkinsViewFetcher::viewsFetched, this, [=](QSet< ViewInfo > info)
-            {
-                _pane->updateViews(info);
-                _fetchTimeoutManager->setIsViewsFetched(!info.isEmpty());
-            });
+    connect(_viewFetcher, &JenkinsViewFetcher::viewsFetched, this, [=](QSet< ViewInfo > info) {
+        _pane->updateViews(info);
+        _fetchTimeoutManager->setIsViewsFetched(!info.isEmpty());
+    });
 
-    connect(_pane, &JenkinsPane::currentViewChanged, this, [=]()
-            {
-                QUrl currentViewUrl = _restRequestBuilder->buildThisOrDefaultViewUrl(
-                    _pane->getSelectedView().url.toString());
-                QUrl settingsUrl = currentViewUrl;
-                settingsUrl.setPort(-1);
-                _settings.setSelectedViewUrl(settingsUrl.toString());
-                onSettingsChanged(_settings);
-            });
+    connect(_pane, &JenkinsPane::currentViewChanged, this, [=]() {
+        QUrl currentViewUrl = _restRequestBuilder->buildThisOrDefaultViewUrl(
+            _pane->getSelectedView().url.toString());
+        QUrl settingsUrl = currentViewUrl;
+        settingsUrl.setPort(-1);
+        _settings.setSelectedViewUrl(settingsUrl.toString());
+        onSettingsChanged(_settings);
+    });
 
     connect(JenkinsJobsModel::instance(), &JenkinsJobsModel::jobFailed, this,
             &JenkinsCIPlugin::addFailedJobMessageToIssues);
     createOptionsPage();
 
     _fetchTimeoutManager->startTimer();
-    connect(_fetchTimeoutManager, &FetchingTimeoutManager::viewUpdateRequested, this, [=](){
-        auto popup = new WarningPopup();
-        popup->show();
-    });
     return true;
 }
 
@@ -186,14 +178,17 @@ void JenkinsCIPlugin::addFailedJobMessageToIssues(const JenkinsJob job)
     ProjectExplorer::TaskHub::addTask(ProjectExplorer::Task::Error, message,
                                       ProjectExplorer::Constants::TASK_CATEGORY_BUILDSYSTEM);
     _alreadyReportedFailures.insert(job.name(), lastBuildUrl);
+
+    WarningPopup *popup = new WarningPopup(_optionsPage->widget());
+    popup->showPopup(
+        QString("Jenkins:\n \"%1\" #%2 failed").arg(job.name()).arg(lastBuildUrl.number));
 }
 
 void JenkinsCIPlugin::createOptionsPage()
 {
     _optionsPage = new OptionsPage(_settings);
     addAutoReleasedObject(_optionsPage);
-    connect(_optionsPage, &OptionsPage::settingsChanged, this,
-            &JenkinsCIPlugin::onSettingsChanged);
+    connect(_optionsPage, &OptionsPage::settingsChanged, this, &JenkinsCIPlugin::onSettingsChanged);
 }
 
 BuildHistoryModel *JenkinsCIPlugin::createBuildHistoryModel()
