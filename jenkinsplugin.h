@@ -12,6 +12,7 @@
 #include "jenkinsjob.h"
 #include "jenkinsviewfetcher.h"
 #include "fetchingtimeoutmanager.h"
+#include "buildnotificator.h"
 
 namespace JenkinsCI
 {
@@ -39,7 +40,6 @@ private slots:
 
     void onSettingsChanged(const JenkinsSettings &settings);
     void showJobHistoryDialog(JenkinsJob job);
-    void reportJobExecutionFailure(const JenkinsJob job);
 
 private:
     void createOptionsPage();
@@ -54,8 +54,8 @@ private:
     JenkinsSettings _settings;
     JenkinsPane *_pane;
     FetchingTimeoutManager *_fetchTimeoutManager;
-    //key - job name
-    QMap<QString, JenkinsJob::BuildUrl> _alreadyReportedFailures;
+//    //key - job name
+    std::shared_ptr<BuildNotificator> _buildNotificator;
 };
 
 }  // namespace Internal

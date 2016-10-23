@@ -67,8 +67,9 @@ bool JenkinsCIPlugin::initialize(const QStringList &arguments, QString *errorStr
     addAutoReleasedObject(_viewFetcher);
 
     //    onSettingsChanged(_settings);
+    createOptionsPage();
+    _buildNotificator = std::make_shared<BuildNotificator>(_optionsPage->widget());
 
-    _alreadyReportedFailures.clear();
     JenkinsJobsModel::instance()->resetModel(_settings.jenkinsUrl());
 
     connect(_fetchTimeoutManager, &FetchingTimeoutManager::viewUpdateRequested, _viewFetcher,
@@ -99,9 +100,9 @@ bool JenkinsCIPlugin::initialize(const QStringList &arguments, QString *errorStr
         onSettingsChanged(_settings);
     });
 
-    connect(JenkinsJobsModel::instance(), &JenkinsJobsModel::jobFailed, this,
-            &JenkinsCIPlugin::reportJobExecutionFailure);
-    createOptionsPage();
+    connect(JenkinsJobsModel::instance(), &JenkinsJobsModel::jobFailed, _buildNotificator.get(),
+            &BuildNotificator::notifyAboutFailure);
+
 
     _fetchTimeoutManager->startTimer();
     return true;
@@ -136,7 +137,7 @@ void JenkinsCIPlugin::onSettingsChanged(const JenkinsSettings &settings)
 {
     settings.save(Core::ICore::settings());
 
-    _alreadyReportedFailures.clear();
+    _buildNotificator->setSettings(settings);
     JenkinsJobsModel::instance()->resetModel(settings.jenkinsUrl());
     _restRequestBuilder->setJenkinsSettings(settings);
     _fetchTimeoutManager->setIsViewsFetched(false);
@@ -153,39 +154,6 @@ void JenkinsCIPlugin::showJobHistoryDialog(JenkinsJob job)
     BuildHistoryDialog *dialog = new BuildHistoryDialog(job, createBuildHistoryModel(), nullptr);
     dialog->setAttribute(Qt::WA_DeleteOnClose, true);
     dialog->show();
-}
-
-void JenkinsCIPlugin::reportJobExecutionFailure(const JenkinsJob job)
-{
-    if (!_settings.notifyAboutFailedBuilds())
-        return;
-    JenkinsJob::BuildUrl lastBuildUrl = job.getLastBuildUrl();
-    if (_alreadyReportedFailures.contains(job.name()))
-    {
-        JenkinsJob::BuildUrl reportedUrl = _alreadyReportedFailures[job.name()];
-        if (reportedUrl == lastBuildUrl)
-            return;
-    }
-    QUrl url(lastBuildUrl.url);
-    url.setPort(_settings.port());
-    QString message = QCoreApplication::translate("JenkinsPlugin::Task",
-                                                  "Jenkins: %1 Build #%2 failed. Build date: %3.\n "
-                                                  "See %4 for details")
-                          .arg(job.name())
-                          .arg(lastBuildUrl.number)
-                          .arg(job.lastBuildDate().toString(QStringLiteral("dd.MM.yyyy hh:mm:ss")))
-                          .arg(url.toString());
-    ProjectExplorer::TaskHub::addTask(ProjectExplorer::Task::Error, message,
-                                      ProjectExplorer::Constants::TASK_CATEGORY_BUILDSYSTEM);
-    _alreadyReportedFailures.insert(job.name(), lastBuildUrl);
-
-    WarningPopup *popup = new WarningPopup(_optionsPage->widget());
-    popup->setShowPeriod(_settings.popupShowPeriod());
-    QString popupMessage
-        = QCoreApplication::translate("JenkinsPlugin::Task", "<b>Jenkins:</b>\n \"%1\" #%2 failed")
-              .arg(job.name())
-              .arg(lastBuildUrl.number);
-    popup->showPopup(popupMessage);
 }
 
 void JenkinsCIPlugin::createOptionsPage()

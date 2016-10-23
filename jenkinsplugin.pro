@@ -24,7 +24,8 @@ SOURCES += \
     jenkinsviewfetcher.cpp \
     jenkinsviewcombobox.cpp \
     fetchingtimeoutmanager.cpp \
-    warningpopup.cpp
+    warningpopup.cpp \
+    buildnotificator.cpp
 
 HEADERS += \
         jenkinspluginconstants.h \
@@ -47,7 +48,8 @@ HEADERS += \
     jenkinsviewcombobox.h \
     fetchingtimeoutmanager.h \
     jenkinsci_global.h \
-    warningpopup.h
+    warningpopup.h \
+    buildnotificator.h
 
 CONFIG += c++14
 # Qt Creator linking
