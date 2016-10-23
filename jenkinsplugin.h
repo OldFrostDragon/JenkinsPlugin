@@ -39,7 +39,7 @@ private slots:
 
     void onSettingsChanged(const JenkinsSettings &settings);
     void showJobHistoryDialog(JenkinsJob job);
-    void addFailedJobMessageToIssues(const JenkinsJob job);
+    void reportJobExecutionFailure(const JenkinsJob job);
 
 private:
     void createOptionsPage();

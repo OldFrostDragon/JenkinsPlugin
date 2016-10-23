@@ -100,7 +100,7 @@ bool JenkinsCIPlugin::initialize(const QStringList &arguments, QString *errorStr
     });
 
     connect(JenkinsJobsModel::instance(), &JenkinsJobsModel::jobFailed, this,
-            &JenkinsCIPlugin::addFailedJobMessageToIssues);
+            &JenkinsCIPlugin::reportJobExecutionFailure);
     createOptionsPage();
 
     _fetchTimeoutManager->startTimer();
@@ -155,7 +155,7 @@ void JenkinsCIPlugin::showJobHistoryDialog(JenkinsJob job)
     dialog->show();
 }
 
-void JenkinsCIPlugin::addFailedJobMessageToIssues(const JenkinsJob job)
+void JenkinsCIPlugin::reportJobExecutionFailure(const JenkinsJob job)
 {
     if (!_settings.notifyAboutFailedBuilds())
         return;
@@ -181,8 +181,11 @@ void JenkinsCIPlugin::addFailedJobMessageToIssues(const JenkinsJob job)
 
     WarningPopup *popup = new WarningPopup(_optionsPage->widget());
     popup->setShowPeriod(_settings.popupShowPeriod());
-    popup->showPopup(
-        QString("Jenkins:\n \"%1\" #%2 failed").arg(job.name()).arg(lastBuildUrl.number));
+    QString popupMessage
+        = QCoreApplication::translate("JenkinsPlugin::Task", "<b>Jenkins:</b>\n \"%1\" #%2 failed")
+              .arg(job.name())
+              .arg(lastBuildUrl.number);
+    popup->showPopup(popupMessage);
 }
 
 void JenkinsCIPlugin::createOptionsPage()

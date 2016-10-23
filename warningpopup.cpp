@@ -3,6 +3,7 @@
 
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QFontDatabase>
 
 WarningPopup::WarningPopup(QWidget *parent) : QWidget(parent), ui(new Ui::WarningPopup)
 {
@@ -20,6 +21,7 @@ WarningPopup::WarningPopup(QWidget *parent) : QWidget(parent), ui(new Ui::Warnin
     connect(ui->closeButton, &QPushButton::clicked, this, &WarningPopup::close);
     connect(&_timer, &QTimer::timeout, this, &WarningPopup::close);
 
+    ui->warningTextlabel->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
     hide();
 }
 

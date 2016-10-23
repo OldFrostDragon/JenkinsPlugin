@@ -156,7 +156,7 @@ color: rgb(255, 0, 0)</string>
                </size>
               </property>
               <property name="styleSheet">
-               <string notr="true">background-color: rgb(128, 0, 0);
+               <string notr="true">background-color: rgb(196, 0, 0);
 border: 0px;
 border-radius: 0px; </string>
               </property>
