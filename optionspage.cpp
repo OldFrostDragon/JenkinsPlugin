@@ -10,7 +10,7 @@ OptionsPage::OptionsPage(const JenkinsSettings settings, QObject *parent) : Core
     setDisplayName(tr("Jenkins"));
     setCategory("Jenkins");
     setDisplayCategory(tr("Jenkins"));
-    setCategoryIcon(QLatin1String(JenkinsCI::Constants::JENKINS_LOGO));
+    setCategoryIcon(Utils::Icon(QLatin1String(JenkinsCI::Constants::JENKINS_LOGO)));
 }
 
 QWidget *OptionsPage::widget()

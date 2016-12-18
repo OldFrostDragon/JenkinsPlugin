@@ -50,7 +50,7 @@ void JenkinsTreeItemDelegate::paint(QPainter *painter, const QStyleOptionViewIte
 QSize JenkinsTreeItemDelegate::sizeHint(const QStyleOptionViewItem &option,
                                         const QModelIndex &index) const
 {
-    QStyleOptionViewItemV4 options = option;
+    QStyleOptionViewItem options = option;
     initStyleOption(&options, index);
 
     QTextDocument doc;

@@ -1,5 +1,7 @@
 #include "jenkinsjobsmodel.h"
 
+#include <cmath>
+
 using namespace JenkinsCI::Internal;
 
 static JenkinsJobsModel *_instance = nullptr;

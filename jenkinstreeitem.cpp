@@ -4,6 +4,7 @@
 #include "jenkinspluginconstants.h"
 
 #include <limits>
+#include <cmath>
 
 using namespace JenkinsCI::Internal;
 

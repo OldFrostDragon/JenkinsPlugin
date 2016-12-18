@@ -14,7 +14,7 @@ namespace JenkinsCI
 namespace Internal
 {
 
-class JenkinsJobsModel : public Utils::TreeModel
+class JenkinsJobsModel : public Utils::TreeModel<>
 {
     Q_OBJECT
 public:
